@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GCSE Revision Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Arial,sans-serif;background:#f9f9f9;margin:0;padding:20px;}
+h1{text-align:center;color:#333;}
+.subject{background:#fff;margin-bottom:15px;padding:15px;border-radius:8px;border-left:6px solid #2b79c7;}
+label{display:block;margin:5px 0;}
+.progress-bar-container{background:#eee;border-radius:20px;margin-top:10px;}
+.progress-bar{height:12px;background:#2b79c7;border-radius:20px;width:0%;}
+.quiz{background:#fff;padding:20px;border-radius:8px;border-left:6px solid #e67e22;margin-top:20px;}
+button{padding:10px 14px;margin-top:10px;cursor:pointer;background:#2b79c7;color:#fff;border:none;border-radius:4px;}
+button:hover{background:#1f57a1;}
+</style>
+</head>
+<body>
+<h1>📚 GCSE Revision Tracker</h1>
+<div id="subjects"></div>
+<div class="quiz">
+<h2>🧠 Quick Quiz</h2>
+<button onclick="generateQuiz()">Generate Question</button>
+<p id="quizQuestion"></p>
+</div>
+
+<script>
+// Subjects and topics
+const subjects = {
+"Maths (OCR)": ["Fractions","Percentages","Algebra","Linear equations","Quadratics","Probability","Trigonometry","Vectors"],
+"Combined Science (AQA)": ["Cell biology","Organisation","Infection & response","Atomic structure","Bonding","Energy changes","Forces","Electricity"],
+"Computer Science (OCR)": ["Systems architecture","Memory","Storage","Networks","Cyber security","Algorithms","Programming"],
+"Geography (AQA)": ["Natural hazards","Rivers","Coasts","Ecosystems","Urban issues","Resource management"],
+"German (AQA)": ["Family","School","Free time","Technology","Holidays","Future plans"],
+"English (AQA)": ["Language paper 1","Language paper 2","Creative writing","Analysis skills"],
+"Media Studies": ["Media language","Representation","Audience","Industry","Case studies"]
+};
+
+// Quiz prompts
+const quizPrompts = [
+"What is a quadratic equation?",
+"What is the function of the CPU?",
+"What causes earthquakes?",
+"What is mitosis?",
+"What does 'weil' mean in German?",
+"What is media representation?",
+"What is probability?"
+];
+
+// Render subjects
+function renderSubjects(){
+  const container = document.getElementById("subjects");
+  for(let subject in subjects){
+    let div = document.createElement("div");
+    div.className="subject";
+    let html = `<h2>${subject}</h2><div class="progress-bar-container"><div id="prog-${subject}" class="progress-bar"></div></div>`;
+    subjects[subject].forEach((topic,i)=>{
+      // Load saved state from localStorage
+      let saved = localStorage.getItem(`chk-${subject}-${i}`) === "true";
+      html += `<label><input type="checkbox" id="chk-${subject}-${i}" ${saved?"checked":""} onchange="updateProgress('${subject}')"> ${topic}</label>`;
+    });
+    div.innerHTML = html;
+    container.appendChild(div);
+    updateProgress(subject);
+  }
+}
+
+// Update progress bars and save state
+function updateProgress(subject){
+  let total = subjects[subject].length;
+  let done = 0;
+  for(let i=0;i<total;i++){
+    let chk = document.getElementById(`chk-${subject}-${i}`);
+    if(chk.checked) done++;
+    localStorage.setItem(`chk-${subject}-${i}`, chk.checked);
+  }
+  let percent = Math.round((done/total)*100);
+  document.getElementById(`prog-${subject}`).style.width = percent + "%";
+  document.getElementById(`prog-${subject}`).innerText = done+"/"+total;
+}
+
+// Generate quiz
+function generateQuiz(){
+  const q = quizPrompts[Math.floor(Math.random()*quizPrompts.length)];
+  document.getElementById("quizQuestion").innerText = q;
+}
+
+renderSubjects();
+</script>
+</body>
+</html>
