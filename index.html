@@ -5,87 +5,171 @@
 <title>GCSE Revision Tracker</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{font-family:Arial,sans-serif;background:#f9f9f9;margin:0;padding:20px;}
-h1{text-align:center;color:#333;}
-.subject{background:#fff;margin-bottom:15px;padding:15px;border-radius:8px;border-left:6px solid #2b79c7;}
-label{display:block;margin:5px 0;}
-.progress-bar-container{background:#eee;border-radius:20px;margin-top:10px;}
-.progress-bar{height:12px;background:#2b79c7;border-radius:20px;width:0%;}
-.quiz{background:#fff;padding:20px;border-radius:8px;border-left:6px solid #e67e22;margin-top:20px;}
-button{padding:10px 14px;margin-top:10px;cursor:pointer;background:#2b79c7;color:#fff;border:none;border-radius:4px;}
+/* General styling */
+body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f6f8; margin:0; padding:20px;}
+h1{text-align:center; color:#2b79c7; margin-bottom:20px;}
+.subject{background:#fff; margin-bottom:20px; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+label{display:block; margin:8px 0; cursor:pointer;}
+.progress-bar-container{background:#e0e0e0; border-radius:20px; height:15px; margin:10px 0;}
+.progress-bar{height:15px; border-radius:20px; width:0%; background:#2b79c7; transition: width 0.3s;}
+.quiz{background:#fff; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-top:20px;}
+button{padding:10px 16px; margin-top:10px; cursor:pointer; background:#2b79c7; color:#fff; border:none; border-radius:5px; transition: background 0.3s;}
 button:hover{background:#1f57a1;}
+select{padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px; width:100%;}
+#quizQuestion{margin-top:10px; font-weight:bold;}
 </style>
 </head>
 <body>
+
 <h1>📚 GCSE Revision Tracker</h1>
+
 <div id="subjects"></div>
+
 <div class="quiz">
-<h2>🧠 Quick Quiz</h2>
+<h2>🧠 Quiz Generator</h2>
+<label for="subjectSelect">Select Subject:</label>
+<select id="subjectSelect" onchange="populateTopics()"></select>
+
+<label for="topicSelect">Select Topic:</label>
+<select id="topicSelect"></select>
+
 <button onclick="generateQuiz()">Generate Question</button>
-<p id="quizQuestion"></p>
+<p id="quizQuestion">Select a subject and topic to start.</p>
 </div>
 
 <script>
-// Subjects and topics
+// Subjects, topics, and quiz questions
 const subjects = {
-"Maths (OCR)": ["Fractions","Percentages","Algebra","Linear equations","Quadratics","Probability","Trigonometry","Vectors"],
-"Combined Science (AQA)": ["Cell biology","Organisation","Infection & response","Atomic structure","Bonding","Energy changes","Forces","Electricity"],
-"Computer Science (OCR)": ["Systems architecture","Memory","Storage","Networks","Cyber security","Algorithms","Programming"],
-"Geography (AQA)": ["Natural hazards","Rivers","Coasts","Ecosystems","Urban issues","Resource management"],
-"German (AQA)": ["Family","School","Free time","Technology","Holidays","Future plans"],
-"English (AQA)": ["Language paper 1","Language paper 2","Creative writing","Analysis skills"],
-"Media Studies": ["Media language","Representation","Audience","Industry","Case studies"]
+"Maths (OCR)": {
+"Fractions":["Simplify 3/12.","Convert 0.75 to a fraction.","Add 1/2 + 1/3."],
+"Percentages":["Find 20% of 150.","Increase 50 by 15%.","Decrease 200 by 25%."],
+"Algebra":["Simplify 2x + 5x.","Solve x + 7 = 15.","Factorise x^2 + 5x."],
+"Linear equations":["Solve 2x + 3 = 11.","y = 3x + 5, find y when x=2.","Graph y = 2x +1."],
+"Quadratics":["Solve x^2 - 4 = 0.","Factorise x^2 + 5x + 6.","Find the vertex of y=x^2 +2x+1."],
+"Probability":["A dice is rolled. Probability of 6?","Probability of heads on a coin?","Two coins: probability of two tails?"],
+"Trigonometry":["sin(30°) = ?","cos(60°) = ?","tan(45°) = ?"],
+"Vectors":["Vector addition of (1,2) + (3,4).","Multiply vector (2,3) by 2.","Find magnitude of (3,4)."]
+},
+"Combined Science (AQA)": {
+"Cell biology":["What is mitosis?","Function of mitochondria?","Difference between plant & animal cells?"],
+"Organisation":["Role of the heart?","Function of red blood cells?","What is an enzyme?"],
+"Infection & response":["What causes measles?","Difference between bacteria and viruses?","Define vaccination."],
+"Atomic structure":["Protons, neutrons, electrons?","Atomic number of carbon?","Define isotope."],
+"Bonding":["Ionic bond definition.","Covalent bond example?","Metallic bonding features."],
+"Energy changes":["Exothermic vs endothermic?","Example of exothermic reaction.","Define activation energy."],
+"Forces":["What is Newton's 2nd Law?","Define weight.","What is friction?"],
+"Electricity":["Ohm's Law?","Series vs parallel circuits?","Define current."]
+},
+"Computer Science (OCR)":{
+"Systems architecture":["Function of CPU?","Define RAM.","What is ROM?"],
+"Memory":["Volatile vs non-volatile?","Explain cache memory.","What is virtual memory?"],
+"Storage":["HDD vs SSD?","Capacity of storage units.","Define cloud storage."],
+"Networks":["LAN vs WAN?","What is IP address?","Define network topology."],
+"Cyber security":["What is phishing?","Define malware.","Difference between virus and worm."],
+"Algorithms":["What is a sorting algorithm?","Binary search explanation.","Define algorithm."],
+"Programming":["What is a variable?","Define loop.","What is a function?"]
+},
+"Geography (AQA)":{
+"Natural hazards":["Define earthquake.","Causes of flooding?","What is a volcano?"],
+"Rivers":["Features of a river?","Stages of a river?","Define meander."],
+"Coasts":["Define erosion.","What is longshore drift?","Define spit."],
+"Ecosystems":["Food chain example?","Define producer.","What is biodiversity?"],
+"Urban issues":["Urbanisation definition.","Problems in cities?","What is sustainability?"],
+"Resource management":["Water management methods?","What is renewable energy?","Define deforestation."]
+},
+"German (AQA)":{
+"Family":["Write a sentence about your family.","Define Bruder.","Translate: 'My mother is...'.","What is Schwester?"],
+"School":["Describe your school day.","Translate: 'Ich gehe zur Schule.'","Name 3 school subjects."],
+"Free time":["What is 'spielen'?","Translate: 'I play football.'","Favourite hobby?"],
+"Technology":["Define 'Computer'.","Translate: 'I use my phone.'","Advantages of technology?"],
+"Holidays":["Write about last holiday.","Translate: 'Ich fahre nach Deutschland.'","Favourite holiday activity?"],
+"Future plans":["Translate: 'Ich möchte Arzt werden.'","Write your dream job.","Future holiday plans."]
+},
+"English (AQA)":{
+"Language paper 1":["What is a simile?","Identify the main idea.","Analyse sentence structure."],
+"Language paper 2":["Identify tone in a passage.","Find persuasive techniques.","Summarise the text."],
+"Creative writing":["Write a short story opening.","Describe a setting.","Create a character."],
+"Analysis skills":["Analyse a poem.","Identify language features.","Explain effect on reader."]
+},
+"Media Studies":{
+"Media language":["Define camera angle.","What is mise-en-scene?","Example of editing technique."],
+"Representation":["Explain stereotypes.","Example of representation.","Discuss media bias."],
+"Audience":["Define target audience.","Explain audience theory.","What is reception analysis?"],
+"Industry":["What is a media company?","Define distribution.","Example of media product."],
+"Case studies":["Name one case study.","What is the main focus?","Key points from case study."]
+}
 };
 
-// Quiz prompts
-const quizPrompts = [
-"What is a quadratic equation?",
-"What is the function of the CPU?",
-"What causes earthquakes?",
-"What is mitosis?",
-"What does 'weil' mean in German?",
-"What is media representation?",
-"What is probability?"
-];
+// Populate subject dropdown
+function populateSubjects(){
+  const subjectSelect = document.getElementById("subjectSelect");
+  subjectSelect.innerHTML = "";
+  for(let sub in subjects){
+    let opt = document.createElement("option");
+    opt.value = sub;
+    opt.text = sub;
+    subjectSelect.add(opt);
+  }
+  populateTopics();
+}
 
-// Render subjects
+// Populate topic dropdown based on subject
+function populateTopics(){
+  const subject = document.getElementById("subjectSelect").value;
+  const topicSelect = document.getElementById("topicSelect");
+  topicSelect.innerHTML = "";
+  for(let topic in subjects[subject]){
+    let opt = document.createElement("option");
+    opt.value = topic;
+    opt.text = topic;
+    topicSelect.add(opt);
+  }
+}
+
+// Generate quiz question for selected topic
+function generateQuiz(){
+  const subject = document.getElementById("subjectSelect").value;
+  const topic = document.getElementById("topicSelect").value;
+  const questions = subjects[subject][topic];
+  const q = questions[Math.floor(Math.random()*questions.length)];
+  document.getElementById("quizQuestion").innerText = q;
+}
+
+// Progress bars and checkboxes
 function renderSubjects(){
   const container = document.getElementById("subjects");
+  container.innerHTML="";
   for(let subject in subjects){
     let div = document.createElement("div");
     div.className="subject";
     let html = `<h2>${subject}</h2><div class="progress-bar-container"><div id="prog-${subject}" class="progress-bar"></div></div>`;
-    subjects[subject].forEach((topic,i)=>{
-      // Load saved state from localStorage
-      let saved = localStorage.getItem(`chk-${subject}-${i}`) === "true";
-      html += `<label><input type="checkbox" id="chk-${subject}-${i}" ${saved?"checked":""} onchange="updateProgress('${subject}')"> ${topic}</label>`;
-    });
-    div.innerHTML = html;
+    let topics = subjects[subject];
+    for(let topic in topics){
+      let key = `chk-${subject}-${topic}`;
+      let saved = localStorage.getItem(key) === "true";
+      html += `<label><input type="checkbox" id="${key}" ${saved?"checked":""} onchange="updateProgress('${subject}')"> ${topic}</label>`;
+    }
+    div.innerHTML=html;
     container.appendChild(div);
     updateProgress(subject);
   }
 }
 
-// Update progress bars and save state
+// Update progress bar
 function updateProgress(subject){
-  let total = subjects[subject].length;
-  let done = 0;
-  for(let i=0;i<total;i++){
-    let chk = document.getElementById(`chk-${subject}-${i}`);
+  const topics = subjects[subject];
+  let done=0;
+  for(let topic in topics){
+    let chk = document.getElementById(`chk-${subject}-${topic}`);
     if(chk.checked) done++;
-    localStorage.setItem(`chk-${subject}-${i}`, chk.checked);
+    localStorage.setItem(`chk-${subject}-${topic}`, chk.checked);
   }
-  let percent = Math.round((done/total)*100);
-  document.getElementById(`prog-${subject}`).style.width = percent + "%";
-  document.getElementById(`prog-${subject}`).innerText = done+"/"+total;
+  const bar = document.getElementById(`prog-${subject}`);
+  bar.style.width = Math.round(done/topics.length*100)+"%";
+  bar.innerText = done+"/"+topics.length;
 }
 
-// Generate quiz
-function generateQuiz(){
-  const q = quizPrompts[Math.floor(Math.random()*quizPrompts.length)];
-  document.getElementById("quizQuestion").innerText = q;
-}
-
+populateSubjects();
 renderSubjects();
 </script>
 </body>
