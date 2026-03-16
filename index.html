@@ -1,76 +1,207 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate GCSE Revision App 💎</title>
+<title>Ultimate GCSE Revision App 🎓</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-body {font-family:'Inter',sans-serif;margin:0;padding:0;background:#f0f4f8;color:#1f2937;transition:0.3s;}
-.dark {background:#0d1117;color:white;}
-.sidebar {position:fixed; left:0; top:0; bottom:0;width:260px;background:linear-gradient(180deg,#4f7cff,#1e3c72);padding:20px;display:flex;flex-direction:column;color:white;box-shadow:5px 0 15px rgba(0,0,0,0.2);}
-.sidebar h2 {margin-top:0;margin-bottom:20px;font-size:24px;}
-.sidebar button {background:none;border:none;color:white;text-align:left;padding:14px;margin-bottom:10px;border-radius:12px;cursor:pointer;font-weight:600;transition:0.3s;font-size:15px;}
-.sidebar button:hover {background:rgba(255,255,255,0.2);transform:translateX(5px);}
-.main {margin-left:280px;padding:25px;}
-.card {backdrop-filter:blur(15px);background:rgba(255,255,255,0.15);padding:25px;border-radius:25px;box-shadow:0 15px 40px rgba(0,0,0,0.15);margin-bottom:25px;transition:0.3s;}
-.dark .card {background:rgba(255,255,255,0.05);}
-button {padding:12px 20px;border:none;border-radius:16px;background:linear-gradient(90deg,#4f7cff,#34c759);color:white;cursor:pointer;font-weight:600;margin-top:12px;transition:0.3s;box-shadow:0 6px 15px rgba(0,0,0,0.2);}
-button:hover {transform:translateY(-2px) scale(1.02);box-shadow:0 8px 20px rgba(0,0,0,0.25);}
-input, select {width:100%;padding:12px;margin-top:10px;border-radius:12px;border:1px solid #ccc;font-size:15px;}
-.progress-bar {height:28px;width:100%;background:#ddd;border-radius:16px;overflow:hidden;margin-top:10px;}
-.progress-fill {height:100%;width:0%;background: linear-gradient(90deg,#4f7cff,#34c759);text-align:center;color:white;line-height:28px;font-weight:bold;transition:width 0.5s;}
-canvas {max-width:100%;}
-td, th {padding:12px;text-align:center;border-radius:12px;font-weight:600;cursor:pointer;}
-th {background:#4f7cff;color:white;}
-td:hover {opacity:0.85; transform: scale(1.03);}
-#confetti-canvas {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
-.mini-game-card {margin-bottom:20px;background:rgba(255,255,255,0.1);padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+
+body{
+font-family:'Inter',sans-serif;
+margin:0;
+padding:0;
+background:#f0f4f8;
+color:#1f2937;
+transition:0.3s;
+}
+
+.dark{
+background:#0f172a;
+color:white;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:260px;
+background:linear-gradient(180deg,#4f7cff,#3561c3);
+padding:20px;
+display:flex;
+flex-direction:column;
+color:white;
+box-shadow:4px 0 20px rgba(0,0,0,0.15);
+}
+
+.sidebar h2{
+margin-top:0;
+margin-bottom:20px;
+font-size:22px;
+}
+
+.sidebar button{
+background:none;
+border:none;
+color:white;
+text-align:left;
+padding:12px;
+margin-bottom:8px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+transition:0.2s;
+}
+
+.sidebar button:hover{
+background:rgba(255,255,255,0.25);
+transform:translateX(4px);
+}
+
+.main{
+margin-left:280px;
+padding:25px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 15px 30px rgba(0,0,0,0.1);
+margin-bottom:20px;
+transition:0.25s;
+}
+
+.dark .card{
+background:#1f2937;
+}
+
+.card:hover{
+transform:translateY(-3px);
+box-shadow:0 20px 35px rgba(0,0,0,0.15);
+}
+
+button{
+padding:10px 18px;
+border:none;
+border-radius:10px;
+background:#4f7cff;
+color:white;
+cursor:pointer;
+font-weight:600;
+margin-top:10px;
+transition:0.2s;
+}
+
+button:hover{
+background:#2f4fd6;
+transform:scale(1.03);
+}
+
+input, select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+.progress-bar{
+height:24px;
+width:100%;
+background:#ddd;
+border-radius:12px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#4f7cff,#34c759);
+text-align:center;
+color:white;
+line-height:24px;
+font-weight:bold;
+transition:width 0.5s;
+}
+
+canvas{
+max-width:100%;
+}
+
+td, th{
+padding:10px;
+text-align:center;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+}
+
+th{
+background:#4f7cff;
+color:white;
+}
+
+td:hover{
+opacity:0.9;
+transform:scale(1.03);
+}
+
 </style>
-<link rel="manifest" href="manifest.json">
+
 </head>
+
 <body>
-<canvas id="confetti-canvas"></canvas>
+
 <div class="sidebar">
-<h2>GCSE App 💎</h2>
+
+<h2>GCSE App</h2>
+
 <button onclick="showSection('dashboard')">🏠 Dashboard</button>
 <button onclick="showSection('quiz')">🧠 Quiz</button>
 <button onclick="showSection('timetable')">📅 Timetable</button>
 <button onclick="showSection('analytics')">📊 Analytics</button>
 <button onclick="showSection('pomodoro')">⏱ Pomodoro</button>
-<button onclick="showSection('minigame')">🎮 Mini Games</button>
+<button onclick="showSection('minigame')">🎮 Mini Game</button>
 <button onclick="showSection('settings')">⚙️ Settings</button>
 <button id="darkBtn">🌙 Dark Mode</button>
+
 </div>
+
 <div class="main">
+
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
 <p>XP: <span id="xp">0</span></p>
 <p>Level: <span id="level">1</span></p>
 <p>Streak: <span id="streak">0</span></p>
 <p>Badges: <span id="badges">None</span></p>
-<div class="progress-bar"><div class="progress-fill" id="overallProgress">0%</div></div>
+
+<div class="progress-bar">
+<div class="progress-fill" id="overallProgress">0%</div>
 </div>
+
+</div>
+
 <div id="quiz" class="card section" style="display:none;">
+
 <h2>Quiz</h2>
+
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
+
 <div id="quizArea" style="margin-top:20px;">
 <p id="question" style="font-weight:bold;font-size:18px;"></p>
 <button id="nextBtn">Next</button>
 </div>
+
 </div>
-<div id="timetable" class="card section" style="display:none;">
-<h2>Revision Timetable</h2>
-<input id="days" type="number" placeholder="Days to revise">
-<button id="generateTimetableBtn">Generate Timetable</button>
-<div id="timetableContainer" style="overflow-x:auto;margin-top:15px;"></div>
-</div>
-<div id="analytics" class="card section" style="display:none;">
-<h2>Analytics</h2>
-<canvas id="chart" width="400" height="200"></canvas>
-</div>
+
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro Timer</h2>
 <p id="timer">25:00</p>
@@ -78,59 +209,104 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="pausePomodoro">Pause</button>
 <button id="resetPomodoro">Reset</button>
 </div>
-<div id="minigame" class="card section" style="display:none;">
-<h2>Mini Games</h2>
-<div class="mini-game-card" id="memoryGameContainer"></div>
-<div class="mini-game-card" id="quickQuizContainer"></div>
-<div class="mini-game-card" id="wordScrambleContainer"></div>
+
 </div>
-<div id="settings" class="card section" style="display:none;">
-<h2>Settings</h2>
-<p>Toggle dark/light mode or select theme.</p>
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 <script>
-// ===== Section Navigation =====
-function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
 
-// ===== Question Bank (Sample 500 questions for now) =====
-const questionBank={"Maths (OCR)":{"Algebra":["Solve 2x+5=15","Factorize x^2+5x+6","Simplify 3(x+2)-4x"],"Trigonometry":["Calculate sin(30°)","Find missing angle in a right triangle","Use cos rule to find a side"]},"Combined Science (AQA Gateway)":{"Cell Biology":["Function of nucleus","Define osmosis","Prokaryotic vs eukaryotic cells"],"Atomic Structure":["Define proton, neutron, electron","Atomic number?","Isotope?"]},"Computer Science (OCR)":{"Programming":["Define variable","Write a for loop","Explain if statements"],"Algorithms":["What is a sorting algorithm?","Binary search","Linear vs binary search"]},"Geography (AQA)":{"Rivers":["Define erosion","What is deposition?","River formation stages"],"Coasts":["Longshore drift?","Coastal erosion","Headland and bay formation"]},"German (AQA)":{"Family":["Translate: My brother is tall","Conjugate 'haben' for ich, du, er","What is 'Schwester'?"],"School":["Translate: I have maths on Monday","What is 'Lehrer'?","Conjugate 'sein' for wir"]},"English (AQA)":{"Language Paper 1":["What is a simile?","Identify main idea","Explain tone in a paragraph"],"Creative Writing":["Write opening paragraph","Use dialogue","Include rhetorical question"]},"Media Studies":{"Representation":["Define media representation","Example of stereotype","Explain target audience"],"Industry":["Define media industry","Name 2 UK media companies","Explain media regulation"]}};
-const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
-
-// ===== XP / Badges =====
-let xp=parseInt(localStorage.getItem("xp")||0);let streak=parseInt(localStorage.getItem("streak")||0);let badges=JSON.parse(localStorage.getItem("badges")||"[]");
-function updateXP(){document.getElementById("xp").innerText=xp;document.getElementById("level").innerText=Math.floor(xp/100)+1;document.getElementById("streak").innerText=streak;document.getElementById("badges").innerText=badges.length>0?badges.join(", "):"None";document.getElementById("overallProgress").style.width=Math.min(Math.floor(xp/12),100)+"%";document.getElementById("overallProgress").innerText=Math.min(Math.floor(xp/12),100)+"%";}
-updateXP();
-
-// ===== Populate Quiz Selects =====
-const subjectSelect=document.getElementById("subjectSelect");
-const topicSelect=document.getElementById("topicSelect");
-for(let subject in questionBank){let opt=document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);}
-function updateTopics(){topicSelect.innerHTML="";let subj=subjectSelect.value;for(let topic in questionBank[subj]){let opt=document.createElement("option"); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);}}
-subjectSelect.addEventListener("change",()=>{updateTopics();loadQuiz();});
-updateTopics();
-
-// ===== Quiz =====
-let currentQuestionIndex=0;let currentQuestions=[];const questionEl=document.getElementById("question");const nextBtn=document.getElementById("nextBtn");
-function triggerConfetti(){confetti({particleCount:150,spread:70,origin:{y:0.6}});}
-function loadQuiz(){const subj=subjectSelect.value;const top=topicSelect.value;currentQuestions=questionBank[subj][top];currentQuestionIndex=0;showQuestion();}
-function showQuestion(){if(currentQuestionIndex>=currentQuestions.length){questionEl.innerText="✅ Quiz Complete!";nextBtn.style.display="none";return;}questionEl.innerText=currentQuestions[currentQuestionIndex];nextBtn.style.display="inline-block";}
-nextBtn.addEventListener("click",()=>{currentQuestionIndex++; xp+=10; streak+=1; triggerConfetti();if(currentQuestionIndex===currentQuestions.length){badges.push("Completed Topic: "+topicSelect.value);triggerConfetti();}updateXP();localStorage.setItem("xp",xp);localStorage.setItem("streak",streak);localStorage.setItem("badges",JSON.stringify(badges));showQuestion();});
-topicSelect.addEventListener("change",loadQuiz);loadQuiz();
-
-// ===== Timetable =====
-document.getElementById("generateTimetableBtn").addEventListener("click",()=>{const days=parseInt(document.getElementById("days").value);if(!days||days<=0){alert("Enter valid number of days"); return;}const container=document.getElementById("timetableContainer");container.innerHTML="";const subjectsList=Object.keys(questionBank);const table=document.createElement("table");const headerRow=document.createElement("tr"); headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; table.appendChild(headerRow);for(let i=1;i<=days;i++){const row=document.createElement("tr");const dayCell=document.createElement("td"); dayCell.innerText="Day "+i; row.appendChild(dayCell);for(let s=0;s<3;s++){const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];const topics=Object.keys(questionBank[subj]);const topic=topics[Math.floor(Math.random()*topics.length)];const cell=document.createElement("td"); cell.innerText=`${subj}: ${topic}`;cell.style.backgroundColor=subjectColors[subj]||"#888"; cell.style.color="white"; cell.style.fontWeight="bold"; cell.style.borderRadius="8px";cell.addEventListener("click",()=>{subjectSelect.value=subj; updateTopics(); topicSelect.value=topic; loadQuiz(); showSection("quiz");});row.appendChild(cell);}table.appendChild(row);}container.appendChild(table);});
-
-// ===== Analytics =====
-const ctx=document.getElementById("chart").getContext("2d");const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>Math.floor(xp/7)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-
-// ===== Pomodoro =====
-let pomodoroTime=25*60; let pomodoroInterval=null; const timerEl=document.getElementById("timer"); function updateTimer(){let min=Math.floor(pomodoroTime/60);let sec=pomodoroTime%60;timerEl.innerText=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;} document.getElementById("startPomodoro").addEventListener("click",()=>{if(!pomodoroInterval){pomodoroInterval=setInterval(()=>{pomodoroTime--;updateTimer();if(pomodoroTime<=0){clearInterval(pomodoroInterval);pomodoroInterval=null;pomodoroTime=25*60;updateTimer();alert("Pomodoro Complete!");}},1000);}}); document.getElementById("pausePomodoro").addEventListener("click",()=>{clearInterval(pomodoroInterval);pomodoroInterval=null;}); document.getElementById("resetPomodoro").addEventListener("click",()=>{pomodoroTime=25*60;updateTimer();clearInterval(pomodoroInterval);pomodoroInterval=null;}); updateTimer();
-
-// ===== Mini Games =====
-function generateMemoryGame(){const container=document.getElementById("memoryGameContainer");container.innerHTML="<h3>Memory Match</h3>";const cards=["A","B","C","D","A","B","C","D"];cards.sort(()=>Math.random()-0.5);const cardDivs=[];cards.forEach(letter=>{let div=document.createElement("div"); div.innerText="?"; div.style.display="inline-block"; div.style.width="60px"; div.style.height="60px"; div.style.margin="5px"; div.style.background="#4f7cff"; div.style.color="white"; div.style.lineHeight="60px"; div.style.fontWeight="bold"; div.style.fontSize="24px"; div.style.borderRadius="10px"; div.style.textAlign="center"; div.style.cursor="pointer"; div.dataset.value=letter; container.appendChild(div); cardDivs.push(div);});
-let first=null, second=null; cardDivs.forEach(div=>{div.addEventListener("click",()=>{if(div.innerText!=="?"||second) return; div.innerText=div.dataset.value; if(!first) first=div; else second=div; if(first.dataset.value===second.dataset.value){xp+=20;updateXP();triggerConfetti();first=null; second=null;} else{setTimeout(()=>{first.innerText="?"; second.innerText="?"; first=null; second=null;},800);}})});
+function showSection(id){
+document.querySelectorAll('.section').forEach(s=>s.style.display='none')
+document.getElementById(id).style.display='block'
 }
-function generateQuickQuiz(){const container=document.getElementById("quickQuizContainer");container.innerHTML="<h3>Quick-Fire Quiz</h3><p id='qfQuestion'></p><input id='qfAnswer' placeholder='Your answer'><button id='qfBtn'>Submit</button><p id='qfResult'></p>"; const qfQuestion=document.getElementById('qfQuestion'); const qfAnswer=document.getElementById('qfAnswer'); const qfBtn=document.getElementById('qfBtn'); const qfResult=document.getElementById('qfResult'); const questions=["2+2","5*3","10-4"]; const answers=["4","15","6"]; let index=0; qfQuestion.innerText=questions[index]; qfBtn.addEventListener('click',()=>{if(qfAnswer.value.trim()===answers[index]){xp+=15;updateXP
+
+const questionBank={
+"Maths (OCR)":{
+"Algebra":[
+"Solve 2x+5=15",
+"Solve 3x-7=11",
+"Factorise x^2+5x+6",
+"Simplify 3(x+2)-4x",
+"Expand (x+4)(x+3)"
+],
+"Trigonometry":[
+"Find sin(30°)",
+"Find cos(60°)",
+"Find tan(45°)",
+"Use Pythagoras to find hypotenuse",
+"What is sin²θ+cos²θ?"
+]
+}
+}
+
+const subjectSelect=document.getElementById("subjectSelect")
+const topicSelect=document.getElementById("topicSelect")
+
+for(let subject in questionBank){
+let opt=document.createElement("option")
+opt.value=subject
+opt.textContent=subject
+subjectSelect.appendChild(opt)
+}
+
+function updateTopics(){
+topicSelect.innerHTML=""
+let subj=subjectSelect.value
+
+for(let topic in questionBank[subj]){
+let opt=document.createElement("option")
+opt.value=topic
+opt.textContent=topic
+topicSelect.appendChild(opt)
+}
+}
+
+subjectSelect.addEventListener("change",()=>{
+updateTopics()
+loadQuiz()
+})
+
+updateTopics()
+
+let currentQuestions=[]
+let currentQuestionIndex=0
+
+const questionEl=document.getElementById("question")
+const nextBtn=document.getElementById("nextBtn")
+
+function loadQuiz(){
+let subj=subjectSelect.value
+let top=topicSelect.value
+currentQuestions=[...questionBank[subj][top]].sort(()=>Math.random()-0.5)
+currentQuestionIndex=0
+showQuestion()
+}
+
+function showQuestion(){
+
+if(currentQuestionIndex>=currentQuestions.length){
+questionEl.innerText="Quiz complete!"
+nextBtn.style.display="none"
+return
+}
+
+questionEl.innerText=currentQuestions[currentQuestionIndex]
+nextBtn.style.display="inline-block"
+}
+
+nextBtn.addEventListener("click",()=>{
+currentQuestionIndex++
+showQuestion()
+})
+
+topicSelect.addEventListener("change",loadQuiz)
+
+loadQuiz()
+
+document.getElementById("darkBtn").addEventListener("click",()=>{
+document.body.classList.toggle("dark")
+})
+
+</script>
+
+</body>
+</html>
