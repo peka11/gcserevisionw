@@ -3,19 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GCSE Revision App</title>
+<title>GCSE Revision App - Next Gen</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-body {font-family:'Inter',sans-serif;margin:0;padding:20px;background:#f0f4f8;color:#222;transition:0.3s;}
+
+body {
+  font-family:'Inter',sans-serif;
+  margin:0;padding:20px;
+  background:#f0f4f8;
+  color:#222;
+  transition:0.3s;
+}
 .dark {background:#111827;color:white;}
+
 header {display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 h1 {margin:0;font-size:26px;}
-button {padding:10px 16px;background:#4f7cff;border:none;color:white;border-radius:12px;font-weight:bold;cursor:pointer;transition:0.2s;}
+
+button {
+  padding:10px 16px;
+  background:#4f7cff;
+  border:none;
+  color:white;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
 button:hover {background:#3561c3;}
+
 .grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px;}
-.card {background:white;padding:20px;border-radius:20px;box-shadow:0 5px 25px rgba(0,0,0,0.1);transition:0.3s;}
+.card {
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 5px 25px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
 .dark .card {background:#1f2937;}
+
 select,input {width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;}
 #timer {font-size:28px;font-weight:bold;margin:10px 0;text-align:center;}
 #question {font-weight:bold;margin-top:10px;}
@@ -23,11 +49,14 @@ select,input {width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1
 .progress-fill {height:100%;width:0%;background:#4f7cff;text-align:center;color:white;line-height:20px;font-weight:bold;transition:width 0.5s;}
 table {border-collapse:collapse;width:100%;}
 th, td {padding:8px;border:1px solid #ccc;text-align:center;border-radius:10px;}
+td {cursor:pointer;}
+td:hover {opacity:0.9;}
 </style>
 </head>
 <body>
+
 <header>
-<h1>📚 GCSE Revision</h1>
+<h1>🎓 GCSE Revision App</h1>
 <button id="darkBtn">🌙</button>
 </header>
 
@@ -66,7 +95,7 @@ th, td {padding:8px;border:1px solid #ccc;text-align:center;border-radius:10px;}
 </div>
 
 <script>
-// ===== GCSE Questions & Topics =====
+// ===== GCSE Subjects + Topics =====
 const questionBank = {
 "Maths (OCR)":{"Algebra":["Solve 3x+5=20","Expand 4(x+2)","Factorise x^2+5x+6"],"Fractions":["Simplify 12/18","Add 3/5 + 2/7","Convert 0.75 to fraction"],"Percentages":["Find 20% of 150","Increase 50 by 10%","Decrease 80 by 25%"],"Linear equations":["Solve 2x-3=7","y=2x+5 find y when x=3"],"Quadratics":["Solve x^2-5x+6=0","Factorise x^2+7x+10"],"Probability":["Probability of rolling a 6","Probability of heads 3 flips"],"Trigonometry":["sin 30°=?","cos 60°=?","tan 45°=?"],"Vectors":["Vector addition","Find magnitude of vector","Vector subtraction"]},
 "Combined Science (AQA Gateway)":{"Cell biology":["What is mitosis?","Function of nucleus","Function of cell membrane"],"Organisation":["Function of heart","Structure of digestive system","Enzymes role"],"Infection and response":["What is immunity?","What is a virus?","Vaccines function"],"Atomic structure":["Structure of atom","Electron configuration","What is isotope?"],"Bonding":["Ionic bonding example","Covalent bonding example","Metallic bonding"],"Energy changes":["Exothermic vs endothermic","Activation energy","Example of energy change"],"Forces":["Newton's 1st law","Calculate speed","Momentum formula"],"Electricity":["Ohm's law","Voltage formula","Series & parallel circuits"]},
@@ -77,7 +106,18 @@ const questionBank = {
 "Media Studies":{"Media language":["Define codes","Signifier examples","Editing techniques"],"Representation":["What is representation?","Stereotype examples","Audience impact"],"Audience":["Target audience examples","Demographics","Media effects"],"Industry":["Media companies","Ownership","Funding sources"],"Case studies":["Specific case study","Analyse campaign","Evaluate media product"]}
 };
 
-// ===== XP / Streak / Level =====
+// ===== Colors per subject =====
+const subjectColors = {
+"Maths (OCR)":"#4f7cff",
+"Combined Science (AQA Gateway)":"#34c759",
+"Computer Science (OCR)":"#ff9500",
+"Geography (AQA)":"#ff2d55",
+"German (AQA)":"#5856d6",
+"English (AQA)":"#ffcc00",
+"Media Studies":"#ff3b30"
+};
+
+// ===== XP, Streak, Level =====
 let xp = parseInt(localStorage.getItem("xp")||0);
 let streak = parseInt(localStorage.getItem("streak")||0);
 function updateXP(){
@@ -103,7 +143,7 @@ subjectSelect.addEventListener("change",updateTopics);
 updateTopics();
 updateXP();
 
-// ===== Generate Question =====
+// ===== Quiz Generator =====
 const progressFill = document.getElementById("quizProgress");
 document.getElementById("generateQuestionBtn").addEventListener("click",()=>{
   let subj = subjectSelect.value;
@@ -111,13 +151,10 @@ document.getElementById("generateQuestionBtn").addEventListener("click",()=>{
   let list = questionBank[subj][top];
   let q = list[Math.floor(Math.random()*list.length)];
   document.getElementById("question").innerText = q;
-  xp += 10; streak += 1; localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
+  xp += 10; streak +=1; localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
   updateXP();
   let percent = Math.min(Math.floor(xp/12),100);
-  progressFill.style.width = percent + "%";
-  progressFill.innerText = percent+"%";
-  confetti();
-  updateChart(subj);
+  progressFill.style.width = percent + "%"; progressFill.innerText = percent+"%";
 });
 
 // ===== Dark Mode =====
@@ -127,7 +164,7 @@ document.getElementById("darkBtn").addEventListener("click",()=>{document.body.c
 let time = 1500; let timer;
 document.getElementById("startTimerBtn").addEventListener("click",()=>{
   clearInterval(timer);
-  timer = setInterval(()=>{
+  timer=setInterval(()=>{
     time--;
     let m=Math.floor(time/60); let s=time%60;
     document.getElementById("timer").innerText=m+":"+(s<10?"0":"")+s;
@@ -149,29 +186,24 @@ function updateChart(subject){
   chart.update();
 }
 
-// ===== Colors for Timetable =====
-const subjectColors = {"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
-
 // ===== Timetable =====
-document.getElementById("generateTimetableBtn").addEventListener("click", () => {
+document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
   const days = parseInt(document.getElementById("days").value);
-  if(!days || days <= 0){alert("Enter a valid number of days"); return;}
+  if(!days||days<=0){alert("Enter a valid number of days"); return;}
   const container = document.getElementById("timetableContainer");
-  container.innerHTML = "";
+  container.innerHTML="";
   const subjectsList = Object.keys(questionBank);
   const table = document.createElement("table");
-  const headerRow = document.createElement("tr");
-  headerRow.innerHTML = "<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>";
-  table.appendChild(headerRow);
+  const headerRow=document.createElement("tr"); headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; table.appendChild(headerRow);
   for(let i=1;i<=days;i++){
-    const row = document.createElement("tr");
-    const dayCell = document.createElement("td"); dayCell.innerText="Day "+i; dayCell.style.fontWeight="bold"; row.appendChild(dayCell);
+    const row=document.createElement("tr");
+    const dayCell=document.createElement("td"); dayCell.innerText="Day "+i; dayCell.style.fontWeight="bold"; row.appendChild(dayCell);
     for(let s=0;s<3;s++){
-      const subj = subjectsList[Math.floor(Math.random()*subjectsList.length)];
-      const topics = Object.keys(questionBank[subj]);
-      const topic = topics[Math.floor(Math.random()*topics.length)];
-      const cell = document.createElement("td"); cell.innerText=`${subj}: ${topic}`;
-      cell.style.backgroundColor=subjectColors[subj]||"#888"; cell.style.color="white"; cell.style.fontWeight="bold"; cell.style.cursor="pointer"; cell.style.borderRadius="8px";
+      const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
+      const topics=Object.keys(questionBank[subj]);
+      const topic=topics[Math.floor(Math.random()*topics.length)];
+      const cell=document.createElement("td"); cell.innerText=`${subj}: ${topic}`;
+      cell.style.backgroundColor=subjectColors[subj]||"#888"; cell.style.color="white"; cell.style.fontWeight="bold"; cell.style.borderRadius="8px";
       cell.addEventListener("click",()=>{
         subjectSelect.value=subj; updateTopics(); topicSelect.value=topic; document.getElementById("generateQuestionBtn").click();
       });
@@ -181,22 +213,6 @@ document.getElementById("generateTimetableBtn").addEventListener("click", () => 
   }
   container.appendChild(table);
 });
-
-// ===== Confetti =====
-function confetti(){
-  const duration = 1*1000; const end = Date.now()+duration;
-  (function frame(){
-    if(Date.now() > end) return;
-    const conf = document.createElement("div");
-    conf.innerText="🎉";
-    conf.style.position="fixed"; conf.style.fontSize="24px";
-    conf.style.left=Math.random()*window.innerWidth+"px";
-    conf.style.top=Math.random()*window.innerHeight+"px";
-    document.body.appendChild(conf);
-    setTimeout(()=>conf.remove(),1000);
-    requestAnimationFrame(frame);
-  })();
-}
 </script>
 </body>
 </html>
