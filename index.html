@@ -17,7 +17,7 @@ body { font-family:'Inter',sans-serif; margin:0; padding:0; background:#f0f4f8; 
 .main { margin-left:280px; padding:25px; min-height:100vh; transition:0.3s;}
 .card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; min-height:200px; transition:0.3s;}
 .dark .card { background:#1f2937; }
-button { padding:10px 16px; border:none; border-radius:8px; background:#4f7cff; color:white; cursor:pointer; transition:0.2s;}
+button { padding:10px 16px; border:none; border-radius:8px; background:#4f7cff; color:white; cursor:pointer; transition:0.2s; margin-top:5px;}
 button:hover { background:#2f4fd6; }
 input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ccc; }
 .section { display:none; }
@@ -186,8 +186,8 @@ const questionBank={
 "Computer Science (OCR)":{"Programming":[{q:"What is a variable?",options:["Storage","Loop","Condition","Function"],answer:"Storage"}]},
 "Geography (AQA)":{"Rivers":[{q:"Define erosion?",options:["Wearing away rocks","Water flow","Sediment deposit","Tree growth"],answer:"Wearing away rocks"}]},
 "German (AQA)":{"Family":[{q:"Translate: My brother is tall",options:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein"],answer:"Mein Bruder ist groß"}]},
-"English (AQA)":{"Language Paper 1":[{q:"What is a simile?","options":["Comparison using like/as","A type of poem","Main idea","Dialogue"],answer:"Comparison using like/as"}]},
-"Media Studies":{"Representation":[{q:"Define media representation","options":["How media shows groups","Movie genre","TV channel","Ad type"],answer:"How media shows groups"}]}
+"English (AQA)":{"Language Paper 1":[{q:"What is a simile?",options:["Comparison using like/as","A type of poem","Main idea","Dialogue"],answer:"Comparison using like/as"}]},
+"Media Studies":{"Representation":[{q:"Define media representation",options:["How media shows groups","Movie genre","TV channel","Ad type"],answer:"How media shows groups"}]}
 };
 const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
@@ -219,7 +219,114 @@ function showQuestion(){
 loadQuiz();
 
 // ---------------------------
-// You can continue adding timetable, analytics, pomodoro, memory game, flashcards, notes here...
+// Timetable generation
+document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
+  const days=parseInt(document.getElementById("days").value);
+  if(!days||days<=0){ alert("Enter valid number of days"); return; }
+  const container=document.getElementById("timetableContainer");
+  container.innerHTML="";
+  const subjects=Object.keys(questionBank);
+  for(let d=1;d<=days;d++){
+    const dayDiv=document.createElement("div"); dayDiv.className="timetable-day";
+    const dayLabel=document.createElement("div"); dayLabel.style.width="80px"; dayLabel.innerText="Day "+d;
+    dayDiv.appendChild(dayLabel);
+    for(let s=0;s<3;s++){
+      const subj=subjects[Math.floor(Math.random()*subjects.length)];
+      const topics=Object.keys(questionBank[subj]);
+      const topic=topics[Math.floor(Math.random()*topics.length)];
+      const session=document.createElement("div"); session.className="session-card"; session.innerText=subj+": "+topic; 
+      session.style.backgroundColor=subjectColors[subj]||"#888";
+      session.addEventListener("click",()=>{ subjectSelectEl.value=subj; updateTopics(); topicSelectEl.value=topic; loadQuiz(); showSection("quiz");});
+      dayDiv.appendChild(session);
+    }
+    container.appendChild(dayDiv);
+  }
+});
+
+// ---------------------------
+// Analytics chart
+function drawChart(){
+  const ctx=document.getElementById("chart").getContext("2d");
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:Object.keys(questionBank),
+      datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>Math.floor(Math.random()*xp+1)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}}}
+  });
+}
+drawChart();
+
+// ---------------------------
+// Pomodoro timer
+let pomodoroTime=25*60; let pomodoroInterval=null;
+const timerEl=document.getElementById("timer");
+function updateTimer(){ let min=Math.floor(pomodoroTime/60); let sec=pomodoroTime%60; timerEl.innerText=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }
+document.getElementById("startPomodoro").addEventListener("click",()=>{
+  if(!pomodoroInterval){ pomodoroInterval=setInterval(()=>{pomodoroTime--; updateTimer(); if(pomodoroTime<=0){ clearInterval(pomodoroInterval); pomodoroInterval=null; pomodoroTime=25*60; updateTimer(); alert("Pomodoro Complete!"); }},1000);}
+});
+document.getElementById("pausePomodoro").addEventListener("click",()=>{ clearInterval(pomodoroInterval); pomodoroInterval=null;});
+document.getElementById("resetPomodoro").addEventListener("click",()=>{ pomodoroTime=25*60; updateTimer(); clearInterval(pomodoroInterval); pomodoroInterval=null;});
+updateTimer();
+
+// ---------------------------
+// Memory Game
+function generateMemoryGame(){
+  const container=document.getElementById("memoryGameContainer");
+  container.innerHTML="";
+  const cards=["A","B","C","D","A","B","C","D"];
+  cards.sort(()=>Math.random()-0.5);
+  let first=null, second=null;
+  cards.forEach(letter=>{
+    const div=document.createElement("div"); div.className="memory-card"; div.innerText="?"; div.dataset.value=letter;
+    div.onclick=()=>{
+      if(div.innerText!=="?"||second) return;
+      div.innerText=div.dataset.value;
+      if(!first) first=div; else second=div;
+      if(first && second){
+        if(first.dataset.value===second.dataset.value){ xp+=20; updateXP(); triggerConfetti(); first=null; second=null; }
+        else{ setTimeout(()=>{ first.innerText="?"; second.innerText="?"; first=null; second=null; },800);}
+      }
+    };
+    container.appendChild(div);
+  });
+}
+generateMemoryGame();
+
+// ---------------------------
+// Quick Quiz
+function generateQuickQuiz(){
+  const container=document.getElementById("quickQuizContainer");
+  container.innerHTML="";
+  const q={q:"What is 2+2?",options:["3","4","5","6"],answer:"4"};
+  const qEl=document.createElement("p"); qEl.innerText=q.q;
+  container.appendChild(qEl);
+  q.options.forEach(opt=>{
+    const b=document.createElement("button"); b.innerText=opt; b.style.display="block"; b.style.margin="5px 0";
+    b.onclick=()=>{ if(opt===q.answer){ xp+=10; updateXP(); triggerConfetti(); alert("Correct!");} else{alert("Wrong!");} generateQuickQuiz(); };
+    container.appendChild(b);
+  });
+}
+generateQuickQuiz();
+
+// ---------------------------
+// Flashcards
+function generateFlashcards(){
+  const container=document.getElementById("flashcardContainer");
+  container.innerHTML="";
+  const cards=[{q:"Photosynthesis",a:"Plants make food using sunlight"},{q:"Mitosis",a:"Cell division"}];
+  cards.forEach(c=>{
+    const div=document.createElement("div"); div.className="flashcard"; div.innerText=c.q;
+    div.onclick=()=>{ div.innerText=div.innerText===c.q?c.a:c.q; }
+    container.appendChild(div);
+  });
+}
+generateFlashcards();
+
+// ---------------------------
+// Notes
+function saveNotes(){ alert("Notes saved!"); }
 </script>
 </body>
 </html>
