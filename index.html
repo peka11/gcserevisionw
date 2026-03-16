@@ -14,7 +14,7 @@ body { font-family:'Inter',sans-serif; margin:0; padding:0; background:#f0f4f8; 
 .sidebar h2 { margin-top:0; margin-bottom:20px; }
 .sidebar button { background:none; border:none; color:white; text-align:left; padding:12px; margin-bottom:8px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s; }
 .sidebar button:hover { background:rgba(255,255,255,0.2); }
-.main { margin-left:280px; padding:25px; transition:0.3s; }
+.main { margin-left:280px; padding:25px; transition:0.3s; min-height:100vh; }
 .card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; min-height:200px; transition:0.3s; }
 .dark .card { background:#1f2937; }
 button { padding:10px 16px; border:none; border-radius:8px; background:#4f7cff; color:white; cursor:pointer; transition:0.2s; }
@@ -136,63 +136,46 @@ input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; bo
 
 <script>
 // --- Section Navigation ---
-function showSection(id){
-document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-document.getElementById(id).style.display='block';
-}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
 
 // --- Dark Mode ---
 function toggleDark(){document.body.classList.toggle('dark');}
 
-// --- Expanded Question Bank ---
+// --- Question Bank ---
 const questionBank = {
-"Maths (OCR)":{"Algebra":["Solve 2x+5=15","Factorise x²+5x+6","Simplify 3(x+2)-4x","Expand (x+3)(x+4)","Solve x²-9=0","Solve x²+6x+8=0","Simplify 2(x-1)+3(x+4)","Find nth term: 3,7,11,15","Solve x+y=5, x-y=1","Solve 2x+3y=12, x-y=1"],"Trigonometry":["Calculate sin(30°)","Find missing angle in right triangle","Use cos rule to find side","Use sin rule to find side","Calculate tan(45°)","Find height using trig","Find angle using sin⁻¹(0.5)","Find angle using cos⁻¹(0.6)","Use Pythagoras to find side","Solve triangle with sides 5,7,8"]},
-"Combined Science (AQA Gateway)":{"Cell Biology":["Function of nucleus","Define osmosis","Prokaryotic vs eukaryotic cells","Function of mitochondria","Function of ribosomes","What is a chloroplast?","Describe diffusion","Plant vs animal cells","What is differentiation?","Function of cell membrane"],"Atomic Structure":["Define proton, neutron, electron","Atomic number?","Isotope?","What is a molecule?","Explain relative atomic mass","Electron arrangement","What is a compound?","Explain ionic bonding","Explain covalent bonding","Describe nucleus"]},
-"Computer Science (OCR)":{"Programming":["Define variable","Write a for loop","Explain if statements","What is a function?","Difference between int and string","Explain while loop","What is a list/array?","Explain debugging","What is Boolean?","Write program to add two numbers"],"Algorithms":["What is a sorting algorithm?","Binary search","Linear vs binary search","Explain bubble sort","Explain merge sort","Explain insertion sort","What is a flowchart?","What is pseudocode?","What is recursion?","Explain complexity O(n) vs O(log n"]},
-"Geography (AQA)":{"Rivers":["Define erosion","What is deposition?","River formation stages","Hydraulic action","Explain attrition","Explain solution","Describe meanders","What is floodplain?","Causes of flooding","Effects of flooding"],"Coasts":["Longshore drift?","Coastal erosion","Headland and bay formation","Explain weathering","Cliffs and wave-cut platforms","Define sediment cell","Causes of coastal flooding","Effects of coastal erosion","Soft/hard engineering","Advantages/disadvantages of groynes"]},
-"German (AQA)":{"Family":["Translate: My brother is tall","Conjugate 'haben' for ich, du, er","What is 'Schwester'?","Translate: I have younger sister","Translate: My parents are strict","Conjugate 'sein' for ich, du, er","Translate: Grandparents live in Berlin","I get on well with brother","What is 'Onkel'?","What is 'Tante'?"],"School":["Translate: I have maths on Monday","What is 'Lehrer'?","Conjugate 'sein' for wir","Translate: Favourite subject is history","Translate: I dislike science","What is 'Schule'?","Translate: Timetable is busy","Translate: Lessons from 8-3","What is 'Klassenzimmer'?","Translate: I need pen"]},
-"English (AQA)":{"Language Paper 1":["What is a simile?","Identify main idea","Explain tone in paragraph","Identify figurative language","Find purpose of text","What is a metaphor?","Identify perspective","Explain effect on reader","Find word connotations","Explain sentence structure impact"],"Creative Writing":["Write opening paragraph","Use dialogue","Include rhetorical question","Describe setting vividly","Show don't tell","Use cliffhanger","Create tension","Use first-person","Use sensory details","Write strong ending"]},
-"Media Studies":{"Representation":["Define media representation","Example of stereotype","Explain target audience","What is gender representation?","What is racial representation?","How is class represented?","Explain media framing","What is bias?","Youth representation?","Women representation?"],"Industry":["Define media industry","Name 2 UK media companies","Explain media regulation","What is convergence?","Horizontal integration","Vertical integration","Public service media?","Commercial media?","Digital media effect?","Copyright law?"]}};
-
-// --- Subject Colors ---
+"Maths (OCR)":{"Algebra":["Solve 2x+5=15","Factorise x²+5x+6","Simplify 3(x+2)-4x"],"Trigonometry":["Calculate sin(30°)","Find missing angle in right triangle","Use cos rule"]},
+"Combined Science (AQA Gateway)":{"Cell Biology":["Function of nucleus","Define osmosis","Prokaryotic vs eukaryotic cells"],"Atomic Structure":["Define proton, neutron, electron","Atomic number?","Isotope?"]},
+"Computer Science (OCR)":{"Programming":["Define variable","Write a for loop","Explain if statements"],"Algorithms":["What is a sorting algorithm?","Binary search","Linear vs binary search"]},
+"Geography (AQA)":{"Rivers":["Define erosion","What is deposition?","River formation stages"],"Coasts":["Longshore drift?","Coastal erosion","Headland and bay formation"]},
+"German (AQA)":{"Family":["Translate: My brother is tall","Conjugate 'haben' for ich, du, er","What is 'Schwester'?"],"School":["Translate: I have maths on Monday","What is 'Lehrer'?","Conjugate 'sein' for wir"]},
+"English (AQA)":{"Language Paper 1":["What is a simile?","Identify main idea","Explain tone"],"Creative Writing":["Write opening paragraph","Use dialogue","Include rhetorical question"]},
+"Media Studies":{"Representation":["Define media representation","Example of stereotype","Explain target audience"],"Industry":["Define media industry","Name 2 UK media companies","Explain media regulation"]}
+};
 const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
-// --- XP / Badges ---
+// --- XP & Badges ---
 let xp=parseInt(localStorage.getItem("xp")||0);
 let streak=parseInt(localStorage.getItem("streak")||0);
 let badges=JSON.parse(localStorage.getItem("badges")||"[]");
-function updateXP(){
-document.getElementById("xp").innerText=xp;
-document.getElementById("level").innerText=Math.floor(xp/100)+1;
-document.getElementById("streak").innerText=streak;
-document.getElementById("badges").innerText=badges.length>0?badges.join(", "):"None";
-let pct=Math.min(Math.floor(xp/12),100);
-document.getElementById("overallProgress").style.width=pct+"%";
-document.getElementById("overallProgress").innerText=pct+"%";
-}
+function updateXP(){document.getElementById("xp").innerText=xp;document.getElementById("level").innerText=Math.floor(xp/100)+1;document.getElementById("streak").innerText=streak;document.getElementById("badges").innerText=badges.length>0?badges.join(", "):"None";let pct=Math.min(Math.floor(xp/12),100);document.getElementById("overallProgress").style.width=pct+"%";document.getElementById("overallProgress").innerText=pct+"%";}
 updateXP();
 
-// --- Quiz ---
-const subjectSelect=document.getElementById("subjectSelect");
-const topicSelect=document.getElementById("topicSelect");
-for(let s in questionBank){ let opt=document.createElement("option"); opt.value=s; opt.textContent=s; subjectSelect.appendChild(opt);}
-function updateTopics(){ topicSelect.innerHTML=""; let s=subjectSelect.value; for(let t in questionBank[s]){ let opt=document.createElement("option"); opt.value=t; opt.textContent=t; topicSelect.appendChild(opt);} }
-subjectSelect.addEventListener("change",()=>{updateTopics(); loadQuiz();});
+// --- Populate Quiz ---
+const subjectSelectEl=document.getElementById("subjectSelect");
+const topicSelectEl=document.getElementById("topicSelect");
+for(let s in questionBank){let opt=document.createElement("option");opt.value=s;opt.textContent=s;subjectSelectEl.appendChild(opt);}
+function updateTopics(){topicSelectEl.innerHTML="";let s=subjectSelectEl.value;for(let t in questionBank[s]){let opt=document.createElement("option");opt.value=t;opt.textContent=t;topicSelectEl.appendChild(opt);}}
+subjectSelectEl.addEventListener("change",()=>{updateTopics();loadQuiz();});
 updateTopics();
 
 let currentQuestions=[]; let currentIndex=0;
-function loadQuiz(){ let s=subjectSelect.value, t=topicSelect.value; currentQuestions=[...questionBank[s][t]]; currentIndex=0; showQuestion(); }
-function showQuestion(){ const qEl=document.getElementById("question"); const btn=document.getElementById("nextBtn"); if(currentIndex>=currentQuestions.length){ qEl.innerText="✅ Quiz Complete!"; btn.style.display="none"; return;} qEl.innerText=currentQuestions[currentIndex]; btn.style.display="inline-block";}
-document.getElementById("nextBtn").addEventListener("click",()=>{
-currentIndex++; xp+=10; streak+=1; triggerConfetti();
-if(currentIndex===currentQuestions.length){badges.push("Completed: "+topicSelect.value); triggerConfetti();}
-updateXP(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak); localStorage.setItem("badges",JSON.stringify(badges));
-showQuestion();
-});
-topicSelect.addEventListener("change",loadQuiz);
+function loadQuiz(){let s=subjectSelectEl.value,t=topicSelectEl.value;currentQuestions=[...questionBank[s][t]];currentIndex=0;showQuestion();}
+function showQuestion(){const qEl=document.getElementById("question");const btn=document.getElementById("nextBtn");if(currentIndex>=currentQuestions.length){qEl.innerText="✅ Quiz Complete!";btn.style.display="none";return;}qEl.innerText=currentQuestions[currentIndex];btn.style.display="inline-block";}
+document.getElementById("nextBtn").addEventListener("click",()=>{currentIndex++;xp+=10;streak+=1;triggerConfetti();if(currentIndex===currentQuestions.length){badges.push("Completed: "+topicSelectEl.value);triggerConfetti();}updateXP();localStorage.setItem("xp",xp);localStorage.setItem("streak",streak);localStorage.setItem("badges",JSON.stringify(badges));showQuestion();});
+topicSelectEl.addEventListener("change",loadQuiz);
 loadQuiz();
 
-function triggerConfetti(){ confetti({particleCount:150,spread:70,origin:{y:0.6}}); }
+function triggerConfetti(){confetti({particleCount:150,spread:70,origin:{y:0.6}});}
 
 // --- Timetable ---
 document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
@@ -207,9 +190,7 @@ dayDiv.appendChild(dayLabel);
 subjectsList.forEach(subj=>{
 let topics=Object.keys(questionBank[subj]);
 let topic=topics[Math.floor(Math.random()*topics.length)];
-const session=document.createElement("div");
-session.className="session-card"; session.innerText=subj+": "+topic; session.style.backgroundColor=subjectColors[subj]||"#888";
-session.addEventListener("click",()=>{subjectSelect.value=subj; updateTopics(); topicSelect.value=topic; loadQuiz(); showSection("quiz");});
+const session=document.createElement("div"); session.className="session-card"; session.innerText=subj+": "+topic; session.style.backgroundColor=subjectColors[subj]||"#888"; session.addEventListener("click",()=>{subjectSelectEl.value=subj;updateTopics();topicSelectEl.value=topic;loadQuiz();showSection("quiz");});
 dayDiv.appendChild(session);
 });
 container.appendChild(dayDiv);
@@ -217,4 +198,34 @@ container.appendChild(dayDiv);
 });
 
 // --- Analytics ---
-const ctx=document
+const ctx=document.getElementById("chart").getContext("2d");
+new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>Math.floor(xp/7)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+
+// --- Pomodoro ---
+let pomodoroTime=25*60; let pomodoroInterval=null;
+const timerEl=document.getElementById("timer");
+function updateTimer(){let min=Math.floor(pomodoroTime/60);let sec=pomodoroTime%60;timerEl.innerText=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;}
+document.getElementById("startPomodoro").addEventListener("click",()=>{if(!pomodoroInterval){pomodoroInterval=setInterval(()=>{pomodoroTime--;updateTimer();if(pomodoroTime<=0){clearInterval(pomodoroInterval);pomodoroInterval=null;pomodoroTime=25*60;updateTimer();alert("Pomodoro Complete!");}},1000);}});
+document.getElementById("pausePomodoro").addEventListener("click",()=>{clearInterval(pomodoroInterval);pomodoroInterval=null;});
+document.getElementById("resetPomodoro").addEventListener("click",()=>{pomodoroTime=25*60;updateTimer();clearInterval(pomodoroInterval);pomodoroInterval=null;});
+updateTimer();
+
+// --- Memory Game ---
+function generateMemoryGame(){
+const container=document.getElementById("memoryGameContainer"); container.innerHTML="";
+const cards=["A","B","C","D","A","B","C","D"]; cards.sort(()=>Math.random()-0.5);
+let first=null, second=null;
+cards.forEach(letter=>{let div=document.createElement("div"); div.className="memory-card"; div.innerText="?"; div.dataset.value=letter; container.appendChild(div);});
+const cardDivs=document.querySelectorAll(".memory-card");
+cardDivs.forEach(div=>{div.addEventListener("click",()=>{
+if(div.innerText!=="?"||second) return;
+div.innerText=div.dataset.value;
+if(!first) first=div;
+else second=div;
+if(first.dataset.value===second.dataset.value){xp+=20;updateXP();triggerConfetti();first=null;second=null;}else{setTimeout(()=>{first.innerText="?";second.innerText="?";first=null;second=null;},800);}
+});});
+}
+generateMemoryGame();
+</script>
+</body>
+</html>
