@@ -69,7 +69,7 @@ input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radi
 <div class="main">
 
 <!-- Dashboard -->
-<div id="dashboard" class="card section" style="display:block;">
+<div id="dashboard" class="card section">
 <h2>Welcome Back! 🎓</h2>
 <div class="dashboard-stats">
   <div class="stat-card stat-xp">XP<br><span id="xp">0</span></div>
@@ -87,18 +87,18 @@ input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radi
 </div>
 
 <!-- Quiz -->
-<div id="quiz" class="card section">
+<div id="quiz" class="card section" style="display:none;">
 <h2>MCQ Quiz</h2>
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
 <div id="quizArea" style="margin-top:20px;">
 <p id="question" style="font-weight:bold;">Select subject & topic</p>
-<div id="optionsArea" style="margin-top:10px;"></div>
+<div id="optionsArea"></div>
 </div>
 </div>
 
 <!-- Timetable -->
-<div id="timetable" class="card section">
+<div id="timetable" class="card section" style="display:none;">
 <h2>Revision Timetable</h2>
 <input id="days" type="number" placeholder="Days to revise">
 <button id="generateTimetableBtn">Generate Timetable</button>
@@ -106,13 +106,13 @@ input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radi
 </div>
 
 <!-- Analytics -->
-<div id="analytics" class="card section">
+<div id="analytics" class="card section" style="display:none;">
 <h2>Analytics</h2>
 <canvas id="chart" width="400" height="200"></canvas>
 </div>
 
 <!-- Pomodoro -->
-<div id="pomodoro" class="card section">
+<div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro Timer</h2>
 <p id="timer">25:00</p>
 <button id="startPomodoro">Start</button>
@@ -121,7 +121,7 @@ input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radi
 </div>
 
 <!-- Mini Games -->
-<div id="minigame" class="card section">
+<div id="minigame" class="card section" style="display:none;">
 <h2>Mini Games</h2>
 <h3>Memory Matching</h3>
 <div id="memoryGameContainer"></div>
@@ -130,38 +130,35 @@ input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radi
 </div>
 
 <!-- Flashcards -->
-<div id="flashcards" class="card section">
+<div id="flashcards" class="card section" style="display:none;">
 <h2>Flashcards</h2>
 <div id="flashcardContainer" style="display:flex; flex-wrap:wrap;"></div>
 </div>
 
 <!-- Notes -->
-<div id="notes" class="card section">
+<div id="notes" class="card section" style="display:none;">
 <h2>Notes / Sticky Board</h2>
 <textarea id="notesArea" placeholder="Write formulas, definitions, or reminders..."></textarea>
 <button onclick="saveNotes()">Save Notes</button>
 </div>
 
 <!-- Settings -->
-<div id="settings" class="card section">
+<div id="settings" class="card section" style="display:none;">
 <h2>Settings</h2>
 <p>Use the sidebar to toggle dark/light mode and navigate.</p>
 </div>
 
 <script>
-// ---------------------------
-// Section navigation
+// ---------- Navigation ----------
 function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.style.display='none');
   document.getElementById(id).style.display='block';
 }
 
-// ---------------------------
-// Dark mode toggle
+// ---------- Dark Mode ----------
 function toggleDark(){document.body.classList.toggle('dark');}
 
-// ---------------------------
-// XP and Badges
+// ---------- XP & Badges ----------
 let xp=parseInt(localStorage.getItem("xp")||0);
 let streak=parseInt(localStorage.getItem("streak")||0);
 let badges=JSON.parse(localStorage.getItem("badges")||"[]");
@@ -177,19 +174,17 @@ function updateXP(){
 updateXP();
 function triggerConfetti(){confetti({particleCount:150,spread:70,origin:{y:0.6}});}
 
-// ---------------------------
-// Subjects, topics, MCQs
+// ---------- Subjects & Quiz ----------
 const questionBank={
-"Maths (OCR)":{"Algebra":[{q:"Solve 2x+5=15",options:["x=3","x=5","x=10","x=1"],answer:"x=5"}],"Trigonometry":[{q:"Calculate sin(30°)",options:["0.5","0.3","0.6","1"],answer:"0.5"}]},
-"Combined Science (AQA Gateway)":{"Cell Biology":[{q:"Function of nucleus?",options:["Controls cell","Stores water","Makes proteins","Protects DNA"],answer:"Controls cell"}],"Atomic Structure":[{q:"Define proton",options:["Positive particle","Neutral particle","Negative particle","Electron"],answer:"Positive particle"}]},
-"Computer Science (OCR)":{"Programming":[{q:"What is a variable?",options:["Storage","Loop","Condition","Function"],answer:"Storage"}],"Algorithms":[{q:"What is a sorting algorithm?",options:["Arranging data","Searching","Printing","Drawing"],answer:"Arranging data"}]},
-"Geography (AQA)":{"Rivers":[{q:"Define erosion?",options:["Wearing away rocks","Water flow","Sediment deposit","Tree growth"],answer:"Wearing away rocks"}],"Coasts":[{q:"Longshore drift?",options:["Movement of sediment along coast","Wind effect","Tide change","Rainfall"],answer:"Movement of sediment along coast"}]},
-"German (AQA)":{"Family":[{q:"Translate: My brother is tall",options:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein"],answer:"Mein Bruder ist groß"}],"School":[{q:"Translate: I have maths on Monday",options:["Ich habe Mathe am Montag","Ich habe Montag Mathe","Ich habe Mathe heute","Ich habe Montag frei"],answer:"Ich habe Mathe am Montag"}]},
-"English (AQA)":{"Language Paper 1":[{q:"What is a simile?",options:["Comparison using like/as","A type of poem","Main idea","Dialogue"],answer:"Comparison using like/as"}],"Creative Writing":[{q:"Write opening paragraph","options":["N/A"],answer:"N/A"}]},
-"Media Studies":{"Representation":[{q:"Define media representation",options:["How media shows groups","Movie genre","TV channel","Ad type"],answer:"How media shows groups"}],"Industry":[{q:"Define media industry",options:["Companies producing media","Target audience","Ad type","Channel"],answer:"Companies producing media"}]}
+"Maths (OCR)":{"Algebra":[{q:"Solve 2x+5=15",options:["x=3","x=5","x=10","x=1"],answer:"x=5"}]},
+"Combined Science (AQA Gateway)":{"Cell Biology":[{q:"Function of nucleus?",options:["Controls cell","Stores water","Makes proteins","Protects DNA"],answer:"Controls cell"}]},
+"Computer Science (OCR)":{"Programming":[{q:"What is a variable?",options:["Storage","Loop","Condition","Function"],answer:"Storage"}]},
+"Geography (AQA)":{"Rivers":[{q:"Define erosion?",options:["Wearing away rocks","Water flow","Sediment deposit","Tree growth"],answer:"Wearing away rocks"}]},
+"German (AQA)":{"Family":[{q:"Translate: My brother is tall",options:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein"],answer:"Mein Bruder ist groß"}]},
+"English (AQA)":{"Language Paper 1":[{q:"What is a simile?",options:["Comparison using like/as","A type of poem","Main idea","Dialogue"],answer:"Comparison using like/as"}]},
+"Media Studies":{"Representation":[{q:"Define media representation",options:["How media shows groups","Movie genre","TV channel","Ad type"],answer:"How media shows groups"}]}
 };
 
-// Populate quiz dropdowns
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 function populateSubjects(){ subjectSelect.innerHTML=""; for(let s in questionBank){ let opt=document.createElement("option"); opt.value=s; opt.textContent=s; subjectSelect.appendChild(opt); } }
@@ -198,18 +193,18 @@ subjectSelect.addEventListener("change",()=>{ populateTopics(); loadQuiz(); });
 topicSelect.addEventListener("change", loadQuiz);
 populateSubjects(); populateTopics();
 
-// Quiz
+// Quiz logic
 let currentQuestions=[]; let currentQuestionIndex=0;
 const questionEl=document.getElementById("question");
 const optionsArea=document.getElementById("optionsArea");
 function loadQuiz(){
   const subj=subjectSelect.value; const top=topicSelect.value;
-  currentQuestions=questionBank[subj][top];
+  currentQuestions=questionBank[subj][top]||[];
   currentQuestionIndex=0;
   showQuestion();
 }
 function showQuestion(){
-  if(currentQuestions.length===0){ questionEl.innerText="No questions available"; optionsArea.innerHTML=""; return; }
+  if(currentQuestions.length===0){ questionEl.innerText="No questions"; optionsArea.innerHTML=""; return; }
   if(currentQuestionIndex>=currentQuestions.length){ questionEl.innerText="✅ Quiz Complete!"; optionsArea.innerHTML=""; if(!badges.includes(topicSelect.value)){ badges.push(topicSelect.value); updateXP(); triggerConfetti(); localStorage.setItem("badges",JSON.stringify(badges)); } return; }
   const q=currentQuestions[currentQuestionIndex];
   questionEl.innerText=q.q;
@@ -226,8 +221,7 @@ function showQuestion(){
 }
 loadQuiz();
 
-// ---------------------------
-// Timetable
+// ---------- Timetable ----------
 document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
   const days=parseInt(document.getElementById("days").value);
   if(!days||days<=0){ alert("Enter valid number of days"); return; }
@@ -248,17 +242,33 @@ document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
   }
 });
 
-// ---------------------------
-// Analytics
+// ---------- Analytics ----------
 const ctx=document.getElementById("chart").getContext("2d");
 const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>xp),backgroundColor:Object.keys(questionBank).map(s=>['#4f7cff','#34c759','#ff9500','#ff2d55','#5856d6','#ffcc00','#ff3b30'][Math.floor(Math.random()*7)])}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
 
-// ---------------------------
-// Pomodoro
+// ---------- Pomodoro ----------
 let pomodoroTime=25*60, pomodoroInterval=null;
 const timerEl=document.getElementById("timer");
 function updateTimer(){ let min=Math.floor(pomodoroTime/60); let sec=pomodoroTime%60; timerEl.innerText=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }
 document.getElementById("startPomodoro").addEventListener("click",()=>{
   if(!pomodoroInterval){ pomodoroInterval=setInterval(()=>{ pomodoroTime--; updateTimer(); if(pomodoroTime<=0){ clearInterval(pomodoroInterval); pomodoroInterval=null; pomodoroTime=25*60; updateTimer(); alert("Pomodoro Complete!"); } },1000); }
 });
-document.getElementById("pausePomodoro
+document.getElementById("pausePomodoro").addEventListener("click",()=>{ clearInterval(pomodoroInterval); pomodoroInterval=null; });
+document.getElementById("resetPomodoro").addEventListener("click",()=>{ clearInterval(pomodoroInterval); pomodoroInterval=null; pomodoroTime=25*60; updateTimer(); });
+updateTimer();
+
+// ---------- Memory Game ----------
+function generateMemoryGame(){
+  const container=document.getElementById("memoryGameContainer");
+  container.innerHTML="";
+  const cards=["A","B","C","D","A","B","C","D"];
+  cards.sort(()=>Math.random()-0.5);
+  let first=null, second=null;
+  cards.forEach(letter=>{
+    const div=document.createElement("div"); div.className="memory-card"; div.innerText="?"; div.dataset.value=letter;
+    div.onclick=()=>{
+      if(div.innerText!=="?" || second) return;
+      div.innerText=div.dataset.value;
+      if(!first){ first=div; } else { second=div;
+        if(first.dataset.value===second.dataset.value){ xp+=20; updateXP(); triggerConfetti(); first=null; second=null; } 
+        else { setTimeout(()=>{ first.innerText="?"; second.innerText="?"; first=null; second=null; },800
