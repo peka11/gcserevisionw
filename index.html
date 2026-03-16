@@ -114,13 +114,18 @@ document.getElementById(id).style.display='block';
 // ----- Dark Mode -----
 function toggleDark(){document.body.classList.toggle('dark');}
 
-// ----- Question Bank -----
+// ----- Full Question Bank -----
 const questionBank = {
-"Maths":{"Algebra":["Solve 2x+5=15","Factorise x²+5x+6","Simplify 3(x+2)-4x"],"Trigonometry":["sin(30°)","cos rule problem"]},
-"Science":{"Cells":["Define osmosis","Prokaryotic vs Eukaryotic"],"Atoms":["What is a proton?","What is a neutron?"]},
-"English":{"Language":["Identify simile","Explain tone"],"Writing":["Write intro paragraph","Use dialogue"]}
+"Maths (OCR)":{"Algebra":["Solve 2x+5=15","Factorise x²+5x+6","Simplify 3(x+2)-4x"],"Trigonometry":["sin(30°)","cos rule problem","Find missing angle"]},
+"Combined Science (AQA Gateway)":{"Cell Biology":["Function of nucleus","Define osmosis","Prokaryotic vs eukaryotic cells"],"Atomic Structure":["Define proton, neutron, electron","Atomic number?","Isotope?"]},
+"Computer Science (OCR)":{"Programming":["Define variable","Write a for loop","Explain if statements"],"Algorithms":["What is a sorting algorithm?","Binary search","Linear vs binary search"]},
+"Geography (AQA)":{"Rivers":["Define erosion","What is deposition?","River formation stages"],"Coasts":["Longshore drift?","Coastal erosion","Headland and bay formation"]},
+"German (AQA)":{"Family":["Translate: My brother is tall","Conjugate 'haben' for ich, du, er","What is 'Schwester'?"],"School":["Translate: I have maths on Monday","What is 'Lehrer'?","Conjugate 'sein' for wir"]},
+"English (AQA)":{"Language Paper 1":["What is a simile?","Identify main idea","Explain tone in a paragraph"],"Creative Writing":["Write opening paragraph","Use dialogue","Include rhetorical question"]},
+"Media Studies":{"Representation":["Define media representation","Example of stereotype","Explain target audience"],"Industry":["Define media industry","Name 2 UK media companies","Explain media regulation"]}
 };
-const subjectColors={"Maths":"#4f7cff","Science":"#34c759","English":"#ff9500"};
+
+const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
 // ----- XP / Badges -----
 let xp=parseInt(localStorage.getItem("xp")||0);
