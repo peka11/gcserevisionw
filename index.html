@@ -4,119 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ultimate GCSE Revision App 🎓</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-
-body{
-font-family:'Inter',sans-serif;
-margin:0;
-background:#f0f4f8;
-color:#1f2937;
-transition:0.3s;
-}
-
-.dark{
-background:#0f172a;
-color:white;
-}
-
-.sidebar{
-position:fixed;
-left:0;
-top:0;
-bottom:0;
-width:260px;
-background:linear-gradient(180deg,#4f7cff,#3561c3);
-padding:20px;
-color:white;
-}
-
-.sidebar button{
-display:block;
-width:100%;
-margin-bottom:10px;
-padding:12px;
-border:none;
-background:none;
-color:white;
-font-weight:600;
-text-align:left;
-border-radius:8px;
-cursor:pointer;
-}
-
-.sidebar button:hover{
-background:rgba(255,255,255,0.2);
-}
-
-.main{
-margin-left:280px;
-padding:25px;
-}
-
-.card{
-background:white;
-padding:25px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-margin-bottom:20px;
-}
-
-.dark .card{
-background:#1f2937;
-}
-
-button{
-padding:10px 16px;
-border:none;
-border-radius:8px;
-background:#4f7cff;
-color:white;
-cursor:pointer;
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin-top:10px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-.section{
-display:none;
-}
-
-#dashboard{
-display:block;
-}
-
-.memory-card{
-display:inline-block;
-width:60px;
-height:60px;
-background:#4f7cff;
-color:white;
-line-height:60px;
-margin:5px;
-text-align:center;
-border-radius:10px;
-font-weight:bold;
-font-size:22px;
-cursor:pointer;
-}
-
+body { font-family:'Inter',sans-serif; margin:0; padding:0; background:#f0f4f8; color:#1f2937; transition:0.3s; }
+.dark { background:#0f172a; color:white; }
+.sidebar { position:fixed; left:0; top:0; bottom:0; width:260px; background:#4f7cff; padding:20px; color:white; display:flex; flex-direction:column; }
+.sidebar button { background:none; border:none; color:white; text-align:left; padding:12px; margin-bottom:8px; border-radius:8px; cursor:pointer; font-weight:600; }
+.sidebar button:hover { background:rgba(255,255,255,0.2); }
+.main { margin-left:280px; padding:25px; }
+.card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; min-height:200px; }
+.dark .card { background:#1f2937; }
+button { padding:10px 16px; border:none; border-radius:8px; background:#4f7cff; color:white; cursor:pointer; }
+button:hover { background:#2f4fd6; }
+input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ccc; }
+.section { display:none; }
+.memory-card { display:inline-block; width:60px; height:60px; background:#4f7cff; color:white; line-height:60px; margin:5px; text-align:center; border-radius:10px; font-weight:bold; font-size:22px; cursor:pointer; }
 </style>
 </head>
-
 <body>
 
 <div class="sidebar">
-
 <h2>GCSE App</h2>
-
 <button onclick="showSection('dashboard')">🏠 Dashboard</button>
 <button onclick="showSection('quiz')">🧠 Quiz</button>
 <button onclick="showSection('timetable')">📅 Timetable</button>
@@ -125,321 +33,116 @@ cursor:pointer;
 <button onclick="showSection('minigame')">🎮 Mini Game</button>
 <button onclick="showSection('settings')">⚙️ Settings</button>
 <button onclick="toggleDark()">🌙 Dark Mode</button>
-
 </div>
 
 <div class="main">
 
-<div id="dashboard" class="card section">
+<div id="dashboard" class="card section" style="display:block;">
 <h2>Dashboard</h2>
-<p>Welcome to your GCSE revision tracker.</p>
+<p>Welcome to your GCSE revision app!</p>
+<p>Use the sidebar to navigate.</p>
 </div>
 
 <div id="quiz" class="card section">
-
 <h2>Quiz</h2>
-
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
-
-<p id="question" style="font-weight:bold;margin-top:20px;"></p>
-
+<p id="question" style="margin-top:20px;font-weight:bold;">Select a subject and topic.</p>
 <button onclick="nextQuestion()">Next</button>
-
 </div>
 
 <div id="timetable" class="card section">
-
 <h2>Revision Timetable</h2>
-
 <input id="days" type="number" placeholder="Number of days">
-
-<button onclick="generateTimetable()">Generate</button>
-
-<div id="timetableContainer"></div>
-
+<button onclick="generateTimetable()">Generate Timetable</button>
+<div id="timetableContainer" style="margin-top:15px; min-height:100px; border:1px solid #ccc; padding:10px;">Timetable will appear here.</div>
 </div>
 
 <div id="analytics" class="card section">
-
 <h2>Analytics</h2>
-
-<canvas id="chart"></canvas>
-
+<p>Your subject XP will be shown below:</p>
+<canvas id="chart" width="400" height="200"></canvas>
 </div>
 
 <div id="pomodoro" class="card section">
-
 <h2>Pomodoro Timer</h2>
-
 <p id="timer">25:00</p>
-
 <button onclick="startPomodoro()">Start</button>
 <button onclick="pausePomodoro()">Pause</button>
 <button onclick="resetPomodoro()">Reset</button>
-
 </div>
 
 <div id="minigame" class="card section">
-
 <h2>Memory Game</h2>
-
-<div id="memoryGameContainer"></div>
-
+<p>Click a card to reveal its letter.</p>
+<div id="memoryGameContainer" style="min-height:100px;"></div>
 </div>
 
 <div id="settings" class="card section">
-
 <h2>Settings</h2>
-
-<p>Toggle dark mode from the sidebar.</p>
-
+<p>Toggle dark mode using the sidebar button.</p>
 </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-
 function showSection(id){
-
-document.querySelectorAll(".section").forEach(s=>{
-
-s.style.display="none"
-
-})
-
-document.getElementById(id).style.display="block"
-
+  document.querySelectorAll(".section").forEach(s=>s.style.display="none")
+  const sel=document.getElementById(id)
+  if(sel) sel.style.display="block"
 }
 
-function toggleDark(){
+function toggleDark(){document.body.classList.toggle("dark")}
 
-document.body.classList.toggle("dark")
-
-}
-
+// Quiz
 const questionBank={
-
-Maths:{
-Algebra:[
-"Solve 2x+5=15",
-"Solve 3x-7=11",
-"Factorise x²+5x+6",
-"Simplify 3(x+2)-4x"
-]
-},
-
-Science:{
-Atomic:[
-"What is a proton?",
-"What is a neutron?",
-"What is an electron?"
-]
+Maths:{Algebra:["Solve 2x+5=15","Factorise x²+5x+6"]},
+Science:{Atoms:["What is a proton?","What is a neutron?"]}
 }
-
-}
-
 const subjectSelect=document.getElementById("subjectSelect")
 const topicSelect=document.getElementById("topicSelect")
+for(let s in questionBank){ let o=document.createElement("option"); o.text=s; o.value=s; subjectSelect.appendChild(o); }
+function updateTopics(){ topicSelect.innerHTML=""; let s=subjectSelect.value; for(let t in questionBank[s]){ let o=document.createElement("option"); o.text=t; o.value=t; topicSelect.appendChild(o); } }
+subjectSelect.addEventListener("change",updateTopics); updateTopics();
+let questions=[], index=0;
+function loadQuiz(){ let s=subjectSelect.value, t=topicSelect.value; questions=[...questionBank[s][t]]; index=0; document.getElementById("question").innerText=questions[index]; }
+function nextQuestion(){ index++; if(index>=questions.length){document.getElementById("question").innerText="Quiz Complete!"; return;} document.getElementById("question").innerText=questions[index]; }
+topicSelect.addEventListener("change",loadQuiz); loadQuiz();
 
-for(let subject in questionBank){
-
-let opt=document.createElement("option")
-opt.textContent=subject
-opt.value=subject
-
-subjectSelect.appendChild(opt)
-
-}
-
-function updateTopics(){
-
-topicSelect.innerHTML=""
-
-let subj=subjectSelect.value
-
-for(let topic in questionBank[subj]){
-
-let opt=document.createElement("option")
-opt.textContent=topic
-opt.value=topic
-
-topicSelect.appendChild(opt)
-
-}
-
-}
-
-subjectSelect.addEventListener("change",updateTopics)
-
-updateTopics()
-
-let questions=[]
-let index=0
-
-function loadQuiz(){
-
-let subj=subjectSelect.value
-let topic=topicSelect.value
-
-questions=[...questionBank[subj][topic]]
-
-index=0
-
-document.getElementById("question").innerText=questions[index]
-
-}
-
-function nextQuestion(){
-
-index++
-
-if(index>=questions.length){
-
-document.getElementById("question").innerText="Quiz Complete!"
-
-return
-
-}
-
-document.getElementById("question").innerText=questions[index]
-
-}
-
-topicSelect.addEventListener("change",loadQuiz)
-
-loadQuiz()
-
+// Timetable
 function generateTimetable(){
-
-let days=document.getElementById("days").value
-
-let container=document.getElementById("timetableContainer")
-
-let subjects=Object.keys(questionBank)
-
-let table="<table border='1'><tr><th>Day</th><th>Subject</th></tr>"
-
-for(let i=1;i<=days;i++){
-
-let s=subjects[Math.floor(Math.random()*subjects.length)]
-
-table+=`<tr><td>${i}</td><td>${s}</td></tr>`
-
+  let days=parseInt(document.getElementById("days").value)
+  const container=document.getElementById("timetableContainer")
+  const subjects=Object.keys(questionBank)
+  let html="<table border='1' width='100%'><tr><th>Day</th><th>Subject</th></tr>"
+  for(let i=1;i<=days;i++){ let s=subjects[Math.floor(Math.random()*subjects.length)]; html+=`<tr><td>${i}</td><td>${s}</td></tr>` }
+  html+="</table>"; container.innerHTML=html
 }
 
-table+="</table>"
+// Analytics
+const ctx=document.getElementById("chart"); new Chart(ctx,{type:"bar",data:{labels:["Maths","Science"],datasets:[{data:[10,5],backgroundColor:["#4f7cff","#34c759"]}]} });
 
-container.innerHTML=table
+// Pomodoro
+let pomodoro=1500, interval=null
+function updateTimer(){ let m=Math.floor(pomodoro/60), s=pomodoro%60; document.getElementById("timer").innerText=`${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}` }
+function startPomodoro(){ if(interval)return; interval=setInterval(()=>{ pomodoro--; updateTimer(); if(pomodoro<=0){ clearInterval(interval); interval=null; alert("Pomodoro Complete!"); }},1000) }
+function pausePomodoro(){ clearInterval(interval); interval=null; }
+function resetPomodoro(){ pomodoro=1500; updateTimer(); clearInterval(interval); interval=null; }
+updateTimer();
 
-}
-
-const ctx=document.getElementById("chart")
-
-new Chart(ctx,{
-
-type:"bar",
-
-data:{
-
-labels:["Maths","Science"],
-
-datasets:[{
-
-data:[5,5],
-
-backgroundColor:["#4f7cff","#34c759"]
-
-}]
-
-}
-
-})
-
-let pomodoro=1500
-let interval
-
-function updateTimer(){
-
-let m=Math.floor(pomodoro/60)
-let s=pomodoro%60
-
-document.getElementById("timer").innerText=
-m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
-
-}
-
-function startPomodoro(){
-
-interval=setInterval(()=>{
-
-pomodoro--
-
-updateTimer()
-
-if(pomodoro<=0){
-
-clearInterval(interval)
-
-alert("Session Complete")
-
-}
-
-},1000)
-
-}
-
-function pausePomodoro(){
-
-clearInterval(interval)
-
-}
-
-function resetPomodoro(){
-
-pomodoro=1500
-
-updateTimer()
-
-clearInterval(interval)
-
-}
-
-updateTimer()
-
+// Memory Game
 function generateMemoryGame(){
-
-const container=document.getElementById("memoryGameContainer")
-
-const cards=["A","B","C","D","A","B","C","D"]
-
-cards.sort(()=>Math.random()-0.5)
-
-cards.forEach(letter=>{
-
-let div=document.createElement("div")
-
-div.className="memory-card"
-
-div.innerText="?"
-
-div.onclick=()=>{
-
-div.innerText=letter
-
+  const container=document.getElementById("memoryGameContainer"); container.innerHTML="";
+  const cards=["A","B","C","D","A","B","C","D"]; cards.sort(()=>Math.random()-0.5);
+  let first=null, second=null;
+  cards.forEach(l=>{
+    const div=document.createElement("div"); div.className="memory-card"; div.innerText="?";
+    div.onclick=()=>{ if(div.innerText!=="?" || second) return; div.innerText=l; if(!first) first=div; else second=div; if(first.innerText===second.innerText){first=null; second=null;} else{ setTimeout(()=>{ first.innerText="?"; second.innerText="?"; first=null; second=null; },800); } }
+    container.appendChild(div);
+  });
 }
-
-container.appendChild(div)
-
-})
-
-}
-
-generateMemoryGame()
-
+generateMemoryGame();
 </script>
-
 </body>
 </html>
