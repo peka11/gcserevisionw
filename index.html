@@ -6,149 +6,57 @@
 <title>GCSE Revision App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
-:root{
---bg:#eef2f7;
---card:#ffffff;
---primary:#4f8cff;
---secondary:#7bdcb5;
---text:#222;
+body{
+font-family:Arial;
+background:#eef3ff;
+margin:0;
+padding:25px;
 }
 
 .dark{
---bg:#111827;
---card:#1f2937;
---primary:#60a5fa;
---secondary:#34d399;
---text:#f3f4f6;
+background:#111;
+color:white;
 }
 
-body{
-font-family:Poppins,sans-serif;
-background:var(--bg);
-margin:0;
-padding:25px;
-color:var(--text);
-transition:0.3s;
-}
-
-h1{
-text-align:center;
-margin-bottom:10px;
-}
-
-.topbar{
-display:flex;
-justify-content:center;
-gap:15px;
-margin-bottom:20px;
-flex-wrap:wrap;
-}
+h1{text-align:center;}
 
 button{
-background:var(--primary);
+padding:10px 14px;
 border:none;
+border-radius:6px;
+background:#4f8cff;
 color:white;
-padding:10px 16px;
-border-radius:8px;
 cursor:pointer;
-font-weight:600;
-}
-
-button:hover{
-opacity:0.9;
-}
-
-.dashboard{
-display:flex;
-gap:20px;
-justify-content:center;
-margin-bottom:25px;
-flex-wrap:wrap;
 }
 
 .card{
-background:var(--card);
+background:white;
 padding:20px;
-border-radius:14px;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
-min-width:160px;
-text-align:center;
-}
-
-.big{
-font-size:28px;
-font-weight:600;
-color:var(--primary);
-}
-
-.subject{
-background:var(--card);
-margin-bottom:20px;
-padding:20px;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
-transition:0.2s;
-}
-
-.subject:hover{
-transform:translateY(-4px);
-}
-
-.progress-container{
-background:#e5e7eb;
-border-radius:20px;
-height:12px;
 margin:10px 0;
-overflow:hidden;
+border-radius:10px;
+box-shadow:0 5px 12px rgba(0,0,0,0.1);
+}
+
+.dark .card{
+background:#222;
 }
 
 .progress{
-background:linear-gradient(90deg,var(--primary),var(--secondary));
+height:10px;
+background:#ddd;
+border-radius:10px;
+margin:10px 0;
+}
+
+.progress div{
 height:100%;
+background:#4f8cff;
 width:0%;
-transition:width .4s;
-}
-
-label{
-display:block;
-margin:6px 0;
-cursor:pointer;
-}
-
-.section{
-background:var(--card);
-padding:20px;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
-margin-top:25px;
-}
-
-select,input{
-padding:10px;
-border-radius:6px;
-border:1px solid #ccc;
-margin-top:6px;
-width:100%;
-}
-
-#question{
-margin-top:15px;
-font-weight:600;
-}
-
-table{
-width:100%;
-margin-top:10px;
-border-collapse:collapse;
-}
-
-td,th{
-padding:8px;
-border-bottom:1px solid #ddd;
+border-radius:10px;
 }
 
 </style>
@@ -158,181 +66,116 @@ border-bottom:1px solid #ddd;
 
 <h1>📚 GCSE Revision App</h1>
 
-<div class="topbar">
-<button onclick="toggleDark()">🌙 Toggle Dark Mode</button>
-</div>
-
-<div class="dashboard">
+<button onclick="toggleDark()">🌙 Dark Mode</button>
 
 <div class="card">
-<div class="big" id="totalProgress">0%</div>
-Progress
-</div>
 
-<div class="card">
-<div class="big" id="streak">0</div>
-Streak 🔥
+<div>XP: <span id="xp">0</span></div>
+<div>Level: <span id="level">1</span></div>
+<div>Streak 🔥: <span id="streak">0</span></div>
+
 </div>
 
 <div class="card">
-<div class="big" id="xp">0</div>
-XP ⭐
-</div>
 
-<div class="card">
-<div class="big" id="level">1</div>
-Level 🏆
-</div>
-
-</div>
-
-<div id="subjects"></div>
-
-<div class="section">
-
-<h2>🧠 Quiz Generator</h2>
+<h3>Subjects</h3>
 
 <select id="subjectSelect" onchange="populateTopics()"></select>
 <select id="topicSelect"></select>
 
 <button onclick="generateQuestion()">Generate Question</button>
 
-<div id="question">Select a topic to start.</div>
+<div id="question"></div>
 
 </div>
 
-<div class="section">
+<div class="card">
 
-<h2>📅 Revision Timetable Generator</h2>
+<h3>⏱ Pomodoro Timer</h3>
 
-<input id="days" type="number" placeholder="How many days to revise?">
+<div id="timer">25:00</div>
+<button onclick="startTimer()">Start</button>
+<button onclick="resetTimer()">Reset</button>
 
-<button onclick="generateTimetable()">Generate Timetable</button>
+</div>
 
-<table id="timetable"></table>
+<div class="card">
+
+<h3>📈 Revision Progress</h3>
+<canvas id="progressChart"></canvas>
+
+</div>
+
+<div class="card">
+
+<h3>🏅 Achievements</h3>
+<ul id="badges"></ul>
 
 </div>
 
 <script>
 
 const subjects={
-"Maths":["Fractions","Algebra","Quadratics","Graphs","Percentages"],
-"Science":["Cells","Atoms","Electricity","Energy","Forces"],
-"Computer Science":["CPU","Memory","Algorithms","Networks"],
-"Geography":["Rivers","Earthquakes","Climate","Urban Issues"],
-"German":["Family","School","Holidays","Food"],
-"English":["Language Analysis","Creative Writing","Poetry"],
-"Media":["Representation","Audience","Industry"]
+
+"Maths":{
+"Algebra":[
+"Solve 3x+5=20",
+"Expand 4(x+2)",
+"Factorise x²+5x",
+"Solve 2x-7=9"
+],
+
+"Fractions":[
+"Simplify 12/18",
+"Add 3/5 + 2/7",
+"Multiply 2/3 by 4/5",
+"Convert 0.25 to fraction"
+]
+
+},
+
+"Science":{
+"Cells":[
+"What is mitosis?",
+"What does the nucleus do?",
+"What is diffusion?",
+"Function of mitochondria"
+],
+
+"Electricity":[
+"What is voltage?",
+"What is current?",
+"What is resistance?",
+"State Ohm's Law"
+]
+
+},
+
+"Computer Science":{
+"CPU":[
+"What does the CPU do?",
+"What is the ALU?",
+"What is clock speed?"
+],
+
+"Memory":[
+"What is RAM?",
+"What is ROM?",
+"What is cache memory?"
+]
+
+}
+
 };
 
-const questions=[
+let xp=parseInt(localStorage.getItem("xp")||0);
+let streak=parseInt(localStorage.getItem("streak")||0);
 
-"What is a metaphor?",
-"Solve 3x + 5 = 20",
-"What is photosynthesis?",
-"What does the CPU do?",
-"What causes earthquakes?",
-"Translate 'I go to school' into German",
-"What is a simile?",
-"What is Ohm's Law?",
-"What is RAM?",
-"What is erosion?",
-"What is audience representation?",
-"What is a quadratic equation?",
-"What is diffusion?",
-"What is a network protocol?",
-"What is climate change?",
-"What is persuasive language?"
+document.getElementById("xp").innerText=xp;
+document.getElementById("streak").innerText=streak;
 
-];
-
-function renderSubjects(){
-
-let container=document.getElementById("subjects");
-container.innerHTML="";
-
-for(let subject in subjects){
-
-let div=document.createElement("div");
-div.className="subject";
-
-let html=`<h3>${subject}</h3>
-<div class="progress-container">
-<div class="progress" id="prog-${subject}"></div>
-</div>`;
-
-subjects[subject].forEach(topic=>{
-
-let key=subject+"-"+topic;
-let saved=localStorage.getItem(key)==="true";
-
-html+=`<label>
-<input type="checkbox"
-${saved?"checked":""}
-id="${key}"
-onchange="updateProgress('${subject}')">
-${topic}
-</label>`;
-
-});
-
-div.innerHTML=html;
-container.appendChild(div);
-
-updateProgress(subject);
-
-}
-
-updateDashboard();
-
-}
-
-function updateProgress(subject){
-
-let done=0;
-let total=subjects[subject].length;
-
-subjects[subject].forEach(topic=>{
-
-let key=subject+"-"+topic;
-let box=document.getElementById(key);
-
-if(box.checked) done++;
-
-localStorage.setItem(key,box.checked);
-
-});
-
-let percent=Math.round(done/total*100);
-
-document.getElementById("prog-"+subject).style.width=percent+"%";
-
-updateDashboard();
-
-}
-
-function updateDashboard(){
-
-let total=0;
-let done=0;
-
-for(let subject in subjects){
-
-subjects[subject].forEach(topic=>{
-
-total++;
-
-if(localStorage.getItem(subject+"-"+topic)==="true") done++;
-
-});
-
-}
-
-let percent=Math.round(done/total*100);
-
-document.getElementById("totalProgress").innerText=percent+"%";
-
-}
+function level(){return Math.floor(xp/100)+1}
+document.getElementById("level").innerText=level();
 
 function populateSubjects(){
 
@@ -341,8 +184,9 @@ let s=document.getElementById("subjectSelect");
 for(let subject in subjects){
 
 let opt=document.createElement("option");
-opt.value=subject;
 opt.text=subject;
+opt.value=subject;
+
 s.add(opt);
 
 }
@@ -358,80 +202,42 @@ let t=document.getElementById("topicSelect");
 
 t.innerHTML="";
 
-subjects[subject].forEach(topic=>{
+for(let topic in subjects[subject]){
 
 let opt=document.createElement("option");
-opt.value=topic;
 opt.text=topic;
+opt.value=topic;
+
 t.add(opt);
 
-});
+}
 
 }
 
 function generateQuestion(){
 
-let q=questions[Math.floor(Math.random()*questions.length)];
+let subject=document.getElementById("subjectSelect").value;
+let topic=document.getElementById("topicSelect").value;
+
+let list=subjects[subject][topic];
+
+let q=list[Math.floor(Math.random()*list.length)];
 
 document.getElementById("question").innerText=q;
 
-addXP();
-updateStreak();
+gainXP();
+updateChart();
+checkBadges();
 
 }
 
-function addXP(){
-
-let xp=parseInt(localStorage.getItem("xp")||0);
+function gainXP(){
 
 xp+=10;
-
 localStorage.setItem("xp",xp);
 
 document.getElementById("xp").innerText=xp;
-
-let level=Math.floor(xp/100)+1;
-
-document.getElementById("level").innerText=level;
-
-}
-
-function updateStreak(){
-
-let today=new Date().toDateString();
-let last=localStorage.getItem("lastStudy");
-let streak=parseInt(localStorage.getItem("streak")||0);
-
-if(last!==today){
-
-streak++;
-
-localStorage.setItem("streak",streak);
-localStorage.setItem("lastStudy",today);
-
-}
-
-document.getElementById("streak").innerText=streak;
-
-}
-
-function generateTimetable(){
-
-let days=document.getElementById("days").value;
-
-let table=document.getElementById("timetable");
-
-table.innerHTML="<tr><th>Day</th><th>Subject</th></tr>";
-
-let subjectsList=Object.keys(subjects);
-
-for(let i=1;i<=days;i++){
-
-let subject=subjectsList[Math.floor(Math.random()*subjectsList.length)];
-
-table.innerHTML+=`<tr><td>Day ${i}</td><td>${subject}</td></tr>`;
-
-}
+document.getElementById("level").innerText=level();
 
 }
 
@@ -441,21 +247,69 @@ document.body.classList.toggle("dark");
 
 }
 
-function loadStats(){
+let time=1500;
+let timerInterval;
 
-document.getElementById("xp").innerText=localStorage.getItem("xp")||0;
+function startTimer(){
 
-let xp=parseInt(localStorage.getItem("xp")||0);
+timerInterval=setInterval(()=>{
 
-document.getElementById("level").innerText=Math.floor(xp/100)+1;
+time--;
 
-document.getElementById("streak").innerText=localStorage.getItem("streak")||0;
+let m=Math.floor(time/60);
+let s=time%60;
+
+document.getElementById("timer").innerText=
+m+":"+(s<10?"0":"")+s;
+
+if(time<=0) clearInterval(timerInterval);
+
+},1000)
+
+}
+
+function resetTimer(){
+
+clearInterval(timerInterval);
+time=1500;
+document.getElementById("timer").innerText="25:00";
+
+}
+
+const ctx=document.getElementById("progressChart");
+
+let chart=new Chart(ctx,{
+type:"line",
+data:{
+labels:["Start"],
+datasets:[{
+label:"XP Progress",
+data:[xp]
+}]
+}
+});
+
+function updateChart(){
+
+chart.data.labels.push("Study");
+chart.data.datasets[0].data.push(xp);
+chart.update();
+
+}
+
+function checkBadges(){
+
+let badges=document.getElementById("badges");
+
+badges.innerHTML="";
+
+if(xp>=50) badges.innerHTML+="<li>⭐ Beginner</li>";
+if(xp>=200) badges.innerHTML+="<li>🔥 Study Streak</li>";
+if(xp>=500) badges.innerHTML+="<li>🏆 Revision Master</li>";
 
 }
 
 populateSubjects();
-renderSubjects();
-loadStats();
 
 </script>
 
