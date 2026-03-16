@@ -10,53 +10,77 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:#eef3ff;
-margin:0;
-padding:25px;
+:root{
+--bg:#eef2ff;
+--card:white;
+--primary:#4f8cff;
+--secondary:#6dd5a3;
+--text:#222;
 }
 
 .dark{
-background:#111;
-color:white;
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f1f5f9;
+}
+
+body{
+font-family:Arial;
+background:var(--bg);
+margin:0;
+padding:25px;
+color:var(--text);
+transition:0.3s;
 }
 
 h1{text-align:center;}
 
 button{
-padding:10px 14px;
+padding:10px 15px;
 border:none;
-border-radius:6px;
-background:#4f8cff;
+border-radius:8px;
+background:var(--primary);
 color:white;
 cursor:pointer;
+font-weight:bold;
 }
+
+button:hover{opacity:0.9}
 
 .card{
-background:white;
+background:var(--card);
 padding:20px;
-margin:10px 0;
-border-radius:10px;
-box-shadow:0 5px 12px rgba(0,0,0,0.1);
-}
-
-.dark .card{
-background:#222;
+margin:15px 0;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
 }
 
 .progress{
 height:10px;
 background:#ddd;
 border-radius:10px;
+overflow:hidden;
 margin:10px 0;
 }
 
-.progress div{
+.bar{
 height:100%;
-background:#4f8cff;
+background:linear-gradient(90deg,var(--primary),var(--secondary));
 width:0%;
-border-radius:10px;
+}
+
+select,input{
+padding:8px;
+margin:6px 0;
+width:100%;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+#timer{
+font-size:28px;
+font-weight:bold;
+margin:10px 0;
 }
 
 </style>
@@ -66,19 +90,19 @@ border-radius:10px;
 
 <h1>📚 GCSE Revision App</h1>
 
-<button onclick="toggleDark()">🌙 Dark Mode</button>
+<button onclick="toggleDark()">🌙 Toggle Dark Mode</button>
 
 <div class="card">
 
-<div>XP: <span id="xp">0</span></div>
-<div>Level: <span id="level">1</span></div>
-<div>Streak 🔥: <span id="streak">0</span></div>
+<div>⭐ XP: <span id="xp">0</span></div>
+<div>🏆 Level: <span id="level">1</span></div>
+<div>🔥 Streak: <span id="streak">0</span></div>
 
 </div>
 
 <div class="card">
 
-<h3>Subjects</h3>
+<h3>🧠 Quiz Generator</h3>
 
 <select id="subjectSelect" onchange="populateTopics()"></select>
 <select id="topicSelect"></select>
@@ -94,6 +118,7 @@ border-radius:10px;
 <h3>⏱ Pomodoro Timer</h3>
 
 <div id="timer">25:00</div>
+
 <button onclick="startTimer()">Start</button>
 <button onclick="resetTimer()">Reset</button>
 
@@ -101,8 +126,8 @@ border-radius:10px;
 
 <div class="card">
 
-<h3>📈 Revision Progress</h3>
-<canvas id="progressChart"></canvas>
+<h3>📈 Progress</h3>
+<canvas id="chart"></canvas>
 
 </div>
 
@@ -113,169 +138,60 @@ border-radius:10px;
 
 </div>
 
+<div class="card">
+
+<h3>📅 Revision Timetable</h3>
+
+<input id="days" type="number" placeholder="Days to revise">
+
+<button onclick="generateTimetable()">Generate</button>
+
+<table id="timetable"></table>
+
+</div>
+
 <script>
 
+const subjects={
 
-const subjects = {
+"Maths (OCR)":{
 
-"Maths (OCR)": {
+"Algebra":[
+"Solve 3x + 5 = 20",
+"Expand 4(x+2)",
+"Factorise x²+5x",
+"Solve 2x−7=9"
+],
 
 "Fractions":[
 "Simplify 12/18",
-"Convert 0.375 to a fraction",
 "Add 3/5 + 2/7",
-"Multiply 4/9 by 3/5",
-"Divide 5/8 by 2"
-],
-
-"Algebra":[
-"Simplify 3x + 7x",
-"Solve x + 8 = 19",
-"Factorise x² + 6x",
-"Solve 2x + 5 = 17",
-"Expand 3(x+4)"
-],
-
-"Quadratics":[
-"Solve x² − 9 = 0",
-"Factorise x² + 7x + 12",
-"Find roots of x² − 4x = 0",
-"What is a quadratic equation?",
-"Sketch y = x²"
+"Multiply 2/3 × 4/5",
+"Convert 0.25 to a fraction"
 ]
 
 },
 
-"Combined Science (AQA)": {
+"Combined Science (AQA)":{
 
-"Cell Biology":[
+"Cells":[
 "What is mitosis?",
-"What is diffusion?",
 "What does the nucleus do?",
-"Function of mitochondria",
-"Difference between plant and animal cells"
-],
-
-"Atomic Structure":[
-"What is an isotope?",
-"What charge does an electron have?",
-"What is the atomic number?",
-"What is a neutron?",
-"How many protons are in carbon?"
+"What is diffusion?",
+"What do mitochondria do?"
 ],
 
 "Electricity":[
-"What is current?",
 "What is voltage?",
+"What is current?",
 "What is resistance?",
-"What is Ohm's Law?",
-"What is a parallel circuit?"
+"State Ohm's Law"
 ]
 
 },
 
-"Computer Science (OCR)": {
+"Computer Science (OCR)":{
 
-"CPU":[
-"What does the CPU do?",
-"What is the ALU?",
-"What is the control unit?",
-"What is clock speed?",
-"What is a register?"
-],
-
-"Memory":[
-"What is RAM?",
-"What is ROM?",
-"What is cache memory?",
-"What is virtual memory?",
-"Difference between RAM and ROM"
-]
-
-},
-
-"Geography (AQA)": {
-
-"Natural Hazards":[
-"What causes earthquakes?",
-"What is a tectonic plate?",
-"What causes volcanoes?",
-"What is a tsunami?",
-"Name one effect of an earthquake"
-],
-
-"Rivers":[
-"What is erosion?",
-"What is deposition?",
-"What is a meander?",
-"What is a floodplain?",
-"What causes flooding?"
-]
-
-},
-
-"German (AQA)": {
-
-"Family":[
-"Translate: My mother is kind",
-"What does 'Bruder' mean?",
-"What does 'Schwester' mean?",
-"Describe your family in German",
-"Translate: I have two brothers"
-],
-
-"School":[
-"Translate: I go to school",
-"What is 'Lehrer'?",
-"What is 'Hausaufgaben'?",
-"Name three school subjects in German",
-"Describe your school day"
-]
-
-},
-
-"English (AQA)": {
-
-"Language Analysis":[
-"What is a metaphor?",
-"What is a simile?",
-"What is imagery?",
-"What is descriptive language?",
-"Explain the effect on the reader"
-],
-
-"Creative Writing":[
-"Write an opening sentence for a story",
-"Describe a storm",
-"Describe a mysterious setting",
-"Create a character introduction",
-"Write a tense moment"
-]
-
-},
-
-"Media Studies": {
-
-"Representation":[
-"What is representation?",
-"What is a stereotype?",
-"Give an example of media bias",
-"Why is representation important?",
-"What is audience perception?"
-],
-
-"Audience":[
-"What is target audience?",
-"What is demographics?",
-"What is psychographics?",
-"What is audience reception?",
-"How do media companies attract audiences?"
-]
-
-}
-
-};
-"Computer Science":{
 "CPU":[
 "What does the CPU do?",
 "What is the ALU?",
@@ -286,6 +202,70 @@ const subjects = {
 "What is RAM?",
 "What is ROM?",
 "What is cache memory?"
+]
+
+},
+
+"Geography (AQA)":{
+
+"Rivers":[
+"What is erosion?",
+"What is deposition?",
+"What is a meander?"
+],
+
+"Natural Hazards":[
+"What causes earthquakes?",
+"What is a tectonic plate?",
+"What causes volcanoes?"
+]
+
+},
+
+"German (AQA)":{
+
+"Family":[
+"Translate: My mother is kind",
+"What does 'Bruder' mean?",
+"What does 'Schwester' mean?"
+],
+
+"School":[
+"Translate: I go to school",
+"What is 'Lehrer'?",
+"What is 'Hausaufgaben'?"
+]
+
+},
+
+"English (AQA)":{
+
+"Language":[
+"What is a simile?",
+"What is a metaphor?",
+"What is imagery?"
+],
+
+"Creative Writing":[
+"Describe a storm",
+"Write an opening sentence",
+"Describe a mysterious place"
+]
+
+},
+
+"Media Studies":{
+
+"Representation":[
+"What is representation?",
+"What is a stereotype?",
+"What is media bias?"
+],
+
+"Audience":[
+"What is target audience?",
+"What is demographics?",
+"What is psychographics?"
 ]
 
 }
@@ -308,8 +288,8 @@ let s=document.getElementById("subjectSelect");
 for(let subject in subjects){
 
 let opt=document.createElement("option");
-opt.text=subject;
 opt.value=subject;
+opt.text=subject;
 
 s.add(opt);
 
@@ -329,8 +309,8 @@ t.innerHTML="";
 for(let topic in subjects[subject]){
 
 let opt=document.createElement("option");
-opt.text=topic;
 opt.value=topic;
+opt.text=topic;
 
 t.add(opt);
 
@@ -395,19 +375,21 @@ if(time<=0) clearInterval(timerInterval);
 function resetTimer(){
 
 clearInterval(timerInterval);
+
 time=1500;
+
 document.getElementById("timer").innerText="25:00";
 
 }
 
-const ctx=document.getElementById("progressChart");
+const ctx=document.getElementById("chart");
 
 let chart=new Chart(ctx,{
 type:"line",
 data:{
 labels:["Start"],
 datasets:[{
-label:"XP Progress",
+label:"XP",
 data:[xp]
 }]
 }
@@ -428,8 +410,27 @@ let badges=document.getElementById("badges");
 badges.innerHTML="";
 
 if(xp>=50) badges.innerHTML+="<li>⭐ Beginner</li>";
-if(xp>=200) badges.innerHTML+="<li>🔥 Study Streak</li>";
+if(xp>=200) badges.innerHTML+="<li>🔥 Consistent Learner</li>";
 if(xp>=500) badges.innerHTML+="<li>🏆 Revision Master</li>";
+
+}
+
+function generateTimetable(){
+
+let days=document.getElementById("days").value;
+let table=document.getElementById("timetable");
+
+table.innerHTML="";
+
+let list=Object.keys(subjects);
+
+for(let i=1;i<=days;i++){
+
+let subject=list[Math.floor(Math.random()*list.length)];
+
+table.innerHTML+=`<tr><td>Day ${i}</td><td>${subject}</td></tr>`;
+
+}
 
 }
 
