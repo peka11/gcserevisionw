@@ -9,11 +9,11 @@
 /* Global Styles */
 body {font-family:'Inter',sans-serif;margin:0;padding:0;background:#f0f4f8;color:#1f2937;transition:0.3s;}
 .dark {background:#111827;color:white;}
-.sidebar {position:fixed; left:0; top:0; bottom:0;width:220px;background:#4f7cff;padding:20px;display:flex;flex-direction:column;color:white;}
+.sidebar {position:fixed; left:0; top:0; bottom:0;width:240px;background:#4f7cff;padding:20px;display:flex;flex-direction:column;color:white;}
 .sidebar h2 {margin-top:0;margin-bottom:20px;font-size:22px;}
-.sidebar button {background:none;border:none;color:white;text-align:left;padding:10px;margin-bottom:5px;border-radius:8px;cursor:pointer;font-weight:600;transition:0.2s;}
+.sidebar button {background:none;border:none;color:white;text-align:left;padding:12px;margin-bottom:8px;border-radius:8px;cursor:pointer;font-weight:600;transition:0.2s;}
 .sidebar button:hover {background:rgba(255,255,255,0.2);}
-.main {margin-left:240px;padding:20px;}
+.main {margin-left:260px;padding:20px;}
 .card {background:white;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);margin-bottom:20px;transition:0.3s;}
 .dark .card {background:#1f2937;}
 button {padding:10px 16px;border:none;border-radius:12px;background:#4f7cff;color:white;cursor:pointer;font-weight:600;margin-top:10px;transition:0.2s;}
@@ -25,7 +25,6 @@ canvas {max-width:100%;}
 td, th {padding:10px;text-align:center;border-radius:12px;font-weight:600;cursor:pointer;}
 th {background:#4f7cff;color:white;}
 td:hover {opacity:0.85; transform: scale(1.03);}
-/* Confetti Canvas */
 #confetti-canvas {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
 </style>
 </head>
@@ -43,7 +42,6 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="darkBtn">🌙 Dark Mode</button>
 </div>
 <div class="main">
-<!-- Dashboard -->
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
 <p>XP: <span id="xp">0</span></p>
@@ -51,10 +49,7 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <p>Streak: <span id="streak">0</span></p>
 <p>Badges: <span id="badges">None</span></p>
 <div class="progress-bar"><div class="progress-fill" id="overallProgress">0%</div></div>
-<h3>Streak Calendar (placeholder)</h3>
-<p>📅 Days you revised shown here</p>
 </div>
-<!-- Quiz -->
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
 <select id="subjectSelect"></select>
@@ -64,19 +59,16 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="nextBtn">Next</button>
 </div>
 </div>
-<!-- Timetable -->
 <div id="timetable" class="card section" style="display:none;">
 <h2>Revision Timetable</h2>
 <input id="days" type="number" placeholder="Days to revise">
 <button id="generateTimetableBtn">Generate Timetable</button>
 <div id="timetableContainer" style="overflow-x:auto;margin-top:15px;"></div>
 </div>
-<!-- Analytics -->
 <div id="analytics" class="card section" style="display:none;">
 <h2>Analytics</h2>
 <canvas id="chart" width="400" height="200"></canvas>
 </div>
-<!-- Pomodoro -->
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro Timer</h2>
 <p id="timer">25:00</p>
@@ -84,13 +76,10 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="pausePomodoro">Pause</button>
 <button id="resetPomodoro">Reset</button>
 </div>
-<!-- Mini Game -->
 <div id="minigame" class="card section" style="display:none;">
-<h2>Mini Game</h2>
-<p>Memory game placeholder 🧠</p>
+<h2>Mini Game - Memory Match</h2>
 <div id="memoryGameContainer"></div>
 </div>
-<!-- Settings -->
 <div id="settings" class="card section" style="display:none;">
 <h2>Settings</h2>
 <p>Toggle dark/light mode or select theme.</p>
@@ -102,15 +91,30 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 // ===== Section Navigation =====
 function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
 
-// ===== Subjects & Questions (sample placeholders, expand to 1200+) =====
+// ===== Sample Real GCSE Questions (~5 per topic for demo) =====
 const questionBank={
-"Maths (OCR)":{"Algebra":["Solve 3x+5=20","Expand 4(x+2)","Factorise x^2+5x+6"],"Fractions":["Simplify 12/18","Add 3/5 + 2/7","Convert 0.75 to fraction"]},
-"Combined Science (AQA Gateway)":{"Cell biology":["What is mitosis?","Function of nucleus","Function of cell membrane"]},
-"Computer Science (OCR)":{"Systems architecture":["CPU components","Von Neumann architecture"]},
-"Geography (AQA)":{"Natural hazards":["Causes of earthquakes?","Causes of volcanoes"]},
-"German (AQA)":{"Family":["Translate: My mother is kind","Bruder = brother"]},
-"English (AQA)":{"Language paper 1":["Define metaphor","Simile examples"]},
-"Media Studies":{"Media language":["Define codes","Signifier examples"]}
+"Maths (OCR)":{
+"Algebra":["Solve 2x+5=13","Factorise x^2+5x+6","Simplify 3(x+2)+4"],
+"Fractions":["Simplify 12/18","Add 2/5 + 3/10","Convert 0.75 to fraction"]
+},
+"Combined Science (AQA Gateway)":{
+"Cell biology":["What is mitosis?","Function of nucleus","Function of mitochondria"]
+},
+"Computer Science (OCR)":{
+"Systems architecture":["What is the CPU?","Name the main components of a CPU","Define ALU"]
+},
+"Geography (AQA)":{
+"Natural hazards":["Give 2 causes of earthquakes","What is a tsunami?","Explain the effects of volcanoes"]
+},
+"German (AQA)":{
+"Family":["Translate: My brother is kind","Translate: I have two sisters","Der Vater = ?"]
+},
+"English (AQA)":{
+"Language paper 1":["Define metaphor","Give an example of simile","What is alliteration?"]
+},
+"Media Studies":{
+"Media language":["Define signifier","Give an example of codes","What is connotation?"]
+}
 };
 const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
@@ -191,7 +195,7 @@ container.appendChild(table);
 
 // ===== Analytics =====
 const ctx=document.getElementById("chart").getContext("2d");
-const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>Math.floor(Math.random()*xp)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>Math.floor(xp/7)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
 
 // ===== Pomodoro =====
 let pomodoroTime=25*60; let pomodoroInterval=null;
@@ -203,11 +207,29 @@ document.getElementById("resetPomodoro").addEventListener("click",()=>{pomodoroT
 updateTimer();
 
 // ===== Mini Game =====
-document.getElementById("memoryGameContainer").innerHTML=`<p>Memory game coming soon!</p>`;
+function generateMemoryGame(){
+const container=document.getElementById("memoryGameContainer");
+container.innerHTML="";
+const cards=["A","B","C","D","A","B","C","D"];
+cards.sort(()=>Math.random()-0.5);
+const cardDivs=[];
+cards.forEach(letter=>{
+let div=document.createElement("div"); div.innerText="?"; div.style.display="inline-block"; div.style.width="60px"; div.style.height="60px"; div.style.margin="5px"; div.style.background="#4f7cff"; div.style.color="white"; div.style.lineHeight="60px"; div.style.fontWeight="bold"; div.style.fontSize="24px"; div.style.borderRadius="10px"; div.style.textAlign="center"; div.style.cursor="pointer"; div.dataset.value=letter; container.appendChild(div); cardDivs.push(div);
+});
+let first=null, second=null;
+cardDivs.forEach(div=>{div.addEventListener("click",()=>{
+if(div.innerText!=="?"||second) return;
+div.innerText=div.dataset.value;
+if(!first) first=div;
+else second=div;
+if(first.dataset.value===second.dataset.value){xp+=20;updateXP();triggerConfetti();first=null; second=null;}
+else{setTimeout(()=>{first.innerText="?"; second.innerText="?"; first=null; second=null;},800);}
+})});
+}
+generateMemoryGame();
 
 // ===== Dark Mode =====
 document.getElementById("darkBtn").addEventListener("click",()=>{document.body.classList.toggle("dark");});
-
 </script>
 </body>
 </html>
