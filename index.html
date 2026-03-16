@@ -3,33 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎓 GCSE Revision App - Sidebar</title>
+<title>🎓 GCSE Revision App</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family:'Inter',sans-serif;
-  margin:0;
-  padding:0;
-  background:#f0f4f8;
-  color:#1f2937;
-  transition:0.3s;
-}
+body {font-family:'Inter',sans-serif;margin:0;padding:0;background:#f0f4f8;color:#1f2937;transition:0.3s;}
 .dark {background:#111827;color:white;}
-.sidebar {
-  position:fixed; left:0; top:0; bottom:0;
-  width:220px;
-  background:#4f7cff;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  color:white;
-}
+.sidebar {position:fixed; left:0; top:0; bottom:0;width:220px;background:#4f7cff;padding:20px;display:flex;flex-direction:column;color:white;}
 .sidebar h2 {margin-top:0;margin-bottom:20px;font-size:22px;}
-.sidebar button {
-  background:none; border:none; color:white; text-align:left;
-  padding:10px; margin-bottom:5px; border-radius:8px; cursor:pointer;
-  font-weight:600; transition:0.2s;
-}
+.sidebar button {background:none;border:none;color:white;text-align:left;padding:10px;margin-bottom:5px;border-radius:8px;cursor:pointer;font-weight:600;transition:0.2s;}
 .sidebar button:hover {background:rgba(255,255,255,0.2);}
 .main {margin-left:240px;padding:20px;}
 .card {background:white;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);margin-bottom:20px;}
@@ -37,14 +18,12 @@ body {
 button {padding:10px 16px;border:none;border-radius:12px;background:#4f7cff;color:white;cursor:pointer;font-weight:600;margin-top:10px;}
 button:hover {background:#3561c3;}
 input, select {width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
+.progress-bar {height:24px;width:100%;background:#ddd;border-radius:12px;overflow:hidden;margin-top:10px;}
+.progress-fill {height:100%;width:0%;background: linear-gradient(90deg,#4f7cff,#34c759);text-align:center;color:white;line-height:24px;font-weight:bold;transition:width 0.5s;}
 table {border-collapse: separate;border-spacing: 0 10px;width:100%;}
 th, td {padding:10px;text-align:center;border-radius:12px;font-weight:600;cursor:pointer;}
 th {background:#4f7cff;color:white;}
-td {transition:0.2s;}
 td:hover {opacity:0.85; transform: scale(1.03);}
-.dark select,input, .dark th, .dark td {border-color:#555;}
-.dark th {background:#5856d6;}
-.dark td {color:white;}
 </style>
 </head>
 <body>
@@ -59,15 +38,16 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 </div>
 
 <div class="main">
-<!-- Dashboard -->
+
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
 <p>XP: <span id="xp">0</span></p>
 <p>Level: <span id="level">1</span></p>
 <p>Streak: <span id="streak">0</span></p>
+<p>Badges: <span id="badges">None</span></p>
+<div class="progress-bar"><div class="progress-fill" id="overallProgress">0%</div></div>
 </div>
 
-<!-- Quiz Section -->
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
 <select id="subjectSelect"></select>
@@ -78,7 +58,6 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 </div>
 </div>
 
-<!-- Timetable -->
 <div id="timetable" class="card section" style="display:none;">
 <h2>Revision Timetable</h2>
 <input id="days" type="number" placeholder="Days to revise">
@@ -86,19 +65,16 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <div id="timetableContainer" style="overflow-x:auto;margin-top:15px;"></div>
 </div>
 
-<!-- Analytics -->
 <div id="analytics" class="card section" style="display:none;">
 <h2>Analytics</h2>
-<canvas id="chart"></canvas>
+<canvas id="chart" width="400" height="200"></canvas>
 </div>
+
 </div>
 
 <script>
 // ===== Sections =====
-function showSection(id){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
-}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
 
 // ===== Subjects & Topics =====
 const questionBank = {
@@ -110,105 +86,93 @@ const questionBank = {
 "English (AQA)":{"Language paper 1":["Define metaphor","Simile examples"]},
 "Media Studies":{"Media language":["Define codes","Signifier examples"]}
 };
-const subjectColors = {
-"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759",
-"Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55",
-"German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"
-};
+const subjectColors = {"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
 // ===== XP & Streak =====
 let xp=parseInt(localStorage.getItem("xp")||0);
 let streak=parseInt(localStorage.getItem("streak")||0);
+let badges=[];
 function updateXP(){
-  document.getElementById("xp").innerText=xp;
-  document.getElementById("level").innerText=Math.floor(xp/100)+1;
-  document.getElementById("streak").innerText=streak;
+document.getElementById("xp").innerText=xp;
+document.getElementById("level").innerText=Math.floor(xp/100)+1;
+document.getElementById("streak").innerText=streak;
+document.getElementById("badges").innerText=badges.length>0?badges.join(", "):"None";
+document.getElementById("overallProgress").style.width=Math.min(Math.floor(xp/12),100)+"%";
+document.getElementById("overallProgress").innerText=Math.min(Math.floor(xp/12),100)+"%";
 }
 updateXP();
 
-// ===== Populate select =====
+// ===== Populate selects =====
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
-for(let subject in questionBank){
-  let opt=document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);
-}
-function updateTopics(){
-  topicSelect.innerHTML="";
-  let subj=subjectSelect.value;
-  for(let topic in questionBank[subj]){
-    let opt=document.createElement("option"); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);
-  }
-}
-subjectSelect.addEventListener("change",updateTopics);
+for(let subject in questionBank){let opt=document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);}
+function updateTopics(){topicSelect.innerHTML="";let subj=subjectSelect.value;for(let topic in questionBank[subj]){let opt=document.createElement("option"); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);}}
+subjectSelect.addEventListener("change",()=>{updateTopics();loadQuiz();});
 updateTopics();
 
-// ===== Quiz System (simple question display) =====
+// ===== Quiz =====
 let currentQuestionIndex=0;
 let currentQuestions=[];
 const questionEl=document.getElementById("question");
 const nextBtn=document.getElementById("nextBtn");
 
 function loadQuiz(){
-  const subj=subjectSelect.value;
-  const top=topicSelect.value;
-  currentQuestions=questionBank[subj][top];
-  currentQuestionIndex=0;
-  showQuestion();
+const subj=subjectSelect.value;
+const top=topicSelect.value;
+currentQuestions=questionBank[subj][top];
+currentQuestionIndex=0;
+showQuestion();
 }
 
 function showQuestion(){
-  if(currentQuestionIndex>=currentQuestions.length){
-    questionEl.innerText="✅ Quiz Complete!";
-    nextBtn.style.display="none";
-    return;
-  }
-  questionEl.innerText=currentQuestions[currentQuestionIndex];
-  nextBtn.style.display="inline-block";
+if(currentQuestionIndex>=currentQuestions.length){questionEl.innerText="✅ Quiz Complete!";nextBtn.style.display="none";return;}
+questionEl.innerText=currentQuestions[currentQuestionIndex];nextBtn.style.display="inline-block";
 }
 
 nextBtn.addEventListener("click",()=>{
-  currentQuestionIndex++;
-  xp+=10; streak+=1; updateXP();
-  showQuestion();
+currentQuestionIndex++;xp+=10;streak+=1; 
+// Badges example
+if(currentQuestionIndex===currentQuestions.length){badges.push("Completed Topic: "+topicSelect.value);}
+updateXP();showQuestion();
 });
-
-subjectSelect.addEventListener("change",loadQuiz);
 topicSelect.addEventListener("change",loadQuiz);
 loadQuiz();
 
-// ===== Timetable Generator (fixed) =====
+// ===== Timetable =====
 document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
-  const days=parseInt(document.getElementById("days").value);
-  if(!days||days<=0){alert("Enter valid number of days"); return;}
-  const container=document.getElementById("timetableContainer");
-  container.innerHTML="";
-  const subjectsList=Object.keys(questionBank);
-  const table=document.createElement("table");
-  const headerRow=document.createElement("tr"); 
-  headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; 
-  table.appendChild(headerRow);
-  for(let i=1;i<=days;i++){
-    const row=document.createElement("tr");
-    const dayCell=document.createElement("td"); dayCell.innerText="Day "+i; row.appendChild(dayCell);
-    for(let s=0;s<3;s++){
-      const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
-      const topics=Object.keys(questionBank[subj]);
-      const topic=topics[Math.floor(Math.random()*topics.length)];
-      const cell=document.createElement("td"); 
-      cell.innerText=`${subj}: ${topic}`;
-      cell.style.backgroundColor=subjectColors[subj]||"#888"; 
-      cell.style.color="white"; 
-      cell.style.fontWeight="bold"; 
-      cell.style.borderRadius="8px";
-      row.appendChild(cell);
-    }
-    table.appendChild(row);
-  }
-  container.appendChild(table);
+const days=parseInt(document.getElementById("days").value);
+if(!days||days<=0){alert("Enter valid number of days"); return;}
+const container=document.getElementById("timetableContainer");
+container.innerHTML="";
+const subjectsList=Object.keys(questionBank);
+const table=document.createElement("table");
+const headerRow=document.createElement("tr"); 
+headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; 
+table.appendChild(headerRow);
+for(let i=1;i<=days;i++){
+const row=document.createElement("tr");
+const dayCell=document.createElement("td"); dayCell.innerText="Day "+i; row.appendChild(dayCell);
+for(let s=0;s<3;s++){
+const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
+const topics=Object.keys(questionBank[subj]);
+const topic=topics[Math.floor(Math.random()*topics.length)];
+const cell=document.createElement("td"); 
+cell.innerText=`${subj}: ${topic}`;
+cell.style.backgroundColor=subjectColors[subj]||"#888"; 
+cell.style.color="white"; 
+cell.style.fontWeight="bold"; 
+cell.style.borderRadius="8px";
+cell.addEventListener("click",()=>{subjectSelect.value=subj; updateTopics(); topicSelect.value=topic; loadQuiz(); showSection("quiz");});
+row.appendChild(cell);
+}
+table.appendChild(row);
+}
+container.appendChild(table);
 });
 
 // ===== Dark Mode =====
 document.getElementById("darkBtn").addEventListener("click",()=>{document.body.classList.toggle("dark");});
 </script>
+
 </body>
 </html>
