@@ -271,4 +271,25 @@ function generateMemoryGame(){
       div.innerText=div.dataset.value;
       if(!first){ first=div; } else { second=div;
         if(first.dataset.value===second.dataset.value){ xp+=20; updateXP(); triggerConfetti(); first=null; second=null; } 
-        else { setTimeout(()=>{ first.innerText="?"; second.innerText="?"; first=null; second=null; },800
+        else { setTimeout(()=>{ first.innerText="?"; second.innerText="?"; first=null; second=null; },800); }
+      }
+    };
+    container.appendChild(div);
+  });
+}
+generateMemoryGame();
+
+// ---------- Flashcards ----------
+function generateFlashcards(){
+  const container=document.getElementById("flashcardContainer"); container.innerHTML="";
+  for(let subj in questionBank){ for(let topic in questionBank[subj]){ const card=document.createElement("div"); card.className="flashcard"; card.innerText=topic; card.onclick=()=>{ alert("Topic: "+topic+"\nSubject: "+subj); }; container.appendChild(card); } }
+}
+generateFlashcards();
+
+// ---------- Notes ----------
+function saveNotes(){ localStorage.setItem("notes",document.getElementById("notesArea").value); alert("Saved!"); }
+document.getElementById("notesArea").value=localStorage.getItem("notes")||"";
+
+</script>
+</body>
+</html>
