@@ -6,6 +6,7 @@
 <title>🎓 GCSE Revision App</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+/* ===== Global Styles ===== */
 body {font-family:'Inter',sans-serif;margin:0;padding:0;background:#f0f4f8;color:#1f2937;transition:0.3s;}
 .dark {background:#111827;color:white;}
 .sidebar {position:fixed; left:0; top:0; bottom:0;width:220px;background:#4f7cff;padding:20px;display:flex;flex-direction:column;color:white;}
@@ -13,15 +14,15 @@ body {font-family:'Inter',sans-serif;margin:0;padding:0;background:#f0f4f8;color
 .sidebar button {background:none;border:none;color:white;text-align:left;padding:10px;margin-bottom:5px;border-radius:8px;cursor:pointer;font-weight:600;transition:0.2s;}
 .sidebar button:hover {background:rgba(255,255,255,0.2);}
 .main {margin-left:240px;padding:20px;}
-.card {background:white;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);margin-bottom:20px;}
+.card {background:white;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);margin-bottom:20px;transition:0.3s;}
 .dark .card {background:#1f2937;}
-button {padding:10px 16px;border:none;border-radius:12px;background:#4f7cff;color:white;cursor:pointer;font-weight:600;margin-top:10px;}
+button {padding:10px 16px;border:none;border-radius:12px;background:#4f7cff;color:white;cursor:pointer;font-weight:600;margin-top:10px;transition:0.2s;}
 button:hover {background:#3561c3;}
 input, select {width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
 .progress-bar {height:24px;width:100%;background:#ddd;border-radius:12px;overflow:hidden;margin-top:10px;}
 .progress-fill {height:100%;width:0%;background: linear-gradient(90deg,#4f7cff,#34c759);text-align:center;color:white;line-height:24px;font-weight:bold;transition:width 0.5s;}
-table {border-collapse: separate;border-spacing: 0 10px;width:100%;}
-th, td {padding:10px;text-align:center;border-radius:12px;font-weight:600;cursor:pointer;}
+canvas {max-width:100%;}
+td, th {padding:10px;text-align:center;border-radius:12px;font-weight:600;cursor:pointer;}
 th {background:#4f7cff;color:white;}
 td:hover {opacity:0.85; transform: scale(1.03);}
 </style>
@@ -33,12 +34,16 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button onclick="showSection('dashboard')">🏠 Dashboard</button>
 <button onclick="showSection('quiz')">🧠 Quiz</button>
 <button onclick="showSection('timetable')">📅 Timetable</button>
-<button onclick="showSection('analytics')">📊 Progress</button>
+<button onclick="showSection('analytics')">📊 Analytics</button>
+<button onclick="showSection('pomodoro')">⏱ Pomodoro</button>
+<button onclick="showSection('minigame')">🎮 Mini Game</button>
+<button onclick="showSection('settings')">⚙️ Settings</button>
 <button id="darkBtn">🌙 Dark Mode</button>
 </div>
 
 <div class="main">
 
+<!-- Dashboard -->
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
 <p>XP: <span id="xp">0</span></p>
@@ -46,8 +51,11 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <p>Streak: <span id="streak">0</span></p>
 <p>Badges: <span id="badges">None</span></p>
 <div class="progress-bar"><div class="progress-fill" id="overallProgress">0%</div></div>
+<h3>Streak Calendar (placeholder)</h3>
+<p>📅 Marked days you revised</p>
 </div>
 
+<!-- Quiz -->
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
 <select id="subjectSelect"></select>
@@ -58,6 +66,7 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 </div>
 </div>
 
+<!-- Timetable -->
 <div id="timetable" class="card section" style="display:none;">
 <h2>Revision Timetable</h2>
 <input id="days" type="number" placeholder="Days to revise">
@@ -65,18 +74,44 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <div id="timetableContainer" style="overflow-x:auto;margin-top:15px;"></div>
 </div>
 
+<!-- Analytics -->
 <div id="analytics" class="card section" style="display:none;">
 <h2>Analytics</h2>
 <canvas id="chart" width="400" height="200"></canvas>
 </div>
 
+<!-- Pomodoro -->
+<div id="pomodoro" class="card section" style="display:none;">
+<h2>Pomodoro Timer</h2>
+<p id="timer">25:00</p>
+<button id="startPomodoro">Start</button>
+<button id="pausePomodoro">Pause</button>
+<button id="resetPomodoro">Reset</button>
 </div>
 
-<script>
-// ===== Sections =====
-function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
+<!-- Mini Game -->
+<div id="minigame" class="card section" style="display:none;">
+<h2>Mini Game</h2>
+<p>Memory game placeholder 🧠</p>
+</div>
 
-// ===== Subjects & Topics =====
+<!-- Settings -->
+<div id="settings" class="card section" style="display:none;">
+<h2>Settings</h2>
+<p>Toggle dark/light mode or select theme.</p>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// ===== Section Navigation =====
+function showSection(id){
+document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+document.getElementById(id).style.display='block';
+}
+
+// ===== Subjects & Questions =====
 const questionBank = {
 "Maths (OCR)":{"Algebra":["Solve 3x+5=20","Expand 4(x+2)","Factorise x^2+5x+6"],"Fractions":["Simplify 12/18","Add 3/5 + 2/7","Convert 0.75 to fraction"]},
 "Combined Science (AQA Gateway)":{"Cell biology":["What is mitosis?","Function of nucleus","Function of cell membrane"]},
@@ -88,7 +123,7 @@ const questionBank = {
 };
 const subjectColors = {"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
-// ===== XP & Streak =====
+// ===== XP, Streaks, Badges =====
 let xp=parseInt(localStorage.getItem("xp")||0);
 let streak=parseInt(localStorage.getItem("streak")||0);
 let badges=[];
@@ -102,7 +137,7 @@ document.getElementById("overallProgress").innerText=Math.min(Math.floor(xp/12),
 }
 updateXP();
 
-// ===== Populate selects =====
+// ===== Populate Quiz Selects =====
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 for(let subject in questionBank){let opt=document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);}
@@ -131,7 +166,6 @@ questionEl.innerText=currentQuestions[currentQuestionIndex];nextBtn.style.displa
 
 nextBtn.addEventListener("click",()=>{
 currentQuestionIndex++;xp+=10;streak+=1; 
-// Badges example
 if(currentQuestionIndex===currentQuestions.length){badges.push("Completed Topic: "+topicSelect.value);}
 updateXP();showQuestion();
 });
@@ -170,9 +204,22 @@ table.appendChild(row);
 container.appendChild(table);
 });
 
+// ===== Analytics (Chart.js) =====
+const ctx=document.getElementById("chart").getContext("2d");
+const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(()=>Math.floor(Math.random()*100)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+
+// ===== Pomodoro =====
+let pomodoroTime=25*60; let pomodoroInterval=null;
+const timerEl=document.getElementById("timer");
+function updateTimer(){let min=Math.floor(pomodoroTime/60);let sec=pomodoroTime%60;timerEl.innerText=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;}
+document.getElementById("startPomodoro").addEventListener("click",()=>{if(!pomodoroInterval){pomodoroInterval=setInterval(()=>{pomodoroTime--;updateTimer();if(pomodoroTime<=0){clearInterval(pomodoroInterval);pomodoroInterval=null;pomodoroTime=25*60;updateTimer();alert("Pomodoro Complete!");}},1000);}});
+document.getElementById("pausePomodoro").addEventListener("click",()=>{clearInterval(pomodoroInterval);pomodoroInterval=null;});
+document.getElementById("resetPomodoro").addEventListener("click",()=>{pomodoroTime=25*60;updateTimer();clearInterval(pomodoroInterval);pomodoroInterval=null;});
+updateTimer();
+
 // ===== Dark Mode =====
 document.getElementById("darkBtn").addEventListener("click",()=>{document.body.classList.toggle("dark");});
-</script>
 
+</script>
 </body>
 </html>
