@@ -40,7 +40,6 @@ box-shadow:4px 0 20px rgba(0,0,0,0.15);
 .sidebar h2{
 margin-top:0;
 margin-bottom:20px;
-font-size:22px;
 }
 
 .sidebar button{
@@ -53,12 +52,10 @@ margin-bottom:8px;
 border-radius:10px;
 cursor:pointer;
 font-weight:600;
-transition:0.2s;
 }
 
 .sidebar button:hover{
 background:rgba(255,255,255,0.25);
-transform:translateX(4px);
 }
 
 .main{
@@ -72,16 +69,10 @@ padding:25px;
 border-radius:18px;
 box-shadow:0 15px 30px rgba(0,0,0,0.1);
 margin-bottom:20px;
-transition:0.25s;
 }
 
 .dark .card{
 background:#1f2937;
-}
-
-.card:hover{
-transform:translateY(-3px);
-box-shadow:0 20px 35px rgba(0,0,0,0.15);
 }
 
 button{
@@ -93,21 +84,18 @@ color:white;
 cursor:pointer;
 font-weight:600;
 margin-top:10px;
-transition:0.2s;
 }
 
 button:hover{
 background:#2f4fd6;
-transform:scale(1.03);
 }
 
-input, select{
+input,select{
 width:100%;
 padding:10px;
 margin-top:10px;
 border-radius:8px;
 border:1px solid #ccc;
-font-size:14px;
 }
 
 .progress-bar{
@@ -127,29 +115,16 @@ text-align:center;
 color:white;
 line-height:24px;
 font-weight:bold;
-transition:width 0.5s;
 }
 
-canvas{
-max-width:100%;
-}
-
-td, th{
+td,th{
 padding:10px;
 text-align:center;
-border-radius:12px;
-font-weight:600;
-cursor:pointer;
 }
 
 th{
 background:#4f7cff;
 color:white;
-}
-
-td:hover{
-opacity:0.9;
-transform:scale(1.03);
 }
 
 </style>
@@ -179,8 +154,6 @@ transform:scale(1.03);
 <h2>Dashboard</h2>
 <p>XP: <span id="xp">0</span></p>
 <p>Level: <span id="level">1</span></p>
-<p>Streak: <span id="streak">0</span></p>
-<p>Badges: <span id="badges">None</span></p>
 
 <div class="progress-bar">
 <div class="progress-fill" id="overallProgress">0%</div>
@@ -189,53 +162,103 @@ transform:scale(1.03);
 </div>
 
 <div id="quiz" class="card section" style="display:none;">
-
 <h2>Quiz</h2>
 
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
 
-<div id="quizArea" style="margin-top:20px;">
-<p id="question" style="font-weight:bold;font-size:18px;"></p>
+<p id="question" style="margin-top:20px;font-weight:bold;font-size:18px;"></p>
 <button id="nextBtn">Next</button>
+
 </div>
 
+<div id="timetable" class="card section" style="display:none;">
+<h2>Revision Timetable</h2>
+
+<input id="days" type="number" placeholder="Days to revise">
+
+<button onclick="generateTimetable()">Generate Timetable</button>
+
+<div id="timetableContainer"></div>
+
+</div>
+
+<div id="analytics" class="card section" style="display:none;">
+<h2>Analytics</h2>
+<canvas id="chart"></canvas>
 </div>
 
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro Timer</h2>
+
 <p id="timer">25:00</p>
-<button id="startPomodoro">Start</button>
-<button id="pausePomodoro">Pause</button>
-<button id="resetPomodoro">Reset</button>
+
+<button onclick="startPomodoro()">Start</button>
+<button onclick="pausePomodoro()">Pause</button>
+<button onclick="resetPomodoro()">Reset</button>
+
+</div>
+
+<div id="minigame" class="card section" style="display:none;">
+<h2>Mini Game</h2>
+<div id="memoryGameContainer"></div>
+</div>
+
+<div id="settings" class="card section" style="display:none;">
+<h2>Settings</h2>
+<p>Use the sidebar button to toggle dark mode.</p>
 </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 
 function showSection(id){
-document.querySelectorAll('.section').forEach(s=>s.style.display='none')
-document.getElementById(id).style.display='block'
+document.querySelectorAll(".section").forEach(s=>s.style.display="none")
+document.getElementById(id).style.display="block"
+}
+
+let xp=0
+
+function updateXP(){
+document.getElementById("xp").innerText=xp
+document.getElementById("level").innerText=Math.floor(xp/100)+1
+document.getElementById("overallProgress").style.width=Math.min(xp,100)+"%"
+document.getElementById("overallProgress").innerText=Math.min(xp,100)+"%"
 }
 
 const questionBank={
-"Maths (OCR)":{
+
+"Maths":{
 "Algebra":[
 "Solve 2x+5=15",
 "Solve 3x-7=11",
-"Factorise x^2+5x+6",
+"Factorise x²+5x+6",
 "Simplify 3(x+2)-4x",
 "Expand (x+4)(x+3)"
 ],
+
 "Trigonometry":[
 "Find sin(30°)",
 "Find cos(60°)",
 "Find tan(45°)",
-"Use Pythagoras to find hypotenuse",
+"Use Pythagoras theorem",
 "What is sin²θ+cos²θ?"
 ]
+},
+
+"Science":{
+"Atomic Structure":[
+"What is a proton?",
+"What is a neutron?",
+"What is an electron?",
+"What is atomic number?",
+"What is an isotope?"
+]
 }
+
 }
 
 const subjectSelect=document.getElementById("subjectSelect")
@@ -268,43 +291,129 @@ loadQuiz()
 updateTopics()
 
 let currentQuestions=[]
-let currentQuestionIndex=0
-
-const questionEl=document.getElementById("question")
-const nextBtn=document.getElementById("nextBtn")
+let currentIndex=0
 
 function loadQuiz(){
 let subj=subjectSelect.value
-let top=topicSelect.value
-currentQuestions=[...questionBank[subj][top]].sort(()=>Math.random()-0.5)
-currentQuestionIndex=0
+let topic=topicSelect.value
+currentQuestions=[...questionBank[subj][topic]].sort(()=>Math.random()-0.5)
+currentIndex=0
 showQuestion()
 }
 
 function showQuestion(){
 
-if(currentQuestionIndex>=currentQuestions.length){
-questionEl.innerText="Quiz complete!"
-nextBtn.style.display="none"
+if(currentIndex>=currentQuestions.length){
+document.getElementById("question").innerText="Quiz Complete!"
 return
 }
 
-questionEl.innerText=currentQuestions[currentQuestionIndex]
-nextBtn.style.display="inline-block"
+document.getElementById("question").innerText=currentQuestions[currentIndex]
+
 }
 
-nextBtn.addEventListener("click",()=>{
-currentQuestionIndex++
+document.getElementById("nextBtn").onclick=()=>{
+xp+=10
+updateXP()
+currentIndex++
 showQuestion()
-})
+}
 
 topicSelect.addEventListener("change",loadQuiz)
 
 loadQuiz()
 
-document.getElementById("darkBtn").addEventListener("click",()=>{
-document.body.classList.toggle("dark")
+function generateTimetable(){
+
+const days=parseInt(document.getElementById("days").value)
+
+const container=document.getElementById("timetableContainer")
+
+container.innerHTML=""
+
+let subjects=Object.keys(questionBank)
+
+let table="<table border='1'><tr><th>Day</th><th>Subject</th></tr>"
+
+for(let i=1;i<=days;i++){
+
+let subj=subjects[Math.floor(Math.random()*subjects.length)]
+
+table+=`<tr><td>${i}</td><td>${subj}</td></tr>`
+
+}
+
+table+="</table>"
+
+container.innerHTML=table
+
+}
+
+const ctx=document.getElementById("chart")
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Maths","Science"],
+datasets:[{
+data:[10,10],
+backgroundColor:["#4f7cff","#34c759"]
+}]
+}
 })
+
+let pomodoro=1500
+let interval=null
+
+function updateTimer(){
+
+let m=Math.floor(pomodoro/60)
+let s=pomodoro%60
+
+document.getElementById("timer").innerText=
+m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
+
+}
+
+function startPomodoro(){
+
+if(interval)return
+
+interval=setInterval(()=>{
+
+pomodoro--
+updateTimer()
+
+if(pomodoro<=0){
+clearInterval(interval)
+interval=null
+alert("Session Complete")
+}
+
+},1000)
+
+}
+
+function pausePomodoro(){
+clearInterval(interval)
+interval=null
+}
+
+function resetPomodoro(){
+
+pomodoro=1500
+updateTimer()
+
+clearInterval(interval)
+interval=null
+
+}
+
+updateTimer()
+
+document.getElementById("darkBtn").onclick=()=>{
+document.body.classList.toggle("dark")
+}
 
 </script>
 
