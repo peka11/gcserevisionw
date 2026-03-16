@@ -51,10 +51,43 @@ input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; bo
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="card section" style="display:block;">
-<h2>Dashboard</h2>
-<p>XP: <span id="xp">0</span> | Level: <span id="level">1</span> | Streak: <span id="streak">0</span></p>
-<p>Badges: <span id="badges">None</span></p>
-<div class="progress-bar"><div class="progress-fill" id="overallProgress">0%</div></div>
+<h2>Welcome Back! 🎓</h2>
+<div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:20px;">
+  <div style="flex:1; min-width:180px; background:linear-gradient(135deg,#4f7cff,#34c759); color:white; padding:20px; border-radius:18px; box-shadow:0 8px 20px rgba(0,0,0,0.2); text-align:center; transition:0.3s;">
+    <h3>XP</h3>
+    <p style="font-size:24px; font-weight:bold;" id="xp">0</p>
+  </div>
+  <div style="flex:1; min-width:180px; background:linear-gradient(135deg,#ff9500,#ffcc00); color:white; padding:20px; border-radius:18px; box-shadow:0 8px 20px rgba(0,0,0,0.2); text-align:center; transition:0.3s;">
+    <h3>Level</h3>
+    <p style="font-size:24px; font-weight:bold;" id="level">1</p>
+  </div>
+  <div style="flex:1; min-width:180px; background:linear-gradient(135deg,#ff2d55,#ff3b30); color:white; padding:20px; border-radius:18px; box-shadow:0 8px 20px rgba(0,0,0,0.2); text-align:center; transition:0.3s;">
+    <h3>Streak</h3>
+    <p style="font-size:24px; font-weight:bold;" id="streak">0</p>
+  </div>
+</div>
+
+<div style="margin-top:25px; padding:20px; border-radius:18px; background:#f0f4f8; box-shadow:0 8px 25px rgba(0,0,0,0.1);">
+<h3>Badges 🏅</h3>
+<div id="badges" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; font-weight:bold; color:#1f2937;">None</div>
+</div>
+
+<div style="margin-top:25px; padding:20px; border-radius:18px; background:#fff; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+<h3>Overall Progress 📊</h3>
+<div class="progress-bar" style="margin-top:10px;">
+  <div class="progress-fill" id="overallProgress">0%</div>
+</div>
+</div>
+
+<div style="margin-top:25px;">
+<h3>Quick Start</h3>
+<div style="display:flex; flex-wrap:wrap; gap:15px; margin-top:10px;">
+  <button onclick="showSection('quiz')">Take a Quiz 🧠</button>
+  <button onclick="showSection('timetable')">View Timetable 📅</button>
+  <button onclick="showSection('pomodoro')">Pomodoro Timer ⏱</button>
+  <button onclick="showSection('minigame')">Memory Game 🎮</button>
+</div>
+</div>
 </div>
 
 <!-- QUIZ -->
@@ -101,32 +134,30 @@ input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; bo
 <p>Use the sidebar to toggle dark/light mode and navigate.</p>
 </div>
 
-</div>
-
 <script>
-// ----- Section Navigation -----
+// --- Section Navigation ---
 function showSection(id){
 document.querySelectorAll('.section').forEach(s=>s.style.display='none');
 document.getElementById(id).style.display='block';
 }
 
-// ----- Dark Mode -----
+// --- Dark Mode ---
 function toggleDark(){document.body.classList.toggle('dark');}
 
-// ----- Full Expanded Question Bank -----
+// --- Expanded Question Bank ---
 const questionBank = {
 "Maths (OCR)":{"Algebra":["Solve 2x+5=15","Factorise x²+5x+6","Simplify 3(x+2)-4x","Expand (x+3)(x+4)","Solve x²-9=0","Solve x²+6x+8=0","Simplify 2(x-1)+3(x+4)","Find nth term: 3,7,11,15","Solve x+y=5, x-y=1","Solve 2x+3y=12, x-y=1"],"Trigonometry":["Calculate sin(30°)","Find missing angle in right triangle","Use cos rule to find side","Use sin rule to find side","Calculate tan(45°)","Find height using trig","Find angle using sin⁻¹(0.5)","Find angle using cos⁻¹(0.6)","Use Pythagoras to find side","Solve triangle with sides 5,7,8"]},
 "Combined Science (AQA Gateway)":{"Cell Biology":["Function of nucleus","Define osmosis","Prokaryotic vs eukaryotic cells","Function of mitochondria","Function of ribosomes","What is a chloroplast?","Describe diffusion","Plant vs animal cells","What is differentiation?","Function of cell membrane"],"Atomic Structure":["Define proton, neutron, electron","Atomic number?","Isotope?","What is a molecule?","Explain relative atomic mass","Electron arrangement","What is a compound?","Explain ionic bonding","Explain covalent bonding","Describe nucleus"]},
-"Computer Science (OCR)":{"Programming":["Define variable","Write a for loop","Explain if statements","What is a function?","Difference between int and string","Explain while loop","What is a list/array?","Explain debugging","What is Boolean?","Write program to add two numbers"],"Algorithms":["What is a sorting algorithm?","Binary search","Linear vs binary search","Explain bubble sort","Explain merge sort","Explain insertion sort","What is a flowchart?","What is pseudocode?","What is recursion?","Explain complexity O(n) vs O(log n)"]},
+"Computer Science (OCR)":{"Programming":["Define variable","Write a for loop","Explain if statements","What is a function?","Difference between int and string","Explain while loop","What is a list/array?","Explain debugging","What is Boolean?","Write program to add two numbers"],"Algorithms":["What is a sorting algorithm?","Binary search","Linear vs binary search","Explain bubble sort","Explain merge sort","Explain insertion sort","What is a flowchart?","What is pseudocode?","What is recursion?","Explain complexity O(n) vs O(log n"]},
 "Geography (AQA)":{"Rivers":["Define erosion","What is deposition?","River formation stages","Hydraulic action","Explain attrition","Explain solution","Describe meanders","What is floodplain?","Causes of flooding","Effects of flooding"],"Coasts":["Longshore drift?","Coastal erosion","Headland and bay formation","Explain weathering","Cliffs and wave-cut platforms","Define sediment cell","Causes of coastal flooding","Effects of coastal erosion","Soft/hard engineering","Advantages/disadvantages of groynes"]},
 "German (AQA)":{"Family":["Translate: My brother is tall","Conjugate 'haben' for ich, du, er","What is 'Schwester'?","Translate: I have younger sister","Translate: My parents are strict","Conjugate 'sein' for ich, du, er","Translate: Grandparents live in Berlin","I get on well with brother","What is 'Onkel'?","What is 'Tante'?"],"School":["Translate: I have maths on Monday","What is 'Lehrer'?","Conjugate 'sein' for wir","Translate: Favourite subject is history","Translate: I dislike science","What is 'Schule'?","Translate: Timetable is busy","Translate: Lessons from 8-3","What is 'Klassenzimmer'?","Translate: I need pen"]},
 "English (AQA)":{"Language Paper 1":["What is a simile?","Identify main idea","Explain tone in paragraph","Identify figurative language","Find purpose of text","What is a metaphor?","Identify perspective","Explain effect on reader","Find word connotations","Explain sentence structure impact"],"Creative Writing":["Write opening paragraph","Use dialogue","Include rhetorical question","Describe setting vividly","Show don't tell","Use cliffhanger","Create tension","Use first-person","Use sensory details","Write strong ending"]},
 "Media Studies":{"Representation":["Define media representation","Example of stereotype","Explain target audience","What is gender representation?","What is racial representation?","How is class represented?","Explain media framing","What is bias?","Youth representation?","Women representation?"],"Industry":["Define media industry","Name 2 UK media companies","Explain media regulation","What is convergence?","Horizontal integration","Vertical integration","Public service media?","Commercial media?","Digital media effect?","Copyright law?"]}};
 
-// ----- Subject Colors -----
+// --- Subject Colors ---
 const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
-// ----- XP / Badges -----
+// --- XP / Badges ---
 let xp=parseInt(localStorage.getItem("xp")||0);
 let streak=parseInt(localStorage.getItem("streak")||0);
 let badges=JSON.parse(localStorage.getItem("badges")||"[]");
@@ -141,7 +172,7 @@ document.getElementById("overallProgress").innerText=pct+"%";
 }
 updateXP();
 
-// ----- Quiz -----
+// --- Quiz ---
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 for(let s in questionBank){ let opt=document.createElement("option"); opt.value=s; opt.textContent=s; subjectSelect.appendChild(opt);}
@@ -163,7 +194,7 @@ loadQuiz();
 
 function triggerConfetti(){ confetti({particleCount:150,spread:70,origin:{y:0.6}}); }
 
-// ----- Timetable -----
+// --- Timetable ---
 document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
 const days=parseInt(document.getElementById("days").value);
 if(!days||days<=0){alert("Enter valid number of days"); return;}
@@ -185,36 +216,5 @@ container.appendChild(dayDiv);
 }
 });
 
-// ----- Analytics -----
-const ctx=document.getElementById("chart").getContext("2d");
-const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>xp/10),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-
-// ----- Pomodoro -----
-let pomodoroTime=25*60, pomInterval=null;
-const timerEl=document.getElementById("timer");
-function updateTimer(){ let m=Math.floor(pomodoroTime/60), s=pomodoroTime%60; timerEl.innerText=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;}
-document.getElementById("startPomodoro").addEventListener("click",()=>{if(pomInterval)return; pomInterval=setInterval(()=>{pomodoroTime--; updateTimer(); if(pomodoroTime<=0){clearInterval(pomInterval); pomInterval=null; pomodoroTime=25*60; updateTimer(); alert("Pomodoro Complete!");}},1000);});
-document.getElementById("pausePomodoro").addEventListener("click",()=>{clearInterval(pomInterval); pomInterval=null;});
-document.getElementById("resetPomodoro").addEventListener("click",()=>{pomodoroTime=25*60; updateTimer(); clearInterval(pomInterval); pomInterval=null;});
-updateTimer();
-
-// ----- Memory Game -----
-function generateMemoryGame(){
-const container=document.getElementById("memoryGameContainer"); container.innerHTML="";
-const cards=["A","B","C","D","A","B","C","D"]; cards.sort(()=>Math.random()-0.5);
-let first=null, second=null;
-cards.forEach(l=>{
-const div=document.createElement("div"); div.className="memory-card"; div.innerText="?";
-div.onclick=()=>{
-if(div.innerText!=="?"||second) return;
-div.innerText=l;
-if(!first) first=div; else second=div;
-if(first.innerText===second.innerText){first=null; second=null; triggerConfetti();} else{ setTimeout(()=>{first.innerText="?"; second.innerText="?"; first=null; second=null;},800);}
-};
-container.appendChild(div);
-});
-}
-generateMemoryGame();
-</script>
-</body>
-</html>
+// --- Analytics ---
+const ctx=document
