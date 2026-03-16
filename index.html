@@ -1,273 +1,145 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GCSE Revision App</title>
-
 <link rel="manifest" href="manifest.json">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="questions.js"></script>
-
 <style>
-
-body{
-font-family:system-ui;
-margin:0;
-background:#f4f6fb;
-padding:20px;
-}
-
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-h1{
-margin:0;
-}
-
-button{
-background:#4f7cff;
-border:none;
-color:white;
-padding:10px 16px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
-margin-top:20px;
-}
-
-.card{
-background:white;
-padding:20px;
-border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,0.08);
-}
-
-select,input{
-width:100%;
-padding:8px;
-margin-top:6px;
-}
-
-#timer{
-font-size:30px;
-font-weight:bold;
-margin:10px 0;
-}
-
+/* ===== Duolingo-style modern UI ===== */
+body{font-family:'Segoe UI',Arial,sans-serif;margin:0;padding:20px;background:#f4f6fb;color:#222;transition:0.3s;}
+.dark{background:#111827;color:white;}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+h1{margin:0;font-size:24px;}
+button{padding:10px 16px;background:#4f7cff;border:none;color:white;border-radius:12px;font-weight:bold;cursor:pointer;transition:0.2s;}
+button:hover{background:#3561c3;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px;}
+.card{background:white;padding:20px;border-radius:20px;box-shadow:0 5px 25px rgba(0,0,0,0.1);transition:0.3s;}
+.dark .card{background:#1f2937;}
+select,input{width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;}
+#timer{font-size:28px;font-weight:bold;margin:10px 0;text-align:center;}
 </style>
-
 </head>
 
 <body>
-
 <header>
-
 <h1>📚 GCSE Revision</h1>
-
-<button onclick="toggleDark()">🌙</button>
-
+<button id="darkBtn">🌙</button>
 </header>
 
 <div class="grid">
-
-<div class="card">
-<h3>XP</h3>
-<div id="xp">0</div>
+<div class="card"><h3>XP</h3><div id="xp">0</div></div>
+<div class="card"><h3>Level</h3><div id="level">1</div></div>
+<div class="card"><h3>Streak 🔥</h3><div id="streak">0</div></div>
 </div>
 
 <div class="card">
-<h3>Level</h3>
-<div id="level">1</div>
-</div>
-
-<div class="card">
-<h3>Streak 🔥</h3>
-<div id="streak">0</div>
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>Quiz</h3>
-
+<h3>🧠 Quiz Generator</h3>
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
-
-<button onclick="generateQuestion()">Generate Question</button>
-
+<button id="generateQuestionBtn">Generate Question</button>
 <p id="question"></p>
-
 </div>
 
 <div class="card">
-
-<h3>Pomodoro</h3>
-
+<h3>⏱ Pomodoro Timer</h3>
 <div id="timer">25:00</div>
-
-<button onclick="startTimer()">Start</button>
-<button onclick="resetTimer()">Reset</button>
-
+<button id="startTimerBtn">Start</button>
+<button id="resetTimerBtn">Reset</button>
 </div>
 
 <div class="card">
-
-<h3>Progress</h3>
-
+<h3>📊 Subject Progress</h3>
 <canvas id="chart"></canvas>
+</div>
 
+<div class="card">
+<h3>📅 Revision Timetable</h3>
+<input id="days" type="number" placeholder="Days to revise">
+<button id="generateTimetableBtn">Generate</button>
+<table id="timetable"></table>
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function(){
 
-let xp=parseInt(localStorage.getItem("xp")||0)
-let streak=parseInt(localStorage.getItem("streak")||0)
-
-document.getElementById("xp").innerText=xp
-document.getElementById("streak").innerText=streak
-
-function level(){
-return Math.floor(xp/100)+1
+// ===== XP / Level / Streak =====
+let xp=parseInt(localStorage.getItem("xp")||0);
+let streak=parseInt(localStorage.getItem("streak")||0);
+function updateXP(){
+  document.getElementById("xp").innerText=xp;
+  document.getElementById("level").innerText=Math.floor(xp/100)+1;
+  document.getElementById("streak").innerText=streak;
 }
+updateXP();
 
-document.getElementById("level").innerText=level()
-
-const subjectSelect=document.getElementById("subjectSelect")
-const topicSelect=document.getElementById("topicSelect")
+// ===== Populate Subjects / Topics =====
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
 
 for(let subject in questionBank){
-
-let option=document.createElement("option")
-option.value=subject
-option.textContent=subject
-
-subjectSelect.appendChild(option)
-
+  let opt=document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);
 }
-
 function updateTopics(){
-
-topicSelect.innerHTML=""
-
-let subject=subjectSelect.value
-
-for(let topic in questionBank[subject]){
-
-let option=document.createElement("option")
-
-option.value=topic
-option.textContent=topic
-
-topicSelect.appendChild(option)
-
+  topicSelect.innerHTML="";
+  let subj=subjectSelect.value;
+  for(let topic in questionBank[subj]){
+    let opt=document.createElement("option"); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);
+  }
 }
+subjectSelect.addEventListener("change",updateTopics);
+updateTopics();
 
-}
+// ===== Generate Question =====
+document.getElementById("generateQuestionBtn").addEventListener("click",function(){
+  let subj=subjectSelect.value;
+  let top=topicSelect.value;
+  let list=questionBank[subj][top];
+  let q=list[Math.floor(Math.random()*list.length)];
+  document.getElementById("question").innerText=q;
+  xp+=10; streak+=1; localStorage.setItem("xp",xp); localStorage.setItem("streak",streak); updateXP();
+  updateChart(subj);
+});
 
-subjectSelect.addEventListener("change",updateTopics)
+// ===== Dark Mode =====
+document.getElementById("darkBtn").addEventListener("click",function(){document.body.classList.toggle("dark");});
 
-updateTopics()
+// ===== Timer =====
+let time=1500; let timer;
+document.getElementById("startTimerBtn").addEventListener("click",function(){
+  timer=setInterval(function(){time--; let m=Math.floor(time/60); let s=time%60; document.getElementById("timer").innerText=m+":"+(s<10?"0":"")+s; if(time<=0) clearInterval(timer);},1000);
+});
+document.getElementById("resetTimerBtn").addEventListener("click",function(){clearInterval(timer);time=1500;document.getElementById("timer").innerText="25:00";});
 
-function generateQuestion(){
-
-let subject=subjectSelect.value
-let topic=topicSelect.value
-
-let list=questionBank[subject][topic]
-
-let q=list[Math.floor(Math.random()*list.length)]
-
-document.getElementById("question").innerText=q
-
-xp+=10
-
-if(streak>0) xp+=5
-
-localStorage.setItem("xp",xp)
-
-document.getElementById("xp").innerText=xp
-document.getElementById("level").innerText=level()
-
-updateChart()
-
-}
-
-let time=1500
-let timer
-
-function startTimer(){
-
-timer=setInterval(()=>{
-
-time--
-
-let m=Math.floor(time/60)
-let s=time%60
-
-document.getElementById("timer").innerText=
-m+":"+(s<10?"0":"")+s
-
-if(time<=0) clearInterval(timer)
-
-},1000)
-
-}
-
-function resetTimer(){
-
-clearInterval(timer)
-
-time=1500
-
-document.getElementById("timer").innerText="25:00"
-
-}
-
-function toggleDark(){
-
-document.body.classList.toggle("dark")
-
-}
-
-const ctx=document.getElementById("chart")
-
+// ===== Chart =====
+const ctx=document.getElementById("chart");
 const chart=new Chart(ctx,{
 type:"line",
-data:{
-labels:["Start"],
-datasets:[{
-label:"XP",
-data:[xp]
-}]
-}
-})
-
-function updateChart(){
-
-chart.data.labels.push("Study")
-
-chart.data.datasets[0].data.push(xp)
-
-chart.update()
-
+data:{labels:["Start"],datasets:[]},
+options:{responsive:true,plugins:{legend:{display:true}}}
+});
+function updateChart(subject){
+  let ds=chart.data.datasets.find(d=>d.label===subject);
+  if(!ds){ds={label:subject,data:[]}; chart.data.datasets.push(ds);}
+  ds.data.push(xp);
+  chart.data.labels.push("Study "+chart.data.labels.length);
+  chart.update();
 }
 
+// ===== Timetable =====
+document.getElementById("generateTimetableBtn").addEventListener("click",function(){
+  let days=document.getElementById("days").value;
+  let table=document.getElementById("timetable"); table.innerHTML="";
+  let subjectsList=Object.keys(questionBank);
+  for(let i=1;i<=days;i++){
+    let subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
+    table.innerHTML+=`<tr><td>Day ${i}</td><td>${subj}</td></tr>`;
+  }
+});
+
+}); // DOMContentLoaded
 </script>
-
 </body>
 </html>
-```
