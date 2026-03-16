@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-
 body{
 font-family:'Inter',sans-serif;
 background:#f2f5f9;
@@ -111,7 +111,6 @@ background:#1f5fa8;
 margin-top:15px;
 font-weight:600;
 }
-
 </style>
 </head>
 
@@ -120,7 +119,6 @@ font-weight:600;
 <h1>📚 GCSE Revision Tracker</h1>
 
 <div class="dashboard">
-
 <div class="card">
 <div class="big" id="totalProgress">0%</div>
 Total Progress
@@ -130,29 +128,27 @@ Total Progress
 <div class="big" id="streak">0</div>
 Day Streak 🔥
 </div>
-
 </div>
 
 <div id="subjects"></div>
 
 <div class="quiz">
-
 <h2>🧠 Quiz Generator</h2>
 
 <select id="subjectSelect" onchange="populateTopics()"></select>
-
 <select id="topicSelect"></select>
 
 <button onclick="generateQuestion()">Generate Question</button>
 
 <div id="question">Select a topic to begin.</div>
-
 </div>
 
 <script>
 
 const subjects={
-"Maths":{
+
+"Maths (OCR)":{
+
 "Fractions":[
 "Simplify 12/18",
 "Convert 0.375 to a fraction",
@@ -160,6 +156,7 @@ const subjects={
 "Multiply 4/9 by 3/5",
 "Divide 5/8 by 2"
 ],
+
 "Algebra":[
 "Simplify 3x + 7x",
 "Solve x + 8 = 19",
@@ -167,40 +164,143 @@ const subjects={
 "Solve 2x + 5 = 17",
 "Expand 3(x+4)"
 ],
+
 "Quadratics":[
-"Solve x² - 9 = 0",
+"Solve x² − 9 = 0",
 "Factorise x² + 7x + 12",
-"Find roots of x² - 4x = 0",
+"Find roots of x² − 4x = 0",
 "What is a quadratic equation?",
 "Sketch y = x²"
 ]
+
 },
 
-"Science":{
+"Combined Science (AQA)":{
+
 "Cell Biology":[
 "What is mitosis?",
+"What is diffusion?",
 "Function of mitochondria",
 "Difference between plant and animal cells",
-"Define diffusion",
 "What does the nucleus do?"
 ],
+
 "Atomic Structure":[
 "What is an isotope?",
-"Number of protons in carbon",
 "What charge does an electron have?",
-"Define atomic number",
-"What is a neutron?"
+"What is the atomic number?",
+"What is a neutron?",
+"How many protons are in carbon?"
+],
+
+"Electricity":[
+"What is current?",
+"What is voltage?",
+"What is resistance?",
+"What is Ohm's Law?",
+"Difference between series and parallel circuits?"
 ]
+
 },
 
-"Computer Science":{
+"Computer Science (OCR)":{
+
 "CPU":[
 "What does the CPU do?",
 "What is the ALU?",
 "What is the control unit?",
 "What is clock speed?",
 "What is a register?"
+],
+
+"Memory":[
+"What is RAM?",
+"What is ROM?",
+"Difference between RAM and ROM",
+"What is cache memory?",
+"What is virtual memory?"
 ]
+
+},
+
+"Geography (AQA)":{
+
+"Natural Hazards":[
+"What causes earthquakes?",
+"What is a tectonic plate?",
+"What causes volcanoes?",
+"What is a tsunami?",
+"Name one effect of an earthquake"
+],
+
+"Rivers":[
+"What is erosion?",
+"What is a meander?",
+"What is deposition?",
+"What causes flooding?",
+"What is a floodplain?"
+]
+
+},
+
+"German (AQA)":{
+
+"Family":[
+"Translate: My mother is kind",
+"What does 'Bruder' mean?",
+"What does 'Schwester' mean?",
+"Describe your family in German",
+"Translate: I have two brothers"
+],
+
+"School":[
+"Translate: I go to school",
+"What is 'Lehrer'?",
+"What is 'Hausaufgaben'?",
+"Name three school subjects in German",
+"Describe your school day"
+]
+
+},
+
+"English (AQA)":{
+
+"Language Paper 1":[
+"What is a simile?",
+"What is a metaphor?",
+"What is imagery?",
+"Identify descriptive language",
+"Explain the effect on the reader"
+],
+
+"Creative Writing":[
+"Write an opening sentence for a story",
+"Describe a storm",
+"Describe a mysterious setting",
+"Create a character introduction",
+"Write a tense moment"
+]
+
+},
+
+"Media Studies":{
+
+"Representation":[
+"What is representation?",
+"What is a stereotype?",
+"Give an example of media bias",
+"Why is representation important?",
+"What is audience perception?"
+],
+
+"Audience":[
+"What is target audience?",
+"What is demographics?",
+"What is psychographics?",
+"What is audience reception?",
+"How do media companies attract audiences?"
+]
+
 }
 
 };
@@ -381,3 +481,4 @@ loadStreak();
 
 </body>
 </html>
+```
