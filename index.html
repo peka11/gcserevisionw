@@ -3,83 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎓 GCSE Revision App - Pro UI</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>🎓 GCSE Revision App - Sidebar Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ===== Fonts & Body ===== */
 body {
   font-family:'Inter',sans-serif;
   margin:0;
-  padding:20px;
-  background: linear-gradient(135deg, #f0f4f8, #dbeafe);
+  padding:0;
+  background:#f0f4f8;
   color:#1f2937;
-  transition:0.5s;
+  transition:0.3s;
 }
 .dark {background:#111827;color:white;}
 
-/* ===== Header ===== */
-header {
+.sidebar {
+  position:fixed;
+  left:0; top:0; bottom:0;
+  width:220px;
+  background:#4f7cff;
+  padding:20px;
   display:flex;
-  justify-content:space-between;
-  align-items:center;
+  flex-direction:column;
+  color:white;
+}
+.sidebar h2 {margin-top:0;margin-bottom:20px;font-size:22px;}
+.sidebar button {
+  background:none;
+  border:none;
+  color:white;
+  text-align:left;
+  padding:10px;
+  margin-bottom:5px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.2s;
+}
+.sidebar button:hover {background:rgba(255,255,255,0.2);}
+
+.main {
+  margin-left:240px;
+  padding:20px;
+}
+
+.card {
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
   margin-bottom:20px;
 }
-header h1 {
-  font-size:28px;
-  font-weight:700;
-}
-header button {
-  font-size:18px;
+.dark .card {background:#1f2937;}
+
+button {
   padding:10px 16px;
   border:none;
   border-radius:12px;
   background:#4f7cff;
   color:white;
   cursor:pointer;
-  transition:0.3s;
-}
-header button:hover {background:#3561c3;}
-
-/* ===== Grid Cards ===== */
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-  margin-top:20px;
-}
-.card {
-  background:white;
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-  transition:0.3s;
-}
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow:0 15px 30px rgba(0,0,0,0.2);
-}
-.dark .card {background:#1f2937;}
-
-/* ===== Buttons ===== */
-button {
   font-weight:600;
-  transition:0.2s;
-}
-button:hover {opacity:0.9;}
-
-/* ===== Select & Input ===== */
-select,input {
-  width:100%;
-  padding:10px;
   margin-top:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:14px;
 }
+button:hover {background:#3561c3;}
 
-/* ===== Quiz & Progress ===== */
-#question {margin-top:10px;font-weight:600;font-size:16px;}
 .progress-bar {
   height:24px;
   width:100%;
@@ -87,7 +74,6 @@ select,input {
   border-radius:12px;
   overflow:hidden;
   margin-top:10px;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 .progress-fill {
   height:100%;
@@ -99,81 +85,64 @@ select,input {
   font-weight:bold;
   transition:width 0.5s;
 }
-
-/* ===== Timer ===== */
-#timer {
-  font-size:32px;
-  font-weight:bold;
-  text-align:center;
-  margin:10px 0;
-}
-
-/* ===== Table ===== */
-table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  width:100%;
-}
-th, td {
-  padding:10px;
-  text-align:center;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
-}
-td {transition:0.2s;}
-td:hover {opacity:0.85; transform: scale(1.03);}
-th {background:#4f7cff;color:white;}
-
-/* ===== Dark Mode Adjustments ===== */
-.dark select,input, .dark th, .dark td {border-color:#555;}
-.dark th {background:#5856d6;}
-.dark td {color:white;}
 </style>
 </head>
 <body>
 
-<header>
-<h1>🎓 GCSE Revision App</h1>
-<button id="darkBtn">🌙</button>
-</header>
-
-<div class="grid">
-<div class="card"><h3>XP</h3><div id="xp">0</div></div>
-<div class="card"><h3>Level</h3><div id="level">1</div></div>
-<div class="card"><h3>Streak 🔥</h3><div id="streak">0</div></div>
+<div class="sidebar">
+<h2>GCSE App</h2>
+<button onclick="showSection('dashboard')">🏠 Dashboard</button>
+<button onclick="showSection('quiz')">🧠 Quizzes</button>
+<button onclick="showSection('timetable')">📅 Timetable</button>
+<button onclick="showSection('analytics')">📊 Progress</button>
+<button id="darkBtn">🌙 Dark Mode</button>
 </div>
 
-<div class="card">
-<h3>🧠 Quiz Generator</h3>
+<div class="main">
+<!-- Dashboard -->
+<div id="dashboard" class="card section">
+<h2>Dashboard</h2>
+<p>XP: <span id="xp">0</span></p>
+<p>Level: <span id="level">1</span></p>
+<p>Streak: <span id="streak">0</span></p>
+</div>
+
+<!-- Quiz Section -->
+<div id="quiz" class="card section" style="display:none;">
+<h2>Quiz</h2>
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
-<button id="generateQuestionBtn">Generate Question</button>
-<p id="question"></p>
+<div id="quizArea" style="margin-top:20px;">
+<p id="question" style="font-weight:bold;font-size:18px;"></p>
+<div id="answers"></div>
+<button id="nextBtn" style="display:none;">Next</button>
 <div class="progress-bar"><div class="progress-fill" id="quizProgress">0%</div></div>
 </div>
-
-<div class="card">
-<h3>⏱ Pomodoro Timer</h3>
-<div id="timer">25:00</div>
-<button id="startTimerBtn">Start</button>
-<button id="resetTimerBtn">Reset</button>
 </div>
 
-<div class="card">
-<h3>📊 Subject Progress</h3>
-<canvas id="chart"></canvas>
-</div>
-
-<div class="card">
-<h3>📅 Revision Timetable</h3>
+<!-- Timetable -->
+<div id="timetable" class="card section" style="display:none;">
+<h2>Revision Timetable</h2>
 <input id="days" type="number" placeholder="Days to revise">
 <button id="generateTimetableBtn">Generate Timetable</button>
-<div id="timetableContainer" style="overflow-x:auto; margin-top:15px;"></div>
+<div id="timetableContainer" style="overflow-x:auto;margin-top:15px;"></div>
+</div>
+
+<!-- Analytics -->
+<div id="analytics" class="card section" style="display:none;">
+<h2>Analytics</h2>
+<canvas id="chart"></canvas>
+</div>
 </div>
 
 <script>
-// ===== Subjects + Topics =====
+// ===== Sections =====
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+// ===== Subjects & Topics =====
 const questionBank = {
 "Maths (OCR)":{"Algebra":["Solve 3x+5=20","Expand 4(x+2)","Factorise x^2+5x+6"],"Fractions":["Simplify 12/18","Add 3/5 + 2/7","Convert 0.75 to fraction"]},
 "Combined Science (AQA Gateway)":{"Cell biology":["What is mitosis?","Function of nucleus","Function of cell membrane"]},
@@ -189,94 +158,77 @@ const subjectColors = {
 "German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"
 };
 
-// ===== XP, Streak, Level =====
-let xp = parseInt(localStorage.getItem("xp")||0);
-let streak = parseInt(localStorage.getItem("streak")||0);
+// ===== XP & Streak =====
+let xp=parseInt(localStorage.getItem("xp")||0);
+let streak=parseInt(localStorage.getItem("streak")||0);
 function updateXP(){
-  document.getElementById("xp").innerText = xp;
-  document.getElementById("level").innerText = Math.floor(xp/100)+1;
-  document.getElementById("streak").innerText = streak;
+  document.getElementById("xp").innerText=xp;
+  document.getElementById("level").innerText=Math.floor(xp/100)+1;
+  document.getElementById("streak").innerText=streak;
 }
+updateXP();
 
-// ===== Populate Subjects / Topics =====
-const subjectSelect = document.getElementById("subjectSelect");
-const topicSelect = document.getElementById("topicSelect");
+// ===== Populate select =====
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
 for(let subject in questionBank){
-  let opt = document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);
+  let opt=document.createElement("option"); opt.value=subject; opt.textContent=subject; subjectSelect.appendChild(opt);
 }
 function updateTopics(){
   topicSelect.innerHTML="";
-  let subj = subjectSelect.value;
+  let subj=subjectSelect.value;
   for(let topic in questionBank[subj]){
-    let opt = document.createElement("option"); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);
+    let opt=document.createElement("option"); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);
   }
 }
 subjectSelect.addEventListener("change",updateTopics);
 updateTopics();
-updateXP();
 
-// ===== Quiz Generator =====
-const progressFill = document.getElementById("quizProgress");
-document.getElementById("generateQuestionBtn").addEventListener("click",()=>{
-  let subj = subjectSelect.value;
-  let top = topicSelect.value;
-  let list = questionBank[subj][top];
-  let q = list[Math.floor(Math.random()*list.length)];
-  document.getElementById("question").innerText = q;
-  xp+=10; streak+=1; localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
-  updateXP();
-  let percent = Math.min(Math.floor(xp/12),100);
-  progressFill.style.width = percent + "%"; progressFill.innerText = percent+"%";
-});
+// ===== Quiz System =====
+let currentQuestionIndex=0;
+let currentQuestions=[];
+
+const questionEl=document.getElementById("question");
+const answersEl=document.getElementById("answers");
+const nextBtn=document.getElementById("nextBtn");
+const progressFill=document.getElementById("quizProgress");
+
+function loadQuiz(){
+  const subj=subjectSelect.value;
+  const top=topicSelect.value;
+  currentQuestions=questionBank[subj][top].map(q=>({question:q,options:[q,"Fake Answer 1","Fake Answer 2","Fake Answer 3"].sort(()=>Math.random()-0.5)}));
+  currentQuestionIndex=0;
+  showQuestion();
+}
+
+function showQuestion(){
+  if(currentQuestionIndex>=currentQuestions.length){
+    questionEl.innerText="✅ Quiz Complete!";
+    answersEl.innerHTML="";
+    nextBtn.style.display="none";
+    return;
+  }
+  const qObj=currentQuestions[currentQuestionIndex];
+  questionEl.innerText=qObj.question;
+  answersEl.innerHTML="";
+  qObj.options.forEach(opt=>{
+    const btn=document.createElement("button"); btn.innerText=opt;
+    btn.addEventListener("click",()=>{
+      if(opt===qObj.question){xp+=10;streak+=1;updateXP();progressFill.style.width=Math.min(Math.floor(xp/12),100)+"%"; progressFill.innerText=Math.min(Math.floor(xp/12),100)+"%";}
+      currentQuestionIndex++;
+      showQuestion();
+    });
+    answersEl.appendChild(btn);
+  });
+  nextBtn.style.display="none";
+}
+
+document.getElementById("subjectSelect").addEventListener("change",loadQuiz);
+document.getElementById("topicSelect").addEventListener("change",loadQuiz);
+loadQuiz();
 
 // ===== Dark Mode =====
 document.getElementById("darkBtn").addEventListener("click",()=>{document.body.classList.toggle("dark");});
-
-// ===== Timer =====
-let time = 1500; let timer;
-document.getElementById("startTimerBtn").addEventListener("click",()=>{
-  clearInterval(timer);
-  timer=setInterval(()=>{
-    time--; let m=Math.floor(time/60); let s=time%60;
-    document.getElementById("timer").innerText=m+":"+(s<10?"0":"")+s;
-    if(time<=0) clearInterval(timer);
-  },1000);
-});
-document.getElementById("resetTimerBtn").addEventListener("click",()=>{
-  clearInterval(timer); time=1500; document.getElementById("timer").innerText="25:00";
-});
-
-// ===== Chart =====
-const ctx = document.getElementById("chart");
-const chart = new Chart(ctx,{type:"line",data:{labels:["Start"],datasets:[]},options:{responsive:true,plugins:{legend:{display:true}}}});
-
-// ===== Timetable =====
-document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
-  const days = parseInt(document.getElementById("days").value);
-  if(!days||days<=0){alert("Enter valid number of days"); return;}
-  const container = document.getElementById("timetableContainer");
-  container.innerHTML="";
-  const subjectsList = Object.keys(questionBank);
-  const table = document.createElement("table");
-  const headerRow=document.createElement("tr"); headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; table.appendChild(headerRow);
-  for(let i=1;i<=days;i++){
-    const row=document.createElement("tr");
-    const dayCell=document.createElement("td"); dayCell.innerText="Day "+i; row.appendChild(dayCell);
-    for(let s=0;s<3;s++){
-      const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
-      const topics=Object.keys(questionBank[subj]);
-      const topic=topics[Math.floor(Math.random()*topics.length)];
-      const cell=document.createElement("td"); cell.innerText=`${subj}: ${topic}`;
-      cell.style.backgroundColor=subjectColors[subj]||"#888"; cell.style.color="white"; cell.style.fontWeight="bold"; cell.style.borderRadius="8px";
-      cell.addEventListener("click",()=>{
-        subjectSelect.value=subj; updateTopics(); topicSelect.value=topic; document.getElementById("generateQuestionBtn").click();
-      });
-      row.appendChild(cell);
-    }
-    table.appendChild(row);
-  }
-  container.appendChild(table);
-});
 </script>
 </body>
 </html>
