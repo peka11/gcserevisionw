@@ -9,80 +9,49 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-
-:root{
---bg:#eef2ff;
---card:white;
---primary:#4f8cff;
---secondary:#6dd5a3;
---text:#222;
+body{
+font-family:Arial;
+background:#eef2ff;
+margin:0;
+padding:25px;
 }
 
 .dark{
---bg:#0f172a;
---card:#1e293b;
---text:#f1f5f9;
+background:#111827;
+color:white;
 }
-
-body{
-font-family:Arial;
-background:var(--bg);
-margin:0;
-padding:25px;
-color:var(--text);
-transition:0.3s;
-}
-
-h1{text-align:center;}
 
 button{
-padding:10px 15px;
+padding:10px 14px;
+background:#4f8cff;
 border:none;
 border-radius:8px;
-background:var(--primary);
 color:white;
 cursor:pointer;
-font-weight:bold;
 }
-
-button:hover{opacity:0.9}
 
 .card{
-background:var(--card);
+background:white;
 padding:20px;
 margin:15px 0;
-border-radius:12px;
-box-shadow:0 6px 15px rgba(0,0,0,0.1);
-}
-
-.progress{
-height:10px;
-background:#ddd;
 border-radius:10px;
-overflow:hidden;
-margin:10px 0;
+box-shadow:0 5px 12px rgba(0,0,0,0.1);
 }
 
-.bar{
-height:100%;
-background:linear-gradient(90deg,var(--primary),var(--secondary));
-width:0%;
+.dark .card{
+background:#1f2937;
 }
 
 select,input{
+width:100%;
 padding:8px;
 margin:6px 0;
-width:100%;
-border-radius:6px;
-border:1px solid #ccc;
 }
 
 #timer{
 font-size:28px;
 font-weight:bold;
-margin:10px 0;
 }
-
 </style>
 </head>
 
@@ -90,26 +59,25 @@ margin:10px 0;
 
 <h1>📚 GCSE Revision App</h1>
 
-<button onclick="toggleDark()">🌙 Toggle Dark Mode</button>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
 
 <div class="card">
-
-<div>⭐ XP: <span id="xp">0</span></div>
-<div>🏆 Level: <span id="level">1</span></div>
-<div>🔥 Streak: <span id="streak">0</span></div>
-
+XP: <span id="xp">0</span><br>
+Level: <span id="level">1</span><br>
+Streak 🔥: <span id="streak">0</span>
 </div>
 
 <div class="card">
 
 <h3>🧠 Quiz Generator</h3>
 
-<select id="subjectSelect" onchange="populateTopics()"></select>
+<select id="subjectSelect"></select>
+
 <select id="topicSelect"></select>
 
 <button onclick="generateQuestion()">Generate Question</button>
 
-<div id="question"></div>
+<p id="question"></p>
 
 </div>
 
@@ -152,182 +120,151 @@ margin:10px 0;
 
 <script>
 
-const subjects={
+const subjects = {
 
-"Maths (OCR)":{
-
+"Maths (OCR)": {
 "Algebra":[
 "Solve 3x + 5 = 20",
 "Expand 4(x+2)",
-"Factorise x²+5x",
-"Solve 2x−7=9"
+"Factorise x² + 5x"
 ],
-
 "Fractions":[
 "Simplify 12/18",
 "Add 3/5 + 2/7",
-"Multiply 2/3 × 4/5",
-"Convert 0.25 to a fraction"
+"Multiply 2/3 × 4/5"
 ]
-
 },
 
-"Combined Science (AQA)":{
-
+"Combined Science (AQA)": {
 "Cells":[
 "What is mitosis?",
 "What does the nucleus do?",
-"What is diffusion?",
-"What do mitochondria do?"
+"What is diffusion?"
 ],
-
 "Electricity":[
 "What is voltage?",
 "What is current?",
-"What is resistance?",
-"State Ohm's Law"
+"What is resistance?"
 ]
-
 },
 
-"Computer Science (OCR)":{
-
+"Computer Science (OCR)": {
 "CPU":[
 "What does the CPU do?",
 "What is the ALU?",
 "What is clock speed?"
 ],
-
 "Memory":[
 "What is RAM?",
 "What is ROM?",
 "What is cache memory?"
 ]
-
 },
 
-"Geography (AQA)":{
-
+"Geography (AQA)": {
 "Rivers":[
 "What is erosion?",
 "What is deposition?",
 "What is a meander?"
 ],
-
-"Natural Hazards":[
+"Hazards":[
 "What causes earthquakes?",
-"What is a tectonic plate?",
-"What causes volcanoes?"
+"What is a tectonic plate?"
 ]
-
 },
 
-"German (AQA)":{
-
+"German (AQA)": {
 "Family":[
-"Translate: My mother is kind",
 "What does 'Bruder' mean?",
 "What does 'Schwester' mean?"
 ],
-
 "School":[
-"Translate: I go to school",
 "What is 'Lehrer'?",
 "What is 'Hausaufgaben'?"
 ]
-
 },
 
-"English (AQA)":{
-
+"English (AQA)": {
 "Language":[
 "What is a simile?",
-"What is a metaphor?",
-"What is imagery?"
+"What is a metaphor?"
 ],
-
 "Creative Writing":[
 "Describe a storm",
-"Write an opening sentence",
-"Describe a mysterious place"
+"Write a story opening"
 ]
-
 },
 
-"Media Studies":{
-
+"Media Studies": {
 "Representation":[
 "What is representation?",
-"What is a stereotype?",
-"What is media bias?"
+"What is a stereotype?"
 ],
-
 "Audience":[
 "What is target audience?",
-"What is demographics?",
-"What is psychographics?"
+"What is demographics?"
 ]
-
 }
 
 };
 
-let xp=parseInt(localStorage.getItem("xp")||0);
-let streak=parseInt(localStorage.getItem("streak")||0);
+let xp = parseInt(localStorage.getItem("xp") || 0);
+let streak = parseInt(localStorage.getItem("streak") || 0);
 
-document.getElementById("xp").innerText=xp;
-document.getElementById("streak").innerText=streak;
+document.getElementById("xp").innerText = xp;
+document.getElementById("streak").innerText = streak;
 
-function level(){return Math.floor(xp/100)+1}
-document.getElementById("level").innerText=level();
+function getLevel(){
+return Math.floor(xp/100)+1;
+}
 
-function populateSubjects(){
+document.getElementById("level").innerText = getLevel();
 
-let s=document.getElementById("subjectSelect");
+const subjectSelect = document.getElementById("subjectSelect");
+const topicSelect = document.getElementById("topicSelect");
 
 for(let subject in subjects){
 
-let opt=document.createElement("option");
-opt.value=subject;
-opt.text=subject;
+let option=document.createElement("option");
+option.value=subject;
+option.textContent=subject;
 
-s.add(opt);
-
-}
-
-populateTopics();
+subjectSelect.appendChild(option);
 
 }
 
-function populateTopics(){
+function updateTopics(){
 
-let subject=document.getElementById("subjectSelect").value;
-let t=document.getElementById("topicSelect");
+topicSelect.innerHTML="";
 
-t.innerHTML="";
+let subject=subjectSelect.value;
 
 for(let topic in subjects[subject]){
 
-let opt=document.createElement("option");
-opt.value=topic;
-opt.text=topic;
+let option=document.createElement("option");
+option.value=topic;
+option.textContent=topic;
 
-t.add(opt);
+topicSelect.appendChild(option);
+
+}
 
 }
 
-}
+subjectSelect.addEventListener("change",updateTopics);
+
+updateTopics();
 
 function generateQuestion(){
 
-let subject=document.getElementById("subjectSelect").value;
-let topic=document.getElementById("topicSelect").value;
+let subject=subjectSelect.value;
+let topic=topicSelect.value;
 
 let list=subjects[subject][topic];
 
-let q=list[Math.floor(Math.random()*list.length)];
+let question=list[Math.floor(Math.random()*list.length)];
 
-document.getElementById("question").innerText=q;
+document.getElementById("question").innerText=question;
 
 gainXP();
 updateChart();
@@ -338,10 +275,11 @@ checkBadges();
 function gainXP(){
 
 xp+=10;
+
 localStorage.setItem("xp",xp);
 
 document.getElementById("xp").innerText=xp;
-document.getElementById("level").innerText=level();
+document.getElementById("level").innerText=getLevel();
 
 }
 
@@ -352,11 +290,11 @@ document.body.classList.toggle("dark");
 }
 
 let time=1500;
-let timerInterval;
+let timer;
 
 function startTimer(){
 
-timerInterval=setInterval(()=>{
+timer=setInterval(function(){
 
 time--;
 
@@ -366,15 +304,15 @@ let s=time%60;
 document.getElementById("timer").innerText=
 m+":"+(s<10?"0":"")+s;
 
-if(time<=0) clearInterval(timerInterval);
+if(time<=0) clearInterval(timer);
 
-},1000)
+},1000);
 
 }
 
 function resetTimer(){
 
-clearInterval(timerInterval);
+clearInterval(timer);
 
 time=1500;
 
@@ -384,12 +322,12 @@ document.getElementById("timer").innerText="25:00";
 
 const ctx=document.getElementById("chart");
 
-let chart=new Chart(ctx,{
+const chart=new Chart(ctx,{
 type:"line",
 data:{
 labels:["Start"],
 datasets:[{
-label:"XP",
+label:"XP Progress",
 data:[xp]
 }]
 }
@@ -399,42 +337,42 @@ function updateChart(){
 
 chart.data.labels.push("Study");
 chart.data.datasets[0].data.push(xp);
+
 chart.update();
 
 }
 
 function checkBadges(){
 
-let badges=document.getElementById("badges");
+let list=document.getElementById("badges");
 
-badges.innerHTML="";
+list.innerHTML="";
 
-if(xp>=50) badges.innerHTML+="<li>⭐ Beginner</li>";
-if(xp>=200) badges.innerHTML+="<li>🔥 Consistent Learner</li>";
-if(xp>=500) badges.innerHTML+="<li>🏆 Revision Master</li>";
+if(xp>=50) list.innerHTML+="<li>⭐ Beginner</li>";
+if(xp>=200) list.innerHTML+="<li>🔥 Consistent Learner</li>";
+if(xp>=500) list.innerHTML+="<li>🏆 Revision Master</li>";
 
 }
 
 function generateTimetable(){
 
 let days=document.getElementById("days").value;
+
 let table=document.getElementById("timetable");
 
 table.innerHTML="";
 
-let list=Object.keys(subjects);
+let subjectsList=Object.keys(subjects);
 
 for(let i=1;i<=days;i++){
 
-let subject=list[Math.floor(Math.random()*list.length)];
+let subject=subjectsList[Math.floor(Math.random()*subjectsList.length)];
 
 table.innerHTML+=`<tr><td>Day ${i}</td><td>${subject}</td></tr>`;
 
 }
 
 }
-
-populateSubjects();
 
 </script>
 
