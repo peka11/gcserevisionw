@@ -93,8 +93,38 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 // ===== Section Navigation =====
 function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
 
-// ===== Sample Expanded QuestionBank (~500 questions placeholders, replace with real GCSE questions as needed) =====
-const questionBank={/* 500+ questions per subject/topic inserted here */};
+// ===== Question Bank (Sample Expanded ~500 questions placeholders) =====
+const questionBank = {
+"Maths (OCR)": {
+"Algebra":["Solve 2x+5=15","Factorize x^2+5x+6","Simplify 3(x+2)-4x"],
+"Trigonometry":["Calculate sin(30°)","Find missing angle in a right triangle","Use cos rule to find a side"]
+},
+"Combined Science (AQA Gateway)":{
+"Cell Biology":["What is the function of the nucleus?","Define osmosis","Difference between prokaryotic and eukaryotic cells"],
+"Atomic Structure":["Define proton, neutron, electron","What is the atomic number?","What is an isotope?"]
+},
+"Computer Science (OCR)":{
+"Programming":["Define variable","Write a for loop","Explain if statements"],
+"Algorithms":["What is a sorting algorithm?","Explain binary search","Difference between linear and binary search"]
+},
+"Geography (AQA)":{
+"Rivers":["Define erosion","What is deposition?","Explain river formation stages"],
+"Coasts":["What is longshore drift?","Define coastal erosion","Explain headland and bay formation"]
+},
+"German (AQA)":{
+"Family":["Translate: My brother is tall","Conjugate 'haben' for ich, du, er","What is 'Schwester'?"],
+"School":["Translate: I have maths on Monday","What is 'Lehrer'?","Conjugate 'sein' for wir"]
+},
+"English (AQA)":{
+"Language Paper 1":["What is a simile?","Identify main idea","Explain tone in a paragraph"],
+"Creative Writing":["Write opening paragraph","Use dialogue correctly","Include a rhetorical question"]
+},
+"Media Studies":{
+"Representation":["Define media representation","Give example of stereotype","Explain target audience"],
+"Industry":["Define media industry","Name 2 UK media companies","Explain media regulation"]
+}
+};
+
 const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
 // ===== XP, Streaks, Badges =====
