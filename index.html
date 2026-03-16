@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎓 GCSE Revision App</title>
+<title>Ultimate GCSE Revision App 🎓</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ===== Global Styles ===== */
+/* Global Styles */
 body {font-family:'Inter',sans-serif;margin:0;padding:0;background:#f0f4f8;color:#1f2937;transition:0.3s;}
 .dark {background:#111827;color:white;}
 .sidebar {position:fixed; left:0; top:0; bottom:0;width:220px;background:#4f7cff;padding:20px;display:flex;flex-direction:column;color:white;}
@@ -25,10 +25,12 @@ canvas {max-width:100%;}
 td, th {padding:10px;text-align:center;border-radius:12px;font-weight:600;cursor:pointer;}
 th {background:#4f7cff;color:white;}
 td:hover {opacity:0.85; transform: scale(1.03);}
+/* Confetti Canvas */
+#confetti-canvas {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
 </style>
 </head>
 <body>
-
+<canvas id="confetti-canvas"></canvas>
 <div class="sidebar">
 <h2>GCSE App</h2>
 <button onclick="showSection('dashboard')">🏠 Dashboard</button>
@@ -40,9 +42,7 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button onclick="showSection('settings')">⚙️ Settings</button>
 <button id="darkBtn">🌙 Dark Mode</button>
 </div>
-
 <div class="main">
-
 <!-- Dashboard -->
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
@@ -52,9 +52,8 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <p>Badges: <span id="badges">None</span></p>
 <div class="progress-bar"><div class="progress-fill" id="overallProgress">0%</div></div>
 <h3>Streak Calendar (placeholder)</h3>
-<p>📅 Marked days you revised</p>
+<p>📅 Days you revised shown here</p>
 </div>
-
 <!-- Quiz -->
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
@@ -65,7 +64,6 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="nextBtn">Next</button>
 </div>
 </div>
-
 <!-- Timetable -->
 <div id="timetable" class="card section" style="display:none;">
 <h2>Revision Timetable</h2>
@@ -73,13 +71,11 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="generateTimetableBtn">Generate Timetable</button>
 <div id="timetableContainer" style="overflow-x:auto;margin-top:15px;"></div>
 </div>
-
 <!-- Analytics -->
 <div id="analytics" class="card section" style="display:none;">
 <h2>Analytics</h2>
 <canvas id="chart" width="400" height="200"></canvas>
 </div>
-
 <!-- Pomodoro -->
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro Timer</h2>
@@ -88,31 +84,26 @@ td:hover {opacity:0.85; transform: scale(1.03);}
 <button id="pausePomodoro">Pause</button>
 <button id="resetPomodoro">Reset</button>
 </div>
-
 <!-- Mini Game -->
 <div id="minigame" class="card section" style="display:none;">
 <h2>Mini Game</h2>
 <p>Memory game placeholder 🧠</p>
+<div id="memoryGameContainer"></div>
 </div>
-
 <!-- Settings -->
 <div id="settings" class="card section" style="display:none;">
 <h2>Settings</h2>
 <p>Toggle dark/light mode or select theme.</p>
 </div>
-
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <script>
 // ===== Section Navigation =====
-function showSection(id){
-document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-document.getElementById(id).style.display='block';
-}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
 
-// ===== Subjects & Questions =====
-const questionBank = {
+// ===== Subjects & Questions (sample placeholders, expand to 1200+) =====
+const questionBank={
 "Maths (OCR)":{"Algebra":["Solve 3x+5=20","Expand 4(x+2)","Factorise x^2+5x+6"],"Fractions":["Simplify 12/18","Add 3/5 + 2/7","Convert 0.75 to fraction"]},
 "Combined Science (AQA Gateway)":{"Cell biology":["What is mitosis?","Function of nucleus","Function of cell membrane"]},
 "Computer Science (OCR)":{"Systems architecture":["CPU components","Von Neumann architecture"]},
@@ -121,12 +112,12 @@ const questionBank = {
 "English (AQA)":{"Language paper 1":["Define metaphor","Simile examples"]},
 "Media Studies":{"Media language":["Define codes","Signifier examples"]}
 };
-const subjectColors = {"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
+const subjectColors={"Maths (OCR)":"#4f7cff","Combined Science (AQA Gateway)":"#34c759","Computer Science (OCR)":"#ff9500","Geography (AQA)":"#ff2d55","German (AQA)":"#5856d6","English (AQA)":"#ffcc00","Media Studies":"#ff3b30"};
 
 // ===== XP, Streaks, Badges =====
 let xp=parseInt(localStorage.getItem("xp")||0);
 let streak=parseInt(localStorage.getItem("streak")||0);
-let badges=[];
+let badges=JSON.parse(localStorage.getItem("badges")||"[]");
 function updateXP(){
 document.getElementById("xp").innerText=xp;
 document.getElementById("level").innerText=Math.floor(xp/100)+1;
@@ -150,7 +141,7 @@ let currentQuestionIndex=0;
 let currentQuestions=[];
 const questionEl=document.getElementById("question");
 const nextBtn=document.getElementById("nextBtn");
-
+function triggerConfetti(){confetti({particleCount:150,spread:70,origin:{y:0.6}});}
 function loadQuiz(){
 const subj=subjectSelect.value;
 const top=topicSelect.value;
@@ -158,16 +149,16 @@ currentQuestions=questionBank[subj][top];
 currentQuestionIndex=0;
 showQuestion();
 }
-
 function showQuestion(){
 if(currentQuestionIndex>=currentQuestions.length){questionEl.innerText="✅ Quiz Complete!";nextBtn.style.display="none";return;}
 questionEl.innerText=currentQuestions[currentQuestionIndex];nextBtn.style.display="inline-block";
 }
-
 nextBtn.addEventListener("click",()=>{
-currentQuestionIndex++;xp+=10;streak+=1; 
-if(currentQuestionIndex===currentQuestions.length){badges.push("Completed Topic: "+topicSelect.value);}
-updateXP();showQuestion();
+currentQuestionIndex++; xp+=10; streak+=1; triggerConfetti();
+if(currentQuestionIndex===currentQuestions.length){badges.push("Completed Topic: "+topicSelect.value);triggerConfetti();}
+updateXP();
+localStorage.setItem("xp",xp);localStorage.setItem("streak",streak);localStorage.setItem("badges",JSON.stringify(badges));
+showQuestion();
 });
 topicSelect.addEventListener("change",loadQuiz);
 loadQuiz();
@@ -180,9 +171,7 @@ const container=document.getElementById("timetableContainer");
 container.innerHTML="";
 const subjectsList=Object.keys(questionBank);
 const table=document.createElement("table");
-const headerRow=document.createElement("tr"); 
-headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; 
-table.appendChild(headerRow);
+const headerRow=document.createElement("tr"); headerRow.innerHTML="<th>Day</th><th>Session 1</th><th>Session 2</th><th>Session 3</th>"; table.appendChild(headerRow);
 for(let i=1;i<=days;i++){
 const row=document.createElement("tr");
 const dayCell=document.createElement("td"); dayCell.innerText="Day "+i; row.appendChild(dayCell);
@@ -190,12 +179,8 @@ for(let s=0;s<3;s++){
 const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
 const topics=Object.keys(questionBank[subj]);
 const topic=topics[Math.floor(Math.random()*topics.length)];
-const cell=document.createElement("td"); 
-cell.innerText=`${subj}: ${topic}`;
-cell.style.backgroundColor=subjectColors[subj]||"#888"; 
-cell.style.color="white"; 
-cell.style.fontWeight="bold"; 
-cell.style.borderRadius="8px";
+const cell=document.createElement("td"); cell.innerText=`${subj}: ${topic}`;
+cell.style.backgroundColor=subjectColors[subj]||"#888"; cell.style.color="white"; cell.style.fontWeight="bold"; cell.style.borderRadius="8px";
 cell.addEventListener("click",()=>{subjectSelect.value=subj; updateTopics(); topicSelect.value=topic; loadQuiz(); showSection("quiz");});
 row.appendChild(cell);
 }
@@ -204,9 +189,9 @@ table.appendChild(row);
 container.appendChild(table);
 });
 
-// ===== Analytics (Chart.js) =====
+// ===== Analytics =====
 const ctx=document.getElementById("chart").getContext("2d");
-const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(()=>Math.floor(Math.random()*100)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>Math.floor(Math.random()*xp)),backgroundColor:Object.keys(questionBank).map(s=>subjectColors[s])}]},options:{responsive:true,plugins:{legend:{display:false}}}});
 
 // ===== Pomodoro =====
 let pomodoroTime=25*60; let pomodoroInterval=null;
@@ -216,6 +201,9 @@ document.getElementById("startPomodoro").addEventListener("click",()=>{if(!pomod
 document.getElementById("pausePomodoro").addEventListener("click",()=>{clearInterval(pomodoroInterval);pomodoroInterval=null;});
 document.getElementById("resetPomodoro").addEventListener("click",()=>{pomodoroTime=25*60;updateTimer();clearInterval(pomodoroInterval);pomodoroInterval=null;});
 updateTimer();
+
+// ===== Mini Game =====
+document.getElementById("memoryGameContainer").innerHTML=`<p>Memory game coming soon!</p>`;
 
 // ===== Dark Mode =====
 document.getElementById("darkBtn").addEventListener("click",()=>{document.body.classList.toggle("dark");});
