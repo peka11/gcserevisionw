@@ -8,19 +8,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <style>
-body { font-family:'Inter',sans-serif; margin:0; padding:0; background:#f0f4f8; color:#1f2937; transition:0.3s;}
+body { font-family:'Inter',sans-serif; margin:0; padding:0; background:#f0f4f8; color:#1f2937; transition:0.3s; }
 .dark { background:#111827; color:white; }
-.sidebar { position:fixed; left:0; top:0; bottom:0; width:260px; background:linear-gradient(180deg,#4f7cff,#3561c3); padding:20px; color:white; display:flex; flex-direction:column;}
+.sidebar { position:fixed; left:0; top:0; bottom:0; width:260px; background:linear-gradient(180deg,#4f7cff,#3561c3); padding:20px; color:white; display:flex; flex-direction:column; }
 .sidebar h2 { margin-top:0; margin-bottom:20px; }
-.sidebar button { background:none; border:none; color:white; text-align:left; padding:12px; margin-bottom:8px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s;}
-.sidebar button:hover { background:rgba(255,255,255,0.2);}
-.main { margin-left:280px; padding:25px; min-height:100vh; transition:0.3s;}
-.card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; min-height:200px; transition:0.3s;}
+.sidebar button { background:none; border:none; color:white; text-align:left; padding:12px; margin-bottom:8px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s; }
+.sidebar button:hover { background:rgba(255,255,255,0.2); }
+.main { margin-left:280px; padding:25px; min-height:100vh; transition:0.3s; }
+.card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; min-height:200px; transition:0.3s; }
 .dark .card { background:#1f2937; }
-button { padding:10px 16px; border:none; border-radius:8px; background:#4f7cff; color:white; cursor:pointer; transition:0.2s; margin-top:5px;}
+button { padding:10px 16px; border:none; border-radius:8px; background:#4f7cff; color:white; cursor:pointer; transition:0.2s; margin-top:5px; }
 button:hover { background:#2f4fd6; }
 input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ccc; }
-.section { display:none; }
 
 /* Dashboard */
 .dashboard-stats { display:flex; flex-wrap:wrap; gap:20px; margin-top:20px; }
@@ -139,7 +138,7 @@ input, select, textarea { width:100%; padding:10px; margin-top:10px; border-radi
 <!-- Notes -->
 <div id="notes" class="card section">
 <h2>Notes / Sticky Board</h2>
-<textarea id="notesArea" placeholder="Write down formulas, definitions, or reminders..."></textarea>
+<textarea id="notesArea" placeholder="Write formulas, definitions, or reminders..."></textarea>
 <button onclick="saveNotes()">Save Notes</button>
 </div>
 
@@ -179,40 +178,87 @@ updateXP();
 function triggerConfetti(){confetti({particleCount:150,spread:70,origin:{y:0.6}});}
 
 // ---------------------------
-// Full Subject + Topic Question Bank (with flashcards) & MCQs
+// Subjects, topics, MCQs
 const questionBank={
-"Maths (OCR)":{
-  "Algebra":[{q:"Solve 2x+5=15",options:["x=3","x=5","x=10","x=1"],answer:"x=5"}],
-  "Trigonometry":[{q:"Calculate sin(30°)",options:["0.5","0.3","0.6","1"],answer:"0.5"}]
-},
-"Combined Science (AQA Gateway)":{
-  "Cell Biology":[{q:"Function of nucleus?",options:["Controls cell","Stores water","Makes proteins","Protects DNA"],answer:"Controls cell"}],
-  "Atomic Structure":[{q:"Define proton",options:["Positive particle","Neutral particle","Negative particle","Electron"],answer:"Positive particle"}]
-},
-"Computer Science (OCR)":{
-  "Programming":[{q:"What is a variable?",options:["Storage","Loop","Condition","Function"],answer:"Storage"}],
-  "Algorithms":[{q:"What is a sorting algorithm?",options:["Arranging data","Searching","Printing","Drawing"],answer:"Arranging data"}]
-},
-"Geography (AQA)":{
-  "Rivers":[{q:"Define erosion?",options:["Wearing away rocks","Water flow","Sediment deposit","Tree growth"],answer:"Wearing away rocks"}],
-  "Coasts":[{q:"Longshore drift?",options:["Movement of sediment along coast","Wind effect","Tide change","Rainfall"],answer:"Movement of sediment along coast"}]
-},
-"German (AQA)":{
-  "Family":[{q:"Translate: My brother is tall",options:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein"],answer:"Mein Bruder ist groß"}],
-  "School":[{q:"Translate: I have maths on Monday",options:["Ich habe Mathe am Montag","Ich habe Montag Mathe","Ich habe Mathe heute","Ich habe Montag frei"],answer:"Ich habe Mathe am Montag"}]
-},
-"English (AQA)":{
-  "Language Paper 1":[{q:"What is a simile?",options:["Comparison using like/as","A type of poem","Main idea","Dialogue"],answer:"Comparison using like/as"}],
-  "Creative Writing":[{q:"Write opening paragraph","options":["N/A"],answer:"N/A"}]
-},
-"Media Studies":{
-  "Representation":[{q:"Define media representation",options:["How media shows groups","Movie genre","TV channel","Ad type"],answer:"How media shows groups"}],
-  "Industry":[{q:"Define media industry",options:["Companies producing media","Target audience","Ad type","Channel"],answer:"Companies producing media"}]
-}
+"Maths (OCR)":{"Algebra":[{q:"Solve 2x+5=15",options:["x=3","x=5","x=10","x=1"],answer:"x=5"}],"Trigonometry":[{q:"Calculate sin(30°)",options:["0.5","0.3","0.6","1"],answer:"0.5"}]},
+"Combined Science (AQA Gateway)":{"Cell Biology":[{q:"Function of nucleus?",options:["Controls cell","Stores water","Makes proteins","Protects DNA"],answer:"Controls cell"}],"Atomic Structure":[{q:"Define proton",options:["Positive particle","Neutral particle","Negative particle","Electron"],answer:"Positive particle"}]},
+"Computer Science (OCR)":{"Programming":[{q:"What is a variable?",options:["Storage","Loop","Condition","Function"],answer:"Storage"}],"Algorithms":[{q:"What is a sorting algorithm?",options:["Arranging data","Searching","Printing","Drawing"],answer:"Arranging data"}]},
+"Geography (AQA)":{"Rivers":[{q:"Define erosion?",options:["Wearing away rocks","Water flow","Sediment deposit","Tree growth"],answer:"Wearing away rocks"}],"Coasts":[{q:"Longshore drift?",options:["Movement of sediment along coast","Wind effect","Tide change","Rainfall"],answer:"Movement of sediment along coast"}]},
+"German (AQA)":{"Family":[{q:"Translate: My brother is tall",options:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein"],answer:"Mein Bruder ist groß"}],"School":[{q:"Translate: I have maths on Monday",options:["Ich habe Mathe am Montag","Ich habe Montag Mathe","Ich habe Mathe heute","Ich habe Montag frei"],answer:"Ich habe Mathe am Montag"}]},
+"English (AQA)":{"Language Paper 1":[{q:"What is a simile?",options:["Comparison using like/as","A type of poem","Main idea","Dialogue"],answer:"Comparison using like/as"}],"Creative Writing":[{q:"Write opening paragraph","options":["N/A"],answer:"N/A"}]},
+"Media Studies":{"Representation":[{q:"Define media representation",options:["How media shows groups","Movie genre","TV channel","Ad type"],answer:"How media shows groups"}],"Industry":[{q:"Define media industry",options:["Companies producing media","Target audience","Ad type","Channel"],answer:"Companies producing media"}]}
 };
 
-// The rest of the code (quiz load, timetable, flashcards, mini games, pomodoro, analytics) works same as previous example
+// Populate quiz dropdowns
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
+function populateSubjects(){ subjectSelect.innerHTML=""; for(let s in questionBank){ let opt=document.createElement("option"); opt.value=s; opt.textContent=s; subjectSelect.appendChild(opt); } }
+function populateTopics(){ topicSelect.innerHTML=""; const subj=subjectSelect.value; for(let t in questionBank[subj]){ let opt=document.createElement("option"); opt.value=t; opt.textContent=t; topicSelect.appendChild(opt); } }
+subjectSelect.addEventListener("change",()=>{ populateTopics(); loadQuiz(); });
+topicSelect.addEventListener("change", loadQuiz);
+populateSubjects(); populateTopics();
 
-</script>
-</body>
-</html>
+// Quiz
+let currentQuestions=[]; let currentQuestionIndex=0;
+const questionEl=document.getElementById("question");
+const optionsArea=document.getElementById("optionsArea");
+function loadQuiz(){
+  const subj=subjectSelect.value; const top=topicSelect.value;
+  currentQuestions=questionBank[subj][top];
+  currentQuestionIndex=0;
+  showQuestion();
+}
+function showQuestion(){
+  if(currentQuestions.length===0){ questionEl.innerText="No questions available"; optionsArea.innerHTML=""; return; }
+  if(currentQuestionIndex>=currentQuestions.length){ questionEl.innerText="✅ Quiz Complete!"; optionsArea.innerHTML=""; if(!badges.includes(topicSelect.value)){ badges.push(topicSelect.value); updateXP(); triggerConfetti(); localStorage.setItem("badges",JSON.stringify(badges)); } return; }
+  const q=currentQuestions[currentQuestionIndex];
+  questionEl.innerText=q.q;
+  optionsArea.innerHTML="";
+  q.options.forEach(opt=>{
+    const b=document.createElement("button"); b.innerText=opt; b.style.display="block"; b.style.margin="5px 0";
+    b.onclick=()=>{
+      if(opt===q.answer){ xp+=10; streak+=1; alert("Correct!"); } else { alert("Wrong!"); streak=0; }
+      updateXP(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
+      currentQuestionIndex++; showQuestion();
+    };
+    optionsArea.appendChild(b);
+  });
+}
+loadQuiz();
+
+// ---------------------------
+// Timetable
+document.getElementById("generateTimetableBtn").addEventListener("click",()=>{
+  const days=parseInt(document.getElementById("days").value);
+  if(!days||days<=0){ alert("Enter valid number of days"); return; }
+  const container=document.getElementById("timetableContainer"); container.innerHTML="";
+  const subjectsList=Object.keys(questionBank);
+  for(let i=1;i<=days;i++){
+    const dayDiv=document.createElement("div"); dayDiv.className="timetable-day";
+    const dayLabel=document.createElement("div"); dayLabel.innerText="Day "+i; dayLabel.style.fontWeight="bold"; dayDiv.appendChild(dayLabel);
+    for(let s=0;s<3;s++){
+      const subj=subjectsList[Math.floor(Math.random()*subjectsList.length)];
+      const topics=Object.keys(questionBank[subj]);
+      const topic=topics[Math.floor(Math.random()*topics.length)];
+      const card=document.createElement("div"); card.className="session-card"; card.innerText=subj+": "+topic;
+      card.onclick=()=>{ subjectSelect.value=subj; populateTopics(); topicSelect.value=topic; loadQuiz(); showSection("quiz"); };
+      dayDiv.appendChild(card);
+    }
+    container.appendChild(dayDiv);
+  }
+});
+
+// ---------------------------
+// Analytics
+const ctx=document.getElementById("chart").getContext("2d");
+const chart=new Chart(ctx,{type:'bar',data:{labels:Object.keys(questionBank),datasets:[{label:'XP per Subject',data:Object.keys(questionBank).map(s=>xp),backgroundColor:Object.keys(questionBank).map(s=>['#4f7cff','#34c759','#ff9500','#ff2d55','#5856d6','#ffcc00','#ff3b30'][Math.floor(Math.random()*7)])}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+// ---------------------------
+// Pomodoro
+let pomodoroTime=25*60, pomodoroInterval=null;
+const timerEl=document.getElementById("timer");
+function updateTimer(){ let min=Math.floor(pomodoroTime/60); let sec=pomodoroTime%60; timerEl.innerText=`${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }
+document.getElementById("startPomodoro").addEventListener("click",()=>{
+  if(!pomodoroInterval){ pomodoroInterval=setInterval(()=>{ pomodoroTime--; updateTimer(); if(pomodoroTime<=0){ clearInterval(pomodoroInterval); pomodoroInterval=null; pomodoroTime=25*60; updateTimer(); alert("Pomodoro Complete!"); } },1000); }
+});
+document.getElementById("pausePomodoro
