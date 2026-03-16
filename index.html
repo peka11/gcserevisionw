@@ -12,7 +12,6 @@
 body{
 font-family:'Inter',sans-serif;
 margin:0;
-padding:0;
 background:#f0f4f8;
 color:#1f2937;
 transition:0.3s;
@@ -31,31 +30,25 @@ bottom:0;
 width:260px;
 background:linear-gradient(180deg,#4f7cff,#3561c3);
 padding:20px;
-display:flex;
-flex-direction:column;
 color:white;
-box-shadow:4px 0 20px rgba(0,0,0,0.15);
-}
-
-.sidebar h2{
-margin-top:0;
-margin-bottom:20px;
 }
 
 .sidebar button{
-background:none;
-border:none;
-color:white;
-text-align:left;
+display:block;
+width:100%;
+margin-bottom:10px;
 padding:12px;
-margin-bottom:8px;
-border-radius:10px;
-cursor:pointer;
+border:none;
+background:none;
+color:white;
 font-weight:600;
+text-align:left;
+border-radius:8px;
+cursor:pointer;
 }
 
 .sidebar button:hover{
-background:rgba(255,255,255,0.25);
+background:rgba(255,255,255,0.2);
 }
 
 .main{
@@ -67,7 +60,7 @@ padding:25px;
 background:white;
 padding:25px;
 border-radius:18px;
-box-shadow:0 15px 30px rgba(0,0,0,0.1);
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
 margin-bottom:20px;
 }
 
@@ -76,18 +69,12 @@ background:#1f2937;
 }
 
 button{
-padding:10px 18px;
+padding:10px 16px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 background:#4f7cff;
 color:white;
 cursor:pointer;
-font-weight:600;
-margin-top:10px;
-}
-
-button:hover{
-background:#2f4fd6;
 }
 
 input,select{
@@ -98,37 +85,30 @@ border-radius:8px;
 border:1px solid #ccc;
 }
 
-.progress-bar{
-height:24px;
-width:100%;
-background:#ddd;
-border-radius:12px;
-overflow:hidden;
-margin-top:10px;
+.section{
+display:none;
 }
 
-.progress-fill{
-height:100%;
-width:0%;
-background:linear-gradient(90deg,#4f7cff,#34c759);
-text-align:center;
-color:white;
-line-height:24px;
-font-weight:bold;
+#dashboard{
+display:block;
 }
 
-td,th{
-padding:10px;
-text-align:center;
-}
-
-th{
+.memory-card{
+display:inline-block;
+width:60px;
+height:60px;
 background:#4f7cff;
 color:white;
+line-height:60px;
+margin:5px;
+text-align:center;
+border-radius:10px;
+font-weight:bold;
+font-size:22px;
+cursor:pointer;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -144,7 +124,7 @@ color:white;
 <button onclick="showSection('pomodoro')">⏱ Pomodoro</button>
 <button onclick="showSection('minigame')">🎮 Mini Game</button>
 <button onclick="showSection('settings')">⚙️ Settings</button>
-<button id="darkBtn">🌙 Dark Mode</button>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
 
 </div>
 
@@ -152,43 +132,44 @@ color:white;
 
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
-<p>XP: <span id="xp">0</span></p>
-<p>Level: <span id="level">1</span></p>
-
-<div class="progress-bar">
-<div class="progress-fill" id="overallProgress">0%</div>
+<p>Welcome to your GCSE revision tracker.</p>
 </div>
 
-</div>
+<div id="quiz" class="card section">
 
-<div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
 
 <select id="subjectSelect"></select>
 <select id="topicSelect"></select>
 
-<p id="question" style="margin-top:20px;font-weight:bold;font-size:18px;"></p>
-<button id="nextBtn">Next</button>
+<p id="question" style="font-weight:bold;margin-top:20px;"></p>
+
+<button onclick="nextQuestion()">Next</button>
 
 </div>
 
-<div id="timetable" class="card section" style="display:none;">
+<div id="timetable" class="card section">
+
 <h2>Revision Timetable</h2>
 
-<input id="days" type="number" placeholder="Days to revise">
+<input id="days" type="number" placeholder="Number of days">
 
-<button onclick="generateTimetable()">Generate Timetable</button>
+<button onclick="generateTimetable()">Generate</button>
 
 <div id="timetableContainer"></div>
 
 </div>
 
-<div id="analytics" class="card section" style="display:none;">
+<div id="analytics" class="card section">
+
 <h2>Analytics</h2>
+
 <canvas id="chart"></canvas>
+
 </div>
 
-<div id="pomodoro" class="card section" style="display:none;">
+<div id="pomodoro" class="card section">
+
 <h2>Pomodoro Timer</h2>
 
 <p id="timer">25:00</p>
@@ -199,14 +180,20 @@ color:white;
 
 </div>
 
-<div id="minigame" class="card section" style="display:none;">
-<h2>Mini Game</h2>
+<div id="minigame" class="card section">
+
+<h2>Memory Game</h2>
+
 <div id="memoryGameContainer"></div>
+
 </div>
 
-<div id="settings" class="card section" style="display:none;">
+<div id="settings" class="card section">
+
 <h2>Settings</h2>
-<p>Use the sidebar button to toggle dark mode.</p>
+
+<p>Toggle dark mode from the sidebar.</p>
+
 </div>
 
 </div>
@@ -216,46 +203,39 @@ color:white;
 <script>
 
 function showSection(id){
-document.querySelectorAll(".section").forEach(s=>s.style.display="none")
+
+document.querySelectorAll(".section").forEach(s=>{
+
+s.style.display="none"
+
+})
+
 document.getElementById(id).style.display="block"
+
 }
 
-let xp=0
+function toggleDark(){
 
-function updateXP(){
-document.getElementById("xp").innerText=xp
-document.getElementById("level").innerText=Math.floor(xp/100)+1
-document.getElementById("overallProgress").style.width=Math.min(xp,100)+"%"
-document.getElementById("overallProgress").innerText=Math.min(xp,100)+"%"
+document.body.classList.toggle("dark")
+
 }
 
 const questionBank={
 
-"Maths":{
-"Algebra":[
+Maths:{
+Algebra:[
 "Solve 2x+5=15",
 "Solve 3x-7=11",
 "Factorise x²+5x+6",
-"Simplify 3(x+2)-4x",
-"Expand (x+4)(x+3)"
-],
-
-"Trigonometry":[
-"Find sin(30°)",
-"Find cos(60°)",
-"Find tan(45°)",
-"Use Pythagoras theorem",
-"What is sin²θ+cos²θ?"
+"Simplify 3(x+2)-4x"
 ]
 },
 
-"Science":{
-"Atomic Structure":[
+Science:{
+Atomic:[
 "What is a proton?",
 "What is a neutron?",
-"What is an electron?",
-"What is atomic number?",
-"What is an isotope?"
+"What is an electron?"
 ]
 }
 
@@ -265,58 +245,67 @@ const subjectSelect=document.getElementById("subjectSelect")
 const topicSelect=document.getElementById("topicSelect")
 
 for(let subject in questionBank){
+
 let opt=document.createElement("option")
-opt.value=subject
 opt.textContent=subject
+opt.value=subject
+
 subjectSelect.appendChild(opt)
+
 }
 
 function updateTopics(){
+
 topicSelect.innerHTML=""
+
 let subj=subjectSelect.value
 
 for(let topic in questionBank[subj]){
+
 let opt=document.createElement("option")
-opt.value=topic
 opt.textContent=topic
+opt.value=topic
+
 topicSelect.appendChild(opt)
+
 }
+
 }
 
-subjectSelect.addEventListener("change",()=>{
-updateTopics()
-loadQuiz()
-})
+subjectSelect.addEventListener("change",updateTopics)
 
 updateTopics()
 
-let currentQuestions=[]
-let currentIndex=0
+let questions=[]
+let index=0
 
 function loadQuiz(){
+
 let subj=subjectSelect.value
 let topic=topicSelect.value
-currentQuestions=[...questionBank[subj][topic]].sort(()=>Math.random()-0.5)
-currentIndex=0
-showQuestion()
+
+questions=[...questionBank[subj][topic]]
+
+index=0
+
+document.getElementById("question").innerText=questions[index]
+
 }
 
-function showQuestion(){
+function nextQuestion(){
 
-if(currentIndex>=currentQuestions.length){
+index++
+
+if(index>=questions.length){
+
 document.getElementById("question").innerText="Quiz Complete!"
+
 return
-}
-
-document.getElementById("question").innerText=currentQuestions[currentIndex]
 
 }
 
-document.getElementById("nextBtn").onclick=()=>{
-xp+=10
-updateXP()
-currentIndex++
-showQuestion()
+document.getElementById("question").innerText=questions[index]
+
 }
 
 topicSelect.addEventListener("change",loadQuiz)
@@ -325,11 +314,9 @@ loadQuiz()
 
 function generateTimetable(){
 
-const days=parseInt(document.getElementById("days").value)
+let days=document.getElementById("days").value
 
-const container=document.getElementById("timetableContainer")
-
-container.innerHTML=""
+let container=document.getElementById("timetableContainer")
 
 let subjects=Object.keys(questionBank)
 
@@ -337,9 +324,9 @@ let table="<table border='1'><tr><th>Day</th><th>Subject</th></tr>"
 
 for(let i=1;i<=days;i++){
 
-let subj=subjects[Math.floor(Math.random()*subjects.length)]
+let s=subjects[Math.floor(Math.random()*subjects.length)]
 
-table+=`<tr><td>${i}</td><td>${subj}</td></tr>`
+table+=`<tr><td>${i}</td><td>${s}</td></tr>`
 
 }
 
@@ -352,18 +339,27 @@ container.innerHTML=table
 const ctx=document.getElementById("chart")
 
 new Chart(ctx,{
+
 type:"bar",
+
 data:{
+
 labels:["Maths","Science"],
+
 datasets:[{
-data:[10,10],
+
+data:[5,5],
+
 backgroundColor:["#4f7cff","#34c759"]
+
 }]
+
 }
+
 })
 
 let pomodoro=1500
-let interval=null
+let interval
 
 function updateTimer(){
 
@@ -377,17 +373,18 @@ m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
 
 function startPomodoro(){
 
-if(interval)return
-
 interval=setInterval(()=>{
 
 pomodoro--
+
 updateTimer()
 
 if(pomodoro<=0){
+
 clearInterval(interval)
-interval=null
+
 alert("Session Complete")
+
 }
 
 },1000)
@@ -395,25 +392,52 @@ alert("Session Complete")
 }
 
 function pausePomodoro(){
+
 clearInterval(interval)
-interval=null
+
 }
 
 function resetPomodoro(){
 
 pomodoro=1500
+
 updateTimer()
 
 clearInterval(interval)
-interval=null
 
 }
 
 updateTimer()
 
-document.getElementById("darkBtn").onclick=()=>{
-document.body.classList.toggle("dark")
+function generateMemoryGame(){
+
+const container=document.getElementById("memoryGameContainer")
+
+const cards=["A","B","C","D","A","B","C","D"]
+
+cards.sort(()=>Math.random()-0.5)
+
+cards.forEach(letter=>{
+
+let div=document.createElement("div")
+
+div.className="memory-card"
+
+div.innerText="?"
+
+div.onclick=()=>{
+
+div.innerText=letter
+
 }
+
+container.appendChild(div)
+
+})
+
+}
+
+generateMemoryGame()
 
 </script>
 
