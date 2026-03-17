@@ -8,32 +8,105 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body { font-family:'Inter',sans-serif; margin:0; background:#eef2ff; }
-.dark { background:#0f172a; color:white; }
+body {
+  font-family:'Inter',sans-serif;
+  margin:0;
+  background:linear-gradient(135deg,#eef2ff,#f8fafc);
+  color:#111;
+}
+
+.dark {
+  background:#0f172a;
+  color:white;
+}
 
 .sidebar {
-  position:fixed; width:250px; height:100%;
-  background:#4f7cff; padding:20px; color:white;
+  position:fixed;
+  width:260px;
+  height:100%;
+  background:linear-gradient(180deg,#4f7cff,#3561c3);
+  padding:20px;
+  color:white;
 }
-.sidebar button {
-  width:100%; margin:5px 0; padding:12px;
-  border:none; border-radius:8px; background:none;
-  color:white; text-align:left; cursor:pointer;
-}
-.sidebar button:hover { background:rgba(255,255,255,0.2); }
 
-.main { margin-left:270px; padding:25px; }
+.sidebar button {
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border:none;
+  border-radius:10px;
+  background:none;
+  color:white;
+  text-align:left;
+  cursor:pointer;
+}
+
+.sidebar button:hover {
+  background:rgba(255,255,255,0.2);
+}
+
+.main {
+  margin-left:280px;
+  padding:25px;
+}
 
 .card {
-  background:white; padding:20px;
-  border-radius:15px; margin-bottom:20px;
+  background:white;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  margin-bottom:20px;
 }
-.dark .card { background:#1f2937; }
+
+.dark .card {
+  background:#1f2937;
+}
+
+.stats {
+  display:flex;
+  gap:15px;
+}
+
+.stat {
+  flex:1;
+  padding:20px;
+  border-radius:15px;
+  color:white;
+  text-align:center;
+  font-weight:bold;
+}
+
+.xp {background:linear-gradient(135deg,#4f7cff,#22c55e);}
+.level {background:linear-gradient(135deg,#f59e0b,#fde047);}
+.streak {background:linear-gradient(135deg,#ef4444,#f97316);}
+
+button {
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#4f7cff;
+  color:white;
+  cursor:pointer;
+}
 
 .memory-card {
-  width:60px; height:60px; display:inline-block;
-  background:#4f7cff; color:white; line-height:60px;
-  text-align:center; margin:5px; border-radius:10px;
+  width:70px;
+  height:70px;
+  background:#4f7cff;
+  color:white;
+  display:inline-block;
+  line-height:70px;
+  text-align:center;
+  margin:5px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+input, textarea {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
 }
 </style>
 </head>
@@ -41,45 +114,50 @@ body { font-family:'Inter',sans-serif; margin:0; background:#eef2ff; }
 <body>
 
 <div class="sidebar">
-<h2>GCSE App</h2>
-<button onclick="showSection('dashboard')">Dashboard</button>
-<button onclick="showSection('quiz')">Quiz</button>
-<button onclick="showSection('timetable')">Timetable</button>
-<button onclick="showSection('pomodoro')">Pomodoro</button>
-<button onclick="showSection('game')">Mini Game</button>
-<button onclick="showSection('notes')">Notes</button>
-<button onclick="toggleDark()">Dark Mode</button>
+<h2>GCSE Pro</h2>
+
+<button onclick="show('dashboard')">🏠 Dashboard</button>
+<button onclick="show('quiz')">🧠 Quiz</button>
+<button onclick="show('timetable')">📅 Timetable</button>
+<button onclick="show('pomodoro')">⏱ Pomodoro</button>
+<button onclick="show('game')">🎮 Mini Game</button>
+<button onclick="show('notes')">📝 Notes</button>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
 </div>
 
 <div class="main">
 
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
-<p>XP: <span id="xp">0</span></p>
-<p>Level: <span id="level">1</span></p>
-<p>Streak: <span id="streak">0</span></p>
+
+<div class="stats">
+  <div class="stat xp">XP<br><span id="xp">0</span></div>
+  <div class="stat level">Level<br><span id="level">1</span></div>
+  <div class="stat streak">Streak<br><span id="streak">0</span></div>
+</div>
+
 </div>
 
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
 <p id="question"></p>
 <div id="options"></div>
-<button onclick="nextQuestion()">Next</button>
+<button onclick="nextQ()">Next</button>
 </div>
 
 <div id="timetable" class="card section" style="display:none;">
 <h2>Timetable</h2>
-<input id="days" type="number" placeholder="Days">
-<button onclick="generateTimetable()">Generate</button>
+<input id="days" type="number" placeholder="Days to revise">
+<button onclick="generate()">Generate</button>
 <div id="table"></div>
 </div>
 
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro</h2>
 <h1 id="timer">25:00</h1>
-<button onclick="startTimer()">Start</button>
-<button onclick="pauseTimer()">Pause</button>
-<button onclick="resetTimer()">Reset</button>
+<button onclick="start()">Start</button>
+<button onclick="pause()">Pause</button>
+<button onclick="reset()">Reset</button>
 </div>
 
 <div id="game" class="card section" style="display:none;">
@@ -89,7 +167,7 @@ body { font-family:'Inter',sans-serif; margin:0; background:#eef2ff; }
 
 <div id="notes" class="card section" style="display:none;">
 <h2>Notes</h2>
-<textarea id="notesArea" style="width:100%;height:150px;"></textarea>
+<textarea id="notesArea"></textarea>
 <button onclick="saveNotes()">Save</button>
 </div>
 
@@ -97,8 +175,8 @@ body { font-family:'Inter',sans-serif; margin:0; background:#eef2ff; }
 
 <script>
 
-// NAVIGATION
-function showSection(id){
+// NAV
+function show(id){
   document.querySelectorAll(".section").forEach(s=>s.style.display="none");
   document.getElementById(id).style.display="block";
 }
@@ -108,157 +186,139 @@ function toggleDark(){
   document.body.classList.toggle("dark");
 }
 
-// XP SYSTEM
+// XP
 let xp = parseInt(localStorage.getItem("xp")) || 0;
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
-function updateStats(){
+function update(){
   document.getElementById("xp").innerText = xp;
   document.getElementById("level").innerText = Math.floor(xp/100)+1;
   document.getElementById("streak").innerText = streak;
 }
-updateStats();
+update();
 
 // QUIZ
-const questions = [
-  {q:"2x + 6 = 10", a:"2", options:["1","2","3"]},
-  {q:"Capital of France?", a:"Paris", options:["London","Paris","Rome"]},
-  {q:"H2O is?", a:"Water", options:["Oxygen","Hydrogen","Water"]}
+const qs = [
+{q:"2x+6=10",a:"2",o:["1","2","3"]},
+{q:"Capital of Germany?",a:"Berlin",o:["Paris","Berlin","Rome"]},
+{q:"CO2 is?",a:"Carbon dioxide",o:["Oxygen","Carbon dioxide","Hydrogen"]}
 ];
 
-let qIndex = 0;
+let i=0;
 
-function loadQuestion(){
-  let q = questions[qIndex];
-  document.getElementById("question").innerText = q.q;
-  let optDiv = document.getElementById("options");
-  optDiv.innerHTML = "";
+function loadQ(){
+  let q=qs[i];
+  document.getElementById("question").innerText=q.q;
+  let optDiv=document.getElementById("options");
+  optDiv.innerHTML="";
 
-  q.options.forEach(o=>{
-    let btn = document.createElement("button");
-    btn.innerText = o;
-    btn.onclick = ()=>{
-      if(o === q.a){
-        xp += 10;
-        streak++;
-        alert("Correct!");
-      } else {
-        streak = 0;
-        alert("Wrong!");
-      }
-      updateStats();
-      localStorage.setItem("xp", xp);
-      localStorage.setItem("streak", streak);
+  q.o.forEach(opt=>{
+    let b=document.createElement("button");
+    b.innerText=opt;
+    b.onclick=()=>{
+      if(opt===q.a){xp+=10; streak++; alert("Correct");}
+      else{streak=0; alert("Wrong");}
+      update();
+      localStorage.setItem("xp",xp);
+      localStorage.setItem("streak",streak);
     };
-    optDiv.appendChild(btn);
+    optDiv.appendChild(b);
   });
 }
 
-function nextQuestion(){
-  qIndex++;
-  if(qIndex >= questions.length){
-    alert("Quiz finished!");
-    qIndex = 0;
-  }
-  loadQuestion();
+function nextQ(){
+  i++;
+  if(i>=qs.length){alert("Finished"); i=0;}
+  loadQ();
 }
 
-loadQuestion();
+loadQ();
 
 // TIMETABLE
-function generateTimetable(){
-  let days = document.getElementById("days").value;
-  let table = document.getElementById("table");
-  table.innerHTML = "";
+function generate(){
+  let d=document.getElementById("days").value;
+  let table=document.getElementById("table");
+  table.innerHTML="";
 
-  for(let i=1;i<=days;i++){
-    let div = document.createElement("div");
-    div.innerText = "Day " + i + ": Maths, English, Science";
+  for(let i=1;i<=d;i++){
+    let div=document.createElement("div");
+    div.innerText="Day "+i+": Maths, Science, English";
     table.appendChild(div);
   }
 }
 
-// POMODORO
-let time = 1500;
-let interval;
+// TIMER
+let t=1500, int;
 
 function updateTimer(){
-  let m = Math.floor(time/60);
-  let s = time%60;
-  document.getElementById("timer").innerText =
-    `${m}:${s.toString().padStart(2,"0")}`;
+  let m=Math.floor(t/60);
+  let s=t%60;
+  document.getElementById("timer").innerText=`${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function startTimer(){
-  if(!interval){
-    interval = setInterval(()=>{
-      time--;
+function start(){
+  if(!int){
+    int=setInterval(()=>{
+      t--;
       updateTimer();
     },1000);
   }
 }
 
-function pauseTimer(){
-  clearInterval(interval);
-  interval = null;
+function pause(){
+  clearInterval(int);
+  int=null;
 }
 
-function resetTimer(){
-  clearInterval(interval);
-  interval = null;
-  time = 1500;
+function reset(){
+  clearInterval(int);
+  int=null;
+  t=1500;
   updateTimer();
 }
 
 updateTimer();
 
-// MEMORY GAME
-function loadGame(){
-  let arr = ["A","A","B","B"];
+// GAME
+function game(){
+  let arr=["A","A","B","B"];
   arr.sort(()=>Math.random()-0.5);
-
-  let area = document.getElementById("gameArea");
-  area.innerHTML = "";
-
-  let first = null;
+  let gameArea=document.getElementById("gameArea");
+  gameArea.innerHTML="";
+  let first=null;
 
   arr.forEach(val=>{
-    let card = document.createElement("div");
-    card.className = "memory-card";
-    card.innerText = "?";
+    let c=document.createElement("div");
+    c.className="memory-card";
+    c.innerText="?";
 
-    card.onclick = ()=>{
-      card.innerText = val;
-
-      if(!first){
-        first = card;
-      } else {
-        if(first.innerText === card.innerText){
-          xp += 20;
-        } else {
-          setTimeout(()=>{
-            card.innerText = "?";
-            first.innerText = "?";
-          },500);
-        }
-        first = null;
-        updateStats();
+    c.onclick=()=>{
+      c.innerText=val;
+      if(!first) first=c;
+      else{
+        if(first.innerText===c.innerText){xp+=20;}
+        else setTimeout(()=>{
+          c.innerText="?";
+          first.innerText="?";
+        },500);
+        first=null;
+        update();
       }
     };
 
-    area.appendChild(card);
+    gameArea.appendChild(c);
   });
 }
 
-loadGame();
+game();
 
 // NOTES
 function saveNotes(){
-  localStorage.setItem("notes", document.getElementById("notesArea").value);
+  localStorage.setItem("notes",document.getElementById("notesArea").value);
 }
 
-document.getElementById("notesArea").value =
-  localStorage.getItem("notes") || "";
+document.getElementById("notesArea").value=
+  localStorage.getItem("notes")||"";
 
 </script>
 
