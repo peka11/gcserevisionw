@@ -4,89 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ultimate GCSE Revision Pro 🎓</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-body {
-  font-family:'Inter',sans-serif;
-  margin:0;
-  background:linear-gradient(135deg,#eef2ff,#f8fafc);
-  color:#111;
-}
+body { font-family:'Inter',sans-serif; margin:0; background:linear-gradient(135deg,#eef2ff,#f8fafc); color:#111; transition:0.3s; }
 .dark { background:#0f172a; color:white; }
-
-/* Sidebar */
-.sidebar {
-  position:fixed; width:260px; height:100%;
-  background:linear-gradient(180deg,#4f7cff,#3561c3);
-  padding:20px; color:white;
-}
-.sidebar button {
-  width:100%; padding:12px; margin:6px 0;
-  border:none; border-radius:10px;
-  background:none; color:white; text-align:left;
-  cursor:pointer;
-}
+.sidebar { position:fixed; width:260px; height:100%; background:linear-gradient(180deg,#4f7cff,#3561c3); padding:20px; color:white; overflow-y:auto; }
+.sidebar button { width:100%; padding:12px; margin:6px 0; border:none; border-radius:10px; background:none; color:white; text-align:left; cursor:pointer; transition:0.2s; }
 .sidebar button:hover { background:rgba(255,255,255,0.2); }
-
-/* Main */
 .main { margin-left:280px; padding:25px; }
-
-/* Cards */
-.card {
-  background:white; padding:25px;
-  border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1);
-  margin-bottom:20px;
-}
+.card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; transition:0.3s; }
 .dark .card { background:#1f2937; }
-
-/* Stats */
 .stats { display:flex; gap:15px; }
-.stat {
-  flex:1; padding:20px; border-radius:15px;
-  color:white; text-align:center; font-weight:bold;
-}
+.stat { flex:1; padding:20px; border-radius:15px; color:white; text-align:center; font-weight:bold; }
 .xp {background:linear-gradient(135deg,#4f7cff,#22c55e);}
 .level {background:linear-gradient(135deg,#f59e0b,#fde047);}
 .streak {background:linear-gradient(135deg,#ef4444,#f97316);}
-
-/* Quiz style */
-.quiz-option {
-  display:block; padding:12px; margin:10px 0;
-  border-radius:10px; border:2px solid #ddd;
-  cursor:pointer; transition:0.2s;
-}
+.quiz-option { display:block; padding:12px; margin:10px 0; border-radius:10px; border:2px solid #ddd; cursor:pointer; transition:0.2s; }
 .quiz-option:hover { border-color:#4f7cff; background:#eef2ff; }
 .correct { background:#22c55e; color:white; }
 .wrong { background:#ef4444; color:white; }
-
-/* Timetable */
-.day-card {
-  background:linear-gradient(135deg,#4f7cff,#6366f1);
-  color:white; padding:15px; border-radius:15px;
-  margin-bottom:15px;
-}
+.day-card { background:linear-gradient(135deg,#4f7cff,#6366f1); color:white; padding:15px; border-radius:15px; margin-bottom:15px; }
 .sessions { display:flex; gap:10px; margin-top:10px; }
-.session {
-  flex:1; background:white; color:#111;
-  padding:10px; border-radius:10px;
-  text-align:center; font-weight:600;
-  cursor:pointer; transition:0.2s;
-}
+.session { flex:1; background:white; color:#111; padding:10px; border-radius:10px; text-align:center; font-weight:600; cursor:pointer; transition:0.2s; }
 .session:hover { transform:scale(1.05); }
-
-/* Memory & inputs */
-.memory-card {
-  width:70px; height:70px; background:#4f7cff;
-  color:white; display:inline-block;
-  text-align:center; line-height:70px;
-  margin:5px; border-radius:10px; cursor:pointer;
-}
-input, textarea, select {
-  width:100%; padding:10px; margin-top:10px;
-  border-radius:8px;
-}
+.memory-card { width:70px; height:70px; background:#4f7cff; color:white; display:inline-block; text-align:center; line-height:70px; margin:5px; border-radius:10px; cursor:pointer; }
+input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; }
+.subject-note { margin-top:15px; }
+.subject-note h3 { cursor:pointer; background:#4f7cff; color:white; padding:10px; border-radius:10px; margin:5px 0; }
+.subject-note div { display:none; padding:10px; background:#eef2ff; border-radius:10px; margin-bottom:5px; }
+.dark .subject-note div { background:#1f2937; }
 </style>
 </head>
 <body>
@@ -99,6 +45,7 @@ input, textarea, select {
   <button onclick="show('pomodoro')">⏱ Pomodoro</button>
   <button onclick="show('game')">🎮 Mini Game</button>
   <button onclick="show('notes')">📝 Notes</button>
+  <button onclick="show('subjectNotes')">📚 Subject Notes</button>
   <button onclick="toggleDark()">🌙 Dark Mode</button>
 </div>
 
@@ -117,11 +64,9 @@ input, textarea, select {
 <!-- Quiz -->
 <div id="quiz" class="card section" style="display:none;">
   <h2>Quiz</h2>
-
   <select id="subjectSelect"></select>
   <select id="topicSelect"></select>
   <button onclick="startQuiz()">Start Quiz</button>
-
   <div id="quizArea" style="margin-top:20px;">
     <p id="question"></p>
     <div id="options"></div>
@@ -145,7 +90,7 @@ input, textarea, select {
   <button onclick="reset()">Reset</button>
 </div>
 
-<!-- Game -->
+<!-- Memory Game -->
 <div id="game" class="card section" style="display:none;">
   <h2>Memory Game</h2>
   <div id="gameArea"></div>
@@ -153,15 +98,20 @@ input, textarea, select {
 
 <!-- Notes -->
 <div id="notes" class="card section" style="display:none;">
-  <h2>Notes</h2>
+  <h2>General Notes</h2>
   <textarea id="notesArea"></textarea>
   <button onclick="saveNotes()">Save</button>
+</div>
+
+<!-- Subject Notes -->
+<div id="subjectNotes" class="card section" style="display:none;">
+  <h2>Subject Notes</h2>
+  <div id="subjectNotesContainer"></div>
 </div>
 
 </div>
 
 <script>
-
 // Navigation
 function show(id) {
   document.querySelectorAll('.section').forEach(s => s.style.display='none');
@@ -169,246 +119,87 @@ function show(id) {
 }
 
 // Dark Mode
-function toggleDark() {
-  document.body.classList.toggle('dark');
-}
+function toggleDark() { document.body.classList.toggle('dark'); }
 
 // XP System
 let xp = parseInt(localStorage.getItem("xp"))||0;
 let streak = parseInt(localStorage.getItem("streak"))||0;
-
-function updateStats(){
-  document.getElementById("xp").innerText = xp;
-  document.getElementById("level").innerText = Math.floor(xp/100)+1;
-  document.getElementById("streak").innerText = streak;
-}
+function updateStats(){ document.getElementById("xp").innerText=xp; document.getElementById("level").innerText=Math.floor(xp/100)+1; document.getElementById("streak").innerText=streak; }
 updateStats();
 
-// Subjects + Topics
+// Subjects + Topics + Quiz
 const questionBank = {
-  "Maths (OCR)": {
-    "Algebra": [
-      {type:"mcq",q:"Solve 2x+6=14",o:["3","4","5"],a:"4"},
-      {type:"typed",q:"What does 'x' equal if x+3=7?",a:"4"}
-    ],
-    "Geometry": [
-      {type:"mcq",q:"Angle sum in triangle?",o:["180","360","90"],a:"180"}
-    ],
-    "Probability": [
-      {type:"typed",q:"Probability of flipping heads on coin?",a:"1/2"}
-    ]
-  },
-  "Combined Science (AQA)": {
-    "Cell Biology": [
-      {type:"mcq",q:"Function of nucleus?",o:["Controls cell","Stores water","Protects DNA"],a:"Controls cell"}
-    ],
-    "Chemistry Basics": [
-      {type:"typed",q:"Symbol for Sodium?",a:"Na"}
-    ],
-    "Physics Basics": [
-      {type:"mcq",q:"Speed of light approx?",o:["3x10^8","3x10^6","3x10^5"],a:"3x10^8"}
-    ]
-  },
-  "Computer Science (OCR)": {
-    "Programming": [
-      {type:"typed",q:"What keyword starts a function in Python?",a:"def"}
-    ],
-    "Data Representation": [
-      {type:"mcq",q:"1 byte = how many bits?",o:["4","8","16"],a:"8"}
-    ]
-  },
-  "Geography (AQA)": {
-    "Rivers": [
-      {type:"typed",q:"What is erosion?",a:"wearing away rocks"}
-    ],
-    "Weather": [
-      {type:"mcq",q:"What instrument measures wind speed?",o:["Anemometer","Thermometer","Barometer"],a:"Anemometer"}
-    ]
-  },
-  "German (AQA)": {
-    "Family": [
-      {type:"typed",q:"Translate 'my brother' to German",a:"mein bruder"}
-    ],
-    "Food": [
-      {type:"mcq",q:"German for 'apple'?",o:["Apfel","Banane","Traube"],a:"Apfel"}
-    ]
-  },
-  "English (AQA)": {
-    "Language Paper 1": [
-      {type:"mcq",q:"What is a simile?",o:["Comparison using like/as","Type of poem","Main idea"],a:"Comparison using like/as"}
-    ],
-    "Poetry": [
-      {type:"typed",q:"Name a poetic device that repeats initial consonant sounds",a:"alliteration"}
-    ]
-  },
-  "Media Studies": {
-    "Representation": [
-      {type:"typed",q:"Representation in media means showing what of groups?",a:"how they are shown"}
-    ],
-    "Audience": [
-      {type:"mcq",q:"Audience means?",o:["Viewers","Editors","Actors"],a:"Viewers"}
-    ]
-  }
+  "Maths (OCR)": { "Algebra":[{type:"mcq",q:"Solve 2x+6=14",o:["3","4","5"],a:"4"}], "Geometry":[{type:"typed",q:"Angle sum in triangle?",a:"180"}], "Probability":[{type:"typed",q:"Probability of heads?",a:"1/2"}] },
+  "Combined Science (AQA)": { "Cell Biology":[{type:"mcq",q:"Function of nucleus?",o:["Controls cell","Stores water","Protects DNA"],a:"Controls cell"}], "Chemistry Basics":[{type:"typed",q:"Symbol for Sodium?",a:"Na"}], "Physics Basics":[{type:"mcq",q:"Speed of light approx?",o:["3x10^8","3x10^6","3x10^5"],a:"3x10^8"}] },
+  "Computer Science (OCR)": { "Programming":[{type:"typed",q:"Python function keyword?",a:"def"}], "Data Representation":[{type:"mcq",q:"1 byte = ? bits",o:["4","8","16"],a:"8"}] },
+  "Geography (AQA)": { "Rivers":[{type:"typed",q:"Define erosion",a:"wearing away rocks"}], "Weather":[{type:"mcq",q:"Instrument measures wind?",o:["Anemometer","Thermometer","Barometer"],a:"Anemometer"}] },
+  "German (AQA)": { "Family":[{type:"typed",q:"Translate 'my brother'",a:"mein bruder"}], "Food":[{type:"mcq",q:"German for 'apple'?",o:["Apfel","Banane","Traube"],a:"Apfel"}] },
+  "English (AQA)": { "Language Paper 1":[{type:"mcq",q:"What is a simile?",o:["Comparison using like/as","Type of poem","Main idea"],a:"Comparison using like/as"}], "Poetry":[{type:"typed",q:"Device that repeats consonant sounds?",a:"alliteration"}] },
+  "Media Studies": { "Representation":[{type:"typed",q:"Representation means showing what of groups?",a:"how they are shown"}], "Audience":[{type:"mcq",q:"Audience means?",o:["Viewers","Editors","Actors"],a:"Viewers"}] }
 };
 
-// Populate dropdowns
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
-
-function populateSubjects(){
-  subjectSelect.innerHTML="";
-  for(let s in questionBank){
-    subjectSelect.add(new Option(s,s));
-  }
-}
-function populateTopics(){
-  topicSelect.innerHTML="";
-  const subj=subjectSelect.value;
-  for(let t in questionBank[subj]){
-    topicSelect.add(new Option(t,t));
-  }
-}
-
+function populateSubjects(){ subjectSelect.innerHTML=""; for(let s in questionBank){ subjectSelect.add(new Option(s,s)); } }
+function populateTopics(){ topicSelect.innerHTML=""; const subj=subjectSelect.value; for(let t in questionBank[subj]){ topicSelect.add(new Option(t,t)); } }
 subjectSelect.onchange=populateTopics;
 populateSubjects();
 populateTopics();
 
-// Quiz logic
-let currentQuestions=[];
-let qIndex=0;
-
-function startQuiz(){
-  const subj=subjectSelect.value;
-  const top=topicSelect.value;
-  currentQuestions=questionBank[subj][top];
-  qIndex=0;
-  loadQuestion();
-}
-
+let currentQuestions=[]; let qIndex=0;
+function startQuiz(){ const subj=subjectSelect.value; const top=topicSelect.value; currentQuestions=questionBank[subj][top]; qIndex=0; loadQuestion(); }
 function loadQuestion(){
-  const q=document.getElementById("question");
-  const opts=document.getElementById("options");
-  opts.innerHTML="";
+  const qEl=document.getElementById("question"); const opts=document.getElementById("options"); opts.innerHTML="";
   const item=currentQuestions[qIndex];
-
-  q.innerText=item.q;
-
-  if(item.type==="mcq"){
-    item.o.forEach(opt=>{
-      const div=document.createElement("div");
-      div.className="quiz-option";
-      div.innerText=opt;
-      div.onclick=()=>{
-        div.classList.add(opt===item.a?"correct":"wrong");
-        if(opt===item.a){ xp+=10; streak++; }
-        else { streak=0; }
-        updateStats();
-        localStorage.setItem("xp",xp);
-        localStorage.setItem("streak",streak);
-      };
-      opts.appendChild(div);
-    });
+  qEl.innerText=item.q;
+  if(item.type==="mcq"){ item.o.forEach(opt=>{
+    const div=document.createElement("div"); div.className="quiz-option"; div.innerText=opt;
+    div.onclick=()=>{ div.classList.add(opt===item.a?"correct":"wrong"); if(opt===item.a){ xp+=10; streak++; }else{ streak=0;} updateStats(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak); };
+    opts.appendChild(div);
+  });
   } else {
-    const inp=document.createElement("input");
-    inp.placeholder="Type answer here...";
-    opts.appendChild(inp);
-    const btn=document.createElement("button");
-    btn.innerText="Submit";
-    btn.onclick=()=>{
-      if(inp.value.trim().toLowerCase()===item.a.toLowerCase()){
-        alert("Correct!");
-        xp+=10; streak++;
-      } else {
-        alert("Wrong!");
-        streak=0;
-      }
-      updateStats();
-      localStorage.setItem("xp",xp);
-      localStorage.setItem("streak",streak);
-    };
-    opts.appendChild(btn);
+    const inp=document.createElement("input"); inp.placeholder="Type answer here..."; opts.appendChild(inp);
+    const btn=document.createElement("button"); btn.innerText="Submit"; btn.onclick=()=>{
+      if(inp.value.trim().toLowerCase()===item.a.toLowerCase()){ alert("Correct!"); xp+=10; streak++; } else { alert("Wrong!"); streak=0; }
+      updateStats(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
+    }; opts.appendChild(btn);
   }
-}
-
-function nextQ(){
-  qIndex++;
-  if(qIndex>=currentQuestions.length){
-    alert("Quiz complete!");
-    qIndex=0;
-  }
-  loadQuestion();
 }
 
 // Timetable
-function generate(){
-  const days=parseInt(document.getElementById("days").value);
-  const table=document.getElementById("table");
-  table.innerHTML="";
-  const subjects=Object.keys(questionBank);
-
-  for(let i=1;i<=days;i++){
-    const dayCard=document.createElement("div");
-    dayCard.className="day-card";
-    dayCard.innerHTML="<b>Day "+i+"</b>";
-
-    const wrap=document.createElement("div");
-    wrap.className="sessions";
-
-    for(let j=0;j<3;j++){
-      const s=document.createElement("div");
-      s.className="session";
-      const sub=subjects[Math.floor(Math.random()*subjects.length)];
-      s.innerText=sub;
-      s.onclick=()=>{ subjectSelect.value=sub; populateTopics(); show("quiz"); };
-      wrap.appendChild(s);
-    }
-
-    dayCard.appendChild(wrap);
-    table.appendChild(dayCard);
+function generate(){ const days=parseInt(document.getElementById("days").value); const table=document.getElementById("table"); table.innerHTML=""; const subjects=Object.keys(questionBank);
+  for(let i=1;i<=days;i++){ const dayCard=document.createElement("div"); dayCard.className="day-card"; dayCard.innerHTML="<b>Day "+i+"</b>";
+    const wrap=document.createElement("div"); wrap.className="sessions";
+    for(let j=0;j<3;j++){ const s=document.createElement("div"); s.className="session"; const sub=subjects[Math.floor(Math.random()*subjects.length)]; s.innerText=sub; s.onclick=()=>{ subjectSelect.value=sub; populateTopics(); show("quiz"); }; wrap.appendChild(s); }
+    dayCard.appendChild(wrap); table.appendChild(dayCard);
   }
 }
 
 // Pomodoro
-let t=1500, interval;
-function updateTimer(){
-  const m=Math.floor(t/60), s=t%60;
-  document.getElementById("timer").innerText=`${m}:${s.toString().padStart(2,'0')}`;
-}
-function start(){ if(!interval) interval=setInterval(()=>{t--;updateTimer();},1000); }
+let t=1500, interval; function updateTimer(){ const m=Math.floor(t/60), s=t%60; document.getElementById("timer").innerText=`${m}:${s.toString().padStart(2,'0')}`; }
+function start(){ if(!interval) interval=setInterval(()=>{ t--; updateTimer(); if(t<=0){ clearInterval(interval); interval=null; alert("Pomodoro Complete!"); t=1500; updateTimer(); } },1000); }
 function pause(){ clearInterval(interval); interval=null; }
 function reset(){ clearInterval(interval); interval=null; t=1500; updateTimer(); }
 updateTimer();
 
 // Memory Game
-function game(){
-  const arr=["A","A","B","B"];
-  arr.sort(()=>Math.random()-0.5);
-  const area=document.getElementById("gameArea");
-  area.innerHTML="";
-  let first=null;
-  arr.forEach(val=>{
-    const card=document.createElement("div");
-    card.className="memory-card";
-    card.innerText="?";
-    card.onclick=()=>{
-      card.innerText=val;
-      if(!first) first=card;
-      else{
-        if(first.innerText===card.innerText){ xp+=20; }
-        else { setTimeout(()=>{card.innerText="?"; first.innerText="?";},500); }
-        first=null; updateStats();
-      }
-    };
-    area.appendChild(card);
-  });
-}
+function game(){ const arr=["A","A","B","B"]; arr.sort(()=>Math.random()-0.5); const area=document.getElementById("gameArea"); area.innerHTML=""; let first=null; arr.forEach(val=>{ const card=document.createElement("div"); card.className="memory-card"; card.innerText="?"; card.onclick=()=>{ card.innerText=val; if(!first) first=card; else{ if(first.innerText===card.innerText){ xp+=20; updateStats(); } else { setTimeout(()=>{first.innerText="?"; card.innerText="?"; first=null;},500);} first=null; } }; area.appendChild(card); }); }
 game();
 
 // Notes
-function saveNotes(){
-  localStorage.setItem("notes",document.getElementById("notesArea").value);
+function saveNotes(){ localStorage.setItem("notes",document.getElementById("notesArea").value); }
+document.getElementById("notesArea").value=localStorage.getItem("notes")||""; 
+
+// Subject Notes Section
+const subjectNotesContainer=document.getElementById("subjectNotesContainer");
+for(let subj in questionBank){
+  const div=document.createElement("div"); div.className="subject-note";
+  div.innerHTML=`<h3 onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">${subj}</h3>`;
+  const inner=document.createElement("div");
+  inner.innerHTML=Object.keys(questionBank[subj]).map(t=>`<b>${t}:</b> Sample notes about ${t}.`).join("<br>");
+  div.appendChild(inner);
+  subjectNotesContainer.appendChild(div);
 }
-document.getElementById("notesArea").value=localStorage.getItem("notes")||"";
 
 </script>
 </body>
