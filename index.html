@@ -129,15 +129,70 @@ updateStats();
 
 // Subjects + Topics + Quiz
 const questionBank = {
-  "Maths (OCR)": { "Algebra":[{type:"mcq",q:"Solve 2x+6=14",o:["3","4","5"],a:"4"}], "Geometry":[{type:"typed",q:"Angle sum in triangle?",a:"180"}], "Probability":[{type:"typed",q:"Probability of heads?",a:"1/2"}] },
-  "Combined Science (AQA)": { "Cell Biology":[{type:"mcq",q:"Function of nucleus?",o:["Controls cell","Stores water","Protects DNA"],a:"Controls cell"}], "Chemistry Basics":[{type:"typed",q:"Symbol for Sodium?",a:"Na"}], "Physics Basics":[{type:"mcq",q:"Speed of light approx?",o:["3x10^8","3x10^6","3x10^5"],a:"3x10^8"}] },
-  "Computer Science (OCR)": { "Programming":[{type:"typed",q:"Python function keyword?",a:"def"}], "Data Representation":[{type:"mcq",q:"1 byte = ? bits",o:["4","8","16"],a:"8"}] },
-  "Geography (AQA)": { "Rivers":[{type:"typed",q:"Define erosion",a:"wearing away rocks"}], "Weather":[{type:"mcq",q:"Instrument measures wind?",o:["Anemometer","Thermometer","Barometer"],a:"Anemometer"}] },
-  "German (AQA)": { "Family":[{type:"typed",q:"Translate 'my brother'",a:"mein bruder"}], "Food":[{type:"mcq",q:"German for 'apple'?",o:["Apfel","Banane","Traube"],a:"Apfel"}] },
-  "English (AQA)": { "Language Paper 1":[{type:"mcq",q:"What is a simile?",o:["Comparison using like/as","Type of poem","Main idea"],a:"Comparison using like/as"}], "Poetry":[{type:"typed",q:"Device that repeats consonant sounds?",a:"alliteration"}] },
-  "Media Studies": { "Representation":[{type:"typed",q:"Representation means showing what of groups?",a:"how they are shown"}], "Audience":[{type:"mcq",q:"Audience means?",o:["Viewers","Editors","Actors"],a:"Viewers"}] }
+"Maths (OCR)":{"Algebra":[
+  {q:"Solve 2x+6=14",o:["3","4","5","6","7"],a:"4"},
+  {q:"Factorise x^2+5x+6",o:["(x+2)(x+3)","(x+1)(x+6)","(x+2)(x+6)","(x+3)(x+3)","(x+1)(x+5)"],a:"(x+2)(x+3)"},
+  {q:"Solve 3x=9",o:[],a:"3"},
+  {q:"Simplify 2x+3x",o:["5x","6x","x","1","2"],a:"5x"},
+  {q:"Solve x-4=7",o:["11","3","-11","-3","7"],a:"11"}
+],"Geometry":[
+  {q:"Angle sum in triangle?",o:[],a:"180"},
+  {q:"Right angle is?",o:["90","180","60","45","30"],a:"90"},
+  {q:"Sum of angles in quadrilateral?",o:["360","180","90","270","540"],a:"360"},
+  {q:"Number of sides in hexagon?",o:[],a:"6"},
+  {q:"Perimeter of square with side 4?",o:["16","8","12","20","10"],a:"16"}
+]},
+"Combined Science (AQA)":{"Cell Biology":[
+  {q:"Function of nucleus?",o:["Controls cell","Stores water","Protects DNA","Makes proteins","Energy"],a:"Controls cell"},
+  {q:"What carries genetic info?",o:["DNA","RNA","Protein","Carbs","Lipids"],a:"DNA"},
+  {q:"Energy production organelle?",o:[],a:"mitochondria"},
+  {q:"Cell wall found in?",o:["Plant","Animal","Bacteria","Fungi","Protist"],a:"Plant"},
+  {q:"Site of protein synthesis?",o:[],a:"ribosome"}
+],"Chemistry Basics":[
+  {q:"Symbol for Sodium?",o:[],a:"Na"},
+  {q:"Water formula?",o:["H2O","HO2","H2","O2","OH"],a:"H2O"},
+  {q:"pH of neutral?",o:["7","0","14","1","5"],a:"7"},
+  {q:"Atomic number of Carbon?",o:[],a:"6"},
+  {q:"Symbol for Oxygen?",o:["O","Ox","Ox2","C","H"],a:"O"}
+]},
+"English (AQA)":{"Language Paper 1":[
+  {q:"What is a simile?",o:["Comparison using like/as","Type of poem","Main idea","Dialogue","Story"],a:"Comparison using like/as"},
+  {q:"Device that repeats consonant sounds?",o:[],a:"alliteration"},
+  {q:"What is a metaphor?",o:["Symbolic comparison","Story","Poem","Dialogue","Plot"],a:"Symbolic comparison"},
+  {q:"Direct speech uses?",o:["Quotation marks","Brackets","Commas","Apostrophes","Full stop"],a:"Quotation marks"},
+  {q:"Opposite of hyperbole?",o:[],a:"understatement"}
+]},
+"Geography (AQA)":{"Rivers":[
+  {q:"Define erosion?",o:["Wearing away rocks","Water flow","Sediment deposit","Tree growth","Farming"],a:"Wearing away rocks"},
+  {q:"Deposition is?",o:["Material dropped","Flowing water","Uplift","Erosion","Sediment held"],a:"Material dropped"},
+  {q:"Transportation means?",o:["Movement of material","Dropping material","Evaporation","Condensation","Melting"],a:"Movement of material"},
+  {q:"Floodplain definition?",o:[],a:"flat area near river"},
+  {q:"Meander definition?",o:[],a:"bend in river"}
+]},
+"Computer Science (OCR)":{"Programming":[
+  {q:"What is a variable?",o:["Storage","Loop","Condition","Function","Class"],a:"Storage"},
+  {q:"Function of loop?",o:["Repeat code","Stop code","Store value","Compare","Call function"],a:"Repeat code"},
+  {q:"If statement checks?",o:["Condition","Loop","Variable","Print","Function"],a:"Condition"},
+  {q:"Array stores?",o:["Multiple values","Single value","Function","Loop","Object"],a:"Multiple values"},
+  {q:"CPU function?",o:["Process data","Store data","Print","Compute only","Memory"],a:"Process data"}
+]},
+"German (AQA)":{"Family":[
+  {q:"Translate: My brother is tall",o:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein","Wir sind groß"],a:"Mein Bruder ist groß"},
+  {q:"Translate: My mother is kind",o:["Meine Mutter ist nett","Mein Vater ist nett","Ich bin nett","Sie ist nett","Wir sind nett"],a:"Meine Mutter ist nett"},
+  {q:"Translate: I have a dog",o:["Ich habe einen Hund","Ich habe eine Katze","Ich habe ein Pferd","Ich bin Hund","Ich bin Katze"],a:"Ich habe einen Hund"},
+  {q:"Translate: I am happy",o:["Ich bin glücklich","Ich bin traurig","Ich bin müde","Wir sind glücklich","Sie sind glücklich"],a:"Ich bin glücklich"},
+  {q:"Translate: We eat bread",o:["Wir essen Brot","Wir essen Käse","Wir trinken Wasser","Ich esse Brot","Sie essen Brot"],a:"Wir essen Brot"}
+]},
+"Media Studies":{"Representation":[
+  {q:"Define media representation",o:["How media shows groups","Movie genre","TV channel","Ad type","Camera angle"],a:"How media shows groups"},
+  {q:"Stereotype meaning?",o:["Oversimplified image","Complex image","News","Ad","Story"],a:"Oversimplified image"},
+  {q:"Target audience?",o:["Intended viewers","Random people","All people","Only kids","Only adults"],a:"Intended viewers"},
+  {q:"Media text meaning?",o:["Content created","Channel","Genre","Actor","News"],a:"Content created"},
+  {q:"Representation impact?",o:["Influences perception","No impact","Entertainment only","Advertising only","News only"],a:"Influences perception"}
+]}
 };
 
+// Populate subjects/topics
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 function populateSubjects(){ subjectSelect.innerHTML=""; for(let s in questionBank){ subjectSelect.add(new Option(s,s)); } }
@@ -146,15 +201,22 @@ subjectSelect.onchange=populateTopics;
 populateSubjects();
 populateTopics();
 
+// Quiz
 let currentQuestions=[]; let qIndex=0;
 function startQuiz(){ const subj=subjectSelect.value; const top=topicSelect.value; currentQuestions=questionBank[subj][top]; qIndex=0; loadQuestion(); }
 function loadQuestion(){
   const qEl=document.getElementById("question"); const opts=document.getElementById("options"); opts.innerHTML="";
+  if(qIndex>=currentQuestions.length){ qEl.innerText="✅ Quiz Complete!"; return; }
   const item=currentQuestions[qIndex];
   qEl.innerText=item.q;
-  if(item.type==="mcq"){ item.o.forEach(opt=>{
+  if(item.o.length>0){ item.o.forEach(opt=>{
     const div=document.createElement("div"); div.className="quiz-option"; div.innerText=opt;
-    div.onclick=()=>{ div.classList.add(opt===item.a?"correct":"wrong"); if(opt===item.a){ xp+=10; streak++; }else{ streak=0;} updateStats(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak); };
+    div.onclick=()=>{
+      div.classList.add(opt===item.a?"correct":"wrong");
+      if(opt===item.a){ xp+=10; streak++; } else { streak=0; }
+      updateStats(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
+      setTimeout(()=>{ qIndex++; loadQuestion(); },500);
+    };
     opts.appendChild(div);
   });
   } else {
@@ -162,6 +224,7 @@ function loadQuestion(){
     const btn=document.createElement("button"); btn.innerText="Submit"; btn.onclick=()=>{
       if(inp.value.trim().toLowerCase()===item.a.toLowerCase()){ alert("Correct!"); xp+=10; streak++; } else { alert("Wrong!"); streak=0; }
       updateStats(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
+      qIndex++; loadQuestion();
     }; opts.appendChild(btn);
   }
 }
@@ -183,7 +246,7 @@ function reset(){ clearInterval(interval); interval=null; t=1500; updateTimer();
 updateTimer();
 
 // Memory Game
-function game(){ const arr=["A","A","B","B"]; arr.sort(()=>Math.random()-0.5); const area=document.getElementById("gameArea"); area.innerHTML=""; let first=null; arr.forEach(val=>{ const card=document.createElement("div"); card.className="memory-card"; card.innerText="?"; card.onclick=()=>{ card.innerText=val; if(!first) first=card; else{ if(first.innerText===card.innerText){ xp+=20; updateStats(); } else { setTimeout(()=>{first.innerText="?"; card.innerText="?"; first=null;},500);} first=null; } }; area.appendChild(card); }); }
+function game(){ const arr=["A","A","B","B","C","C","D","D"]; arr.sort(()=>Math.random()-0.5); const area=document.getElementById("gameArea"); area.innerHTML=""; let first=null; arr.forEach(val=>{ const card=document.createElement("div"); card.className="memory-card"; card.innerText="?"; card.onclick=()=>{ card.innerText=val; if(!first) first=card; else{ if(first.innerText===card.innerText){ xp+=20; updateStats(); } else { setTimeout(()=>{first.innerText="?"; card.innerText="?"; first=null;},500);} first=null; } }; area.appendChild(card); }); }
 game();
 
 // Notes
@@ -200,7 +263,6 @@ for(let subj in questionBank){
   div.appendChild(inner);
   subjectNotesContainer.appendChild(div);
 }
-
 </script>
 </body>
 </html>
