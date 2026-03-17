@@ -6,172 +6,65 @@
 <title>GCSE Revision Pro 🎓</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
 <style>
-body {
-  font-family:'Inter',sans-serif;
-  margin:0;
-  background:linear-gradient(135deg,#eef2ff,#f8fafc);
-  color:#111;
-  transition:0.3s;
-}
+body { font-family:'Inter',sans-serif; margin:0; background:#eef2ff; }
+.dark { background:#0f172a; color:white; }
 
-.dark {
-  background:#0f172a;
-  color:white;
-}
-
-/* Sidebar */
 .sidebar {
-  position:fixed;
-  width:260px;
-  height:100%;
-  background:rgba(79,124,255,0.9);
-  backdrop-filter: blur(12px);
-  padding:20px;
-  color:white;
+  position:fixed; width:250px; height:100%;
+  background:#4f7cff; padding:20px; color:white;
 }
-
 .sidebar button {
-  display:block;
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:none;
-  border-radius:10px;
-  background:transparent;
-  color:white;
-  text-align:left;
-  cursor:pointer;
-  transition:0.2s;
+  width:100%; margin:5px 0; padding:12px;
+  border:none; border-radius:8px; background:none;
+  color:white; text-align:left; cursor:pointer;
 }
+.sidebar button:hover { background:rgba(255,255,255,0.2); }
 
-.sidebar button.active,
-.sidebar button:hover {
-  background:rgba(255,255,255,0.2);
-}
+.main { margin-left:270px; padding:25px; }
 
-/* Main */
-.main {
-  margin-left:280px;
-  padding:30px;
-}
-
-/* Cards */
 .card {
-  background:rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  border-radius:20px;
-  padding:25px;
-  margin-bottom:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-  animation:fade 0.4s ease;
+  background:white; padding:20px;
+  border-radius:15px; margin-bottom:20px;
 }
+.dark .card { background:#1f2937; }
 
-.dark .card {
-  background:rgba(31,41,55,0.8);
-}
-
-@keyframes fade {
-  from {opacity:0; transform:translateY(10px);}
-  to {opacity:1;}
-}
-
-button {
-  padding:10px 16px;
-  border:none;
-  border-radius:10px;
-  background:#4f7cff;
-  color:white;
-  cursor:pointer;
-}
-
-button:hover {
-  background:#2f4fd6;
-}
-
-/* Stats */
-.dashboard-stats {
-  display:flex;
-  gap:15px;
-  flex-wrap:wrap;
-}
-
-.stat {
-  flex:1;
-  padding:20px;
-  border-radius:15px;
-  color:white;
-  text-align:center;
-  font-weight:bold;
-}
-
-.xp {background:linear-gradient(135deg,#4f7cff,#22c55e);}
-.level {background:linear-gradient(135deg,#f59e0b,#fde047);}
-.streak {background:linear-gradient(135deg,#ef4444,#f97316);}
-
-/* Quiz */
-.option-btn {
-  display:block;
-  margin:8px 0;
-  width:100%;
-}
-
-/* Memory */
 .memory-card {
-  display:inline-block;
-  width:60px;
-  height:60px;
-  margin:5px;
-  background:#4f7cff;
-  color:white;
-  text-align:center;
-  line-height:60px;
-  border-radius:10px;
-  cursor:pointer;
+  width:60px; height:60px; display:inline-block;
+  background:#4f7cff; color:white; line-height:60px;
+  text-align:center; margin:5px; border-radius:10px;
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="sidebar">
-<h2>🎓 GCSE Pro</h2>
-
-<button onclick="showSection('dashboard', this)" class="active">🏠 Dashboard</button>
-<button onclick="showSection('quiz', this)">🧠 Quiz</button>
-<button onclick="showSection('timetable', this)">📅 Timetable</button>
-<button onclick="showSection('analytics', this)">📊 Analytics</button>
-<button onclick="showSection('pomodoro', this)">⏱ Pomodoro</button>
-<button onclick="showSection('minigame', this)">🎮 Games</button>
-<button onclick="showSection('notes', this)">📝 Notes</button>
-
-<button onclick="toggleDark()">🌙 Dark Mode</button>
+<h2>GCSE App</h2>
+<button onclick="showSection('dashboard')">Dashboard</button>
+<button onclick="showSection('quiz')">Quiz</button>
+<button onclick="showSection('timetable')">Timetable</button>
+<button onclick="showSection('pomodoro')">Pomodoro</button>
+<button onclick="showSection('game')">Mini Game</button>
+<button onclick="showSection('notes')">Notes</button>
+<button onclick="toggleDark()">Dark Mode</button>
 </div>
 
 <div class="main">
 
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
-
-<div class="dashboard-stats">
-  <div class="stat xp">XP<br><span id="xp">0</span></div>
-  <div class="stat level">Level<br><span id="level">1</span></div>
-  <div class="stat streak">Streak<br><span id="streak">0</span></div>
-</div>
-
+<p>XP: <span id="xp">0</span></p>
+<p>Level: <span id="level">1</span></p>
+<p>Streak: <span id="streak">0</span></p>
 </div>
 
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
-<select id="subject"></select>
-<select id="topic"></select>
-
-<p id="question">Select topic</p>
+<p id="question"></p>
 <div id="options"></div>
+<button onclick="nextQuestion()">Next</button>
 </div>
 
 <div id="timetable" class="card section" style="display:none;">
@@ -181,26 +74,22 @@ button:hover {
 <div id="table"></div>
 </div>
 
-<div id="analytics" class="card section" style="display:none;">
-<h2>Analytics</h2>
-<canvas id="chart"></canvas>
-</div>
-
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro</h2>
 <h1 id="timer">25:00</h1>
-<button onclick="start()">Start</button>
-<button onclick="pause()">Pause</button>
+<button onclick="startTimer()">Start</button>
+<button onclick="pauseTimer()">Pause</button>
+<button onclick="resetTimer()">Reset</button>
 </div>
 
-<div id="minigame" class="card section" style="display:none;">
+<div id="game" class="card section" style="display:none;">
 <h2>Memory Game</h2>
-<div id="game"></div>
+<div id="gameArea"></div>
 </div>
 
 <div id="notes" class="card section" style="display:none;">
 <h2>Notes</h2>
-<textarea id="notesArea"></textarea>
+<textarea id="notesArea" style="width:100%;height:150px;"></textarea>
 <button onclick="saveNotes()">Save</button>
 </div>
 
@@ -208,115 +97,168 @@ button:hover {
 
 <script>
 
-// NAV
-function showSection(id, btn){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
-
-  document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
+// NAVIGATION
+function showSection(id){
+  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="block";
 }
 
 // DARK MODE
 function toggleDark(){
-  document.body.classList.toggle('dark');
+  document.body.classList.toggle("dark");
 }
 
-// XP
-let xp=0, streak=0;
+// XP SYSTEM
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+
 function updateStats(){
-  document.getElementById("xp").innerText=xp;
-  document.getElementById("level").innerText=Math.floor(xp/100)+1;
-  document.getElementById("streak").innerText=streak;
+  document.getElementById("xp").innerText = xp;
+  document.getElementById("level").innerText = Math.floor(xp/100)+1;
+  document.getElementById("streak").innerText = streak;
 }
 updateStats();
 
 // QUIZ
-const data={
-Maths:{Algebra:[{q:"2x=10",a:"5",o:["3","5","6"]}]}
-};
+const questions = [
+  {q:"2x + 6 = 10", a:"2", options:["1","2","3"]},
+  {q:"Capital of France?", a:"Paris", options:["London","Paris","Rome"]},
+  {q:"H2O is?", a:"Water", options:["Oxygen","Hydrogen","Water"]}
+];
 
-const subj=document.getElementById("subject");
-const top=document.getElementById("topic");
+let qIndex = 0;
 
-for(let s in data){
-  let opt=new Option(s,s);
-  subj.add(opt);
-}
+function loadQuestion(){
+  let q = questions[qIndex];
+  document.getElementById("question").innerText = q.q;
+  let optDiv = document.getElementById("options");
+  optDiv.innerHTML = "";
 
-subj.onchange=()=>{
-  top.innerHTML="";
-  for(let t in data[subj.value]){
-    top.add(new Option(t,t));
-  }
-};
-
-top.onchange=loadQ;
-
-function loadQ(){
-  let q=data[subj.value][top.value][0];
-  document.getElementById("question").innerText=q.q;
-  let div=document.getElementById("options");
-  div.innerHTML="";
-  q.o.forEach(o=>{
-    let b=document.createElement("button");
-    b.className="option-btn";
-    b.innerText=o;
-    b.onclick=()=>{
-      if(o==q.a){xp+=10; streak++; confetti();}
-      else streak=0;
+  q.options.forEach(o=>{
+    let btn = document.createElement("button");
+    btn.innerText = o;
+    btn.onclick = ()=>{
+      if(o === q.a){
+        xp += 10;
+        streak++;
+        alert("Correct!");
+      } else {
+        streak = 0;
+        alert("Wrong!");
+      }
       updateStats();
+      localStorage.setItem("xp", xp);
+      localStorage.setItem("streak", streak);
     };
-    div.appendChild(b);
+    optDiv.appendChild(btn);
   });
 }
 
-// TIMER
-let t=1500, int;
-function start(){
-  if(!int){
-    int=setInterval(()=>{
-      t--;
-      let m=Math.floor(t/60), s=t%60;
-      timer.innerText=`${m}:${s}`;
+function nextQuestion(){
+  qIndex++;
+  if(qIndex >= questions.length){
+    alert("Quiz finished!");
+    qIndex = 0;
+  }
+  loadQuestion();
+}
+
+loadQuestion();
+
+// TIMETABLE
+function generateTimetable(){
+  let days = document.getElementById("days").value;
+  let table = document.getElementById("table");
+  table.innerHTML = "";
+
+  for(let i=1;i<=days;i++){
+    let div = document.createElement("div");
+    div.innerText = "Day " + i + ": Maths, English, Science";
+    table.appendChild(div);
+  }
+}
+
+// POMODORO
+let time = 1500;
+let interval;
+
+function updateTimer(){
+  let m = Math.floor(time/60);
+  let s = time%60;
+  document.getElementById("timer").innerText =
+    `${m}:${s.toString().padStart(2,"0")}`;
+}
+
+function startTimer(){
+  if(!interval){
+    interval = setInterval(()=>{
+      time--;
+      updateTimer();
     },1000);
   }
 }
-function pause(){clearInterval(int); int=null;}
 
-// NOTES
-function saveNotes(){
-  localStorage.setItem("notes",notesArea.value);
+function pauseTimer(){
+  clearInterval(interval);
+  interval = null;
 }
 
-notesArea.value=localStorage.getItem("notes")||"";
+function resetTimer(){
+  clearInterval(interval);
+  interval = null;
+  time = 1500;
+  updateTimer();
+}
 
-// GAME
-function game(){
-  let letters=["A","A","B","B"];
-  letters.sort(()=>Math.random()-0.5);
-  let first=null;
+updateTimer();
 
-  letters.forEach(l=>{
-    let d=document.createElement("div");
-    d.className="memory-card";
-    d.innerText="?";
-    d.onclick=()=>{
-      d.innerText=l;
-      if(!first) first=d;
-      else{
-        if(first.innerText===d.innerText){xp+=20;}
-        else setTimeout(()=>{d.innerText="?"; first.innerText="?";},500);
-        first=null;
+// MEMORY GAME
+function loadGame(){
+  let arr = ["A","A","B","B"];
+  arr.sort(()=>Math.random()-0.5);
+
+  let area = document.getElementById("gameArea");
+  area.innerHTML = "";
+
+  let first = null;
+
+  arr.forEach(val=>{
+    let card = document.createElement("div");
+    card.className = "memory-card";
+    card.innerText = "?";
+
+    card.onclick = ()=>{
+      card.innerText = val;
+
+      if(!first){
+        first = card;
+      } else {
+        if(first.innerText === card.innerText){
+          xp += 20;
+        } else {
+          setTimeout(()=>{
+            card.innerText = "?";
+            first.innerText = "?";
+          },500);
+        }
+        first = null;
         updateStats();
       }
     };
-    gameDiv.appendChild(d);
+
+    area.appendChild(card);
   });
 }
 
-let gameDiv=document.getElementById("game");
-game();
+loadGame();
+
+// NOTES
+function saveNotes(){
+  localStorage.setItem("notes", document.getElementById("notesArea").value);
+}
+
+document.getElementById("notesArea").value =
+  localStorage.getItem("notes") || "";
 
 </script>
 
