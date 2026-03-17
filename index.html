@@ -14,7 +14,7 @@ body { font-family:'Inter',sans-serif; margin:0; background:linear-gradient(135d
 .main { margin-left:280px; padding:25px; }
 .card { background:white; padding:25px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px; transition:0.3s; }
 .dark .card { background:#1f2937; }
-.stats { display:flex; gap:15px; }
+.stats { display:flex; gap:15px; flex-wrap:wrap; }
 .stat { flex:1; padding:20px; border-radius:15px; color:white; text-align:center; font-weight:bold; }
 .xp {background:linear-gradient(135deg,#4f7cff,#22c55e);}
 .level {background:linear-gradient(135deg,#f59e0b,#fde047);}
@@ -24,11 +24,11 @@ body { font-family:'Inter',sans-serif; margin:0; background:linear-gradient(135d
 .correct { background:#22c55e; color:white; }
 .wrong { background:#ef4444; color:white; }
 .day-card { background:linear-gradient(135deg,#4f7cff,#6366f1); color:white; padding:15px; border-radius:15px; margin-bottom:15px; }
-.sessions { display:flex; gap:10px; margin-top:10px; }
-.session { flex:1; background:white; color:#111; padding:10px; border-radius:10px; text-align:center; font-weight:600; cursor:pointer; transition:0.2s; }
+.sessions { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
+.session { flex:1; min-width:80px; background:white; color:#111; padding:10px; border-radius:10px; text-align:center; font-weight:600; cursor:pointer; transition:0.2s; }
 .session:hover { transform:scale(1.05); }
 .memory-card { width:70px; height:70px; background:#4f7cff; color:white; display:inline-block; text-align:center; line-height:70px; margin:5px; border-radius:10px; cursor:pointer; }
-input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; }
+input, textarea, select, button { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:none; }
 .subject-note { margin-top:15px; }
 .subject-note h3 { cursor:pointer; background:#4f7cff; color:white; padding:10px; border-radius:10px; margin:5px 0; }
 .subject-note div { display:none; padding:10px; background:#eef2ff; border-radius:10px; margin-bottom:5px; }
@@ -51,7 +51,6 @@ input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radi
 
 <div class="main">
 
-<!-- Dashboard -->
 <div id="dashboard" class="card section">
   <h2>Dashboard</h2>
   <div class="stats">
@@ -61,7 +60,6 @@ input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radi
   </div>
 </div>
 
-<!-- Quiz -->
 <div id="quiz" class="card section" style="display:none;">
   <h2>Quiz</h2>
   <select id="subjectSelect"></select>
@@ -73,7 +71,6 @@ input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radi
   </div>
 </div>
 
-<!-- Timetable -->
 <div id="timetable" class="card section" style="display:none;">
   <h2>Timetable</h2>
   <input id="days" type="number" placeholder="Days to revise">
@@ -81,7 +78,6 @@ input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radi
   <div id="table"></div>
 </div>
 
-<!-- Pomodoro -->
 <div id="pomodoro" class="card section" style="display:none;">
   <h2>Pomodoro</h2>
   <h1 id="timer">25:00</h1>
@@ -90,20 +86,17 @@ input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radi
   <button onclick="reset()">Reset</button>
 </div>
 
-<!-- Memory Game -->
 <div id="game" class="card section" style="display:none;">
   <h2>Memory Game</h2>
   <div id="gameArea"></div>
 </div>
 
-<!-- Notes -->
 <div id="notes" class="card section" style="display:none;">
   <h2>General Notes</h2>
-  <textarea id="notesArea"></textarea>
+  <textarea id="notesArea" placeholder="Write your notes here..."></textarea>
   <button onclick="saveNotes()">Save</button>
 </div>
 
-<!-- Subject Notes -->
 <div id="subjectNotes" class="card section" style="display:none;">
   <h2>Subject Notes</h2>
   <div id="subjectNotesContainer"></div>
@@ -113,84 +106,38 @@ input, textarea, select { width:100%; padding:10px; margin-top:10px; border-radi
 
 <script>
 // Navigation
-function show(id) {
-  document.querySelectorAll('.section').forEach(s => s.style.display='none');
-  document.getElementById(id).style.display='block';
-}
+function show(id){ document.querySelectorAll('.section').forEach(s=>s.style.display='none'); document.getElementById(id).style.display='block'; }
 
 // Dark Mode
-function toggleDark() { document.body.classList.toggle('dark'); }
+function toggleDark(){ document.body.classList.toggle('dark'); }
 
 // XP System
-let xp = parseInt(localStorage.getItem("xp"))||0;
-let streak = parseInt(localStorage.getItem("streak"))||0;
+let xp=parseInt(localStorage.getItem("xp"))||0;
+let streak=parseInt(localStorage.getItem("streak"))||0;
 function updateStats(){ document.getElementById("xp").innerText=xp; document.getElementById("level").innerText=Math.floor(xp/100)+1; document.getElementById("streak").innerText=streak; }
 updateStats();
 
-// Subjects + Topics + Quiz
+// Full GCSE Topic List with 5 placeholder questions each
 const questionBank = {
-"Maths (OCR)":{"Algebra":[
-  {q:"Solve 2x+6=14",o:["3","4","5","6","7"],a:"4"},
-  {q:"Factorise x^2+5x+6",o:["(x+2)(x+3)","(x+1)(x+6)","(x+2)(x+6)","(x+3)(x+3)","(x+1)(x+5)"],a:"(x+2)(x+3)"},
-  {q:"Solve 3x=9",o:[],a:"3"},
-  {q:"Simplify 2x+3x",o:["5x","6x","x","1","2"],a:"5x"},
-  {q:"Solve x-4=7",o:["11","3","-11","-3","7"],a:"11"}
-],"Geometry":[
-  {q:"Angle sum in triangle?",o:[],a:"180"},
-  {q:"Right angle is?",o:["90","180","60","45","30"],a:"90"},
-  {q:"Sum of angles in quadrilateral?",o:["360","180","90","270","540"],a:"360"},
-  {q:"Number of sides in hexagon?",o:[],a:"6"},
-  {q:"Perimeter of square with side 4?",o:["16","8","12","20","10"],a:"16"}
-]},
-"Combined Science (AQA)":{"Cell Biology":[
-  {q:"Function of nucleus?",o:["Controls cell","Stores water","Protects DNA","Makes proteins","Energy"],a:"Controls cell"},
-  {q:"What carries genetic info?",o:["DNA","RNA","Protein","Carbs","Lipids"],a:"DNA"},
-  {q:"Energy production organelle?",o:[],a:"mitochondria"},
-  {q:"Cell wall found in?",o:["Plant","Animal","Bacteria","Fungi","Protist"],a:"Plant"},
-  {q:"Site of protein synthesis?",o:[],a:"ribosome"}
-],"Chemistry Basics":[
-  {q:"Symbol for Sodium?",o:[],a:"Na"},
-  {q:"Water formula?",o:["H2O","HO2","H2","O2","OH"],a:"H2O"},
-  {q:"pH of neutral?",o:["7","0","14","1","5"],a:"7"},
-  {q:"Atomic number of Carbon?",o:[],a:"6"},
-  {q:"Symbol for Oxygen?",o:["O","Ox","Ox2","C","H"],a:"O"}
-]},
-"English (AQA)":{"Language Paper 1":[
-  {q:"What is a simile?",o:["Comparison using like/as","Type of poem","Main idea","Dialogue","Story"],a:"Comparison using like/as"},
-  {q:"Device that repeats consonant sounds?",o:[],a:"alliteration"},
-  {q:"What is a metaphor?",o:["Symbolic comparison","Story","Poem","Dialogue","Plot"],a:"Symbolic comparison"},
-  {q:"Direct speech uses?",o:["Quotation marks","Brackets","Commas","Apostrophes","Full stop"],a:"Quotation marks"},
-  {q:"Opposite of hyperbole?",o:[],a:"understatement"}
-]},
-"Geography (AQA)":{"Rivers":[
-  {q:"Define erosion?",o:["Wearing away rocks","Water flow","Sediment deposit","Tree growth","Farming"],a:"Wearing away rocks"},
-  {q:"Deposition is?",o:["Material dropped","Flowing water","Uplift","Erosion","Sediment held"],a:"Material dropped"},
-  {q:"Transportation means?",o:["Movement of material","Dropping material","Evaporation","Condensation","Melting"],a:"Movement of material"},
-  {q:"Floodplain definition?",o:[],a:"flat area near river"},
-  {q:"Meander definition?",o:[],a:"bend in river"}
-]},
-"Computer Science (OCR)":{"Programming":[
-  {q:"What is a variable?",o:["Storage","Loop","Condition","Function","Class"],a:"Storage"},
-  {q:"Function of loop?",o:["Repeat code","Stop code","Store value","Compare","Call function"],a:"Repeat code"},
-  {q:"If statement checks?",o:["Condition","Loop","Variable","Print","Function"],a:"Condition"},
-  {q:"Array stores?",o:["Multiple values","Single value","Function","Loop","Object"],a:"Multiple values"},
-  {q:"CPU function?",o:["Process data","Store data","Print","Compute only","Memory"],a:"Process data"}
-]},
-"German (AQA)":{"Family":[
-  {q:"Translate: My brother is tall",o:["Mein Bruder ist groß","Meine Schwester ist klein","Ich bin groß","Er ist klein","Wir sind groß"],a:"Mein Bruder ist groß"},
-  {q:"Translate: My mother is kind",o:["Meine Mutter ist nett","Mein Vater ist nett","Ich bin nett","Sie ist nett","Wir sind nett"],a:"Meine Mutter ist nett"},
-  {q:"Translate: I have a dog",o:["Ich habe einen Hund","Ich habe eine Katze","Ich habe ein Pferd","Ich bin Hund","Ich bin Katze"],a:"Ich habe einen Hund"},
-  {q:"Translate: I am happy",o:["Ich bin glücklich","Ich bin traurig","Ich bin müde","Wir sind glücklich","Sie sind glücklich"],a:"Ich bin glücklich"},
-  {q:"Translate: We eat bread",o:["Wir essen Brot","Wir essen Käse","Wir trinken Wasser","Ich esse Brot","Sie essen Brot"],a:"Wir essen Brot"}
-]},
-"Media Studies":{"Representation":[
-  {q:"Define media representation",o:["How media shows groups","Movie genre","TV channel","Ad type","Camera angle"],a:"How media shows groups"},
-  {q:"Stereotype meaning?",o:["Oversimplified image","Complex image","News","Ad","Story"],a:"Oversimplified image"},
-  {q:"Target audience?",o:["Intended viewers","Random people","All people","Only kids","Only adults"],a:"Intended viewers"},
-  {q:"Media text meaning?",o:["Content created","Channel","Genre","Actor","News"],a:"Content created"},
-  {q:"Representation impact?",o:["Influences perception","No impact","Entertainment only","Advertising only","News only"],a:"Influences perception"}
-]}
+"Biology":{"Cell Level Systems":[],"Scaling Up":[],"Organism Level Systems":[],"Community Level Systems":[],"Genes, Inheritance & Selection":[],"Global Challenges":[]},
+"Chemistry":{"Particles":[],"Elements, Compounds & Mixtures":[],"Chemical Reactions":[],"Predicting & Identifying Reactions & Products":[],"Monitoring & Controlling Chemical Reactions":[],"Global Challenges":[]},
+"Physics":{"Matter":[],"Forces":[],"Electricity":[],"Magnetism & Magnetic Fields":[],"Waves in Matter":[],"Radioactivity":[],"Energy":[],"Global Challenges":[]},
+"Maths":{"Numbers":[],"Algebra":[],"Graphs":[],"Ratio, Proportion & Rates of Change":[],"Geometry & Measures":[],"Pythagoras & Trigonometry":[],"Probability & Statistics":[]},
+"Computer Science":{"Systems Architecture":[],"Memory & Storage":[],"Computer Networks, Connections & Protocols":[],"Network Security":[],"Systems Software":[],"Ethical, Legal, Cultural & Environmental Impacts of Digital Technology":[],"Algorithms":[],"Programming Fundamentals":[],"Producing Robust Programs":[],"Boolean Logic":[],"Programming Languages & IDEs":[]},
+"Geography":{"The Challenge of Natural Hazards":[],"The Living World":[],"Physical Landscapes in the UK":[],"Urban Issues and Challenges":[],"The Changing Economic World":[],"The Challenge of Resource Management":[]},
+"German":{"Identity & Relationships":[],"Healthy Living & Lifestyle":[],"Education & Work":[],"Free Time & Leisure":[],"Customs & Festivals":[],"Home, Town & Local Area":[],"Environment & Global Issues":[],"Travel & Tourism":[],"Present Tense":[],"Past Tense":[],"Future Tense":[],"Modal Verbs":[],"Reflexive Verbs":[],"Cases":[],"Adjective Endings":[],"Reading Skills":[],"Listening Skills":[],"Speaking Skills":[],"Writing Skills":[]},
+"English":{"Language Paper 1 – Reading (Fiction)":[],"Language Paper 1 – Writing (Descriptive/Narrative)":[],"Language Paper 2 – Reading (Non-fiction)":[],"Language Paper 2 – Writing (Viewpoints/Perspectives)":[],"Literature Paper 1 – Macbeth":[],"Literature Paper 1 – A Christmas Carol":[],"Literature Paper 2 – An Inspector Calls":[],"Literature Paper 2 – Power & Conflict Poetry":[],"Literature Paper 2 – Unseen Poetry":[],"SPaG":[]},
+"Media Studies":{"Media Language":[],"Media Representation":[],"Media Industries":[],"Media Audiences":[],"Newspapers":[],"Magazines":[],"Advertising & Marketing":[],"Film":[],"Television":[],"Online & Social Media":[],"Music Video":[],"Video Games":[],"Component 1 Exam Skills":[],"Component 2 Exam Skills":[]}
 };
+
+// Generate placeholder 5 questions per topic
+for(let subj in questionBank){
+  for(let topic in questionBank[subj]){
+    for(let i=1;i<=5;i++){
+      questionBank[subj][topic].push({q:`Sample Question ${i} for ${topic}`, o:["Option 1","Option 2","Option 3","Option 4","Option 5"], a:"Option 1"});
+    }
+  }
+}
 
 // Populate subjects/topics
 const subjectSelect=document.getElementById("subjectSelect");
@@ -207,9 +154,8 @@ function startQuiz(){ const subj=subjectSelect.value; const top=topicSelect.valu
 function loadQuestion(){
   const qEl=document.getElementById("question"); const opts=document.getElementById("options"); opts.innerHTML="";
   if(qIndex>=currentQuestions.length){ qEl.innerText="✅ Quiz Complete!"; return; }
-  const item=currentQuestions[qIndex];
-  qEl.innerText=item.q;
-  if(item.o.length>0){ item.o.forEach(opt=>{
+  const item=currentQuestions[qIndex]; qEl.innerText=item.q;
+  item.o.forEach(opt=>{
     const div=document.createElement("div"); div.className="quiz-option"; div.innerText=opt;
     div.onclick=()=>{
       div.classList.add(opt===item.a?"correct":"wrong");
@@ -219,23 +165,14 @@ function loadQuestion(){
     };
     opts.appendChild(div);
   });
-  } else {
-    const inp=document.createElement("input"); inp.placeholder="Type answer here..."; opts.appendChild(inp);
-    const btn=document.createElement("button"); btn.innerText="Submit"; btn.onclick=()=>{
-      if(inp.value.trim().toLowerCase()===item.a.toLowerCase()){ alert("Correct!"); xp+=10; streak++; } else { alert("Wrong!"); streak=0; }
-      updateStats(); localStorage.setItem("xp",xp); localStorage.setItem("streak",streak);
-      qIndex++; loadQuestion();
-    }; opts.appendChild(btn);
-  }
 }
 
 // Timetable
 function generate(){ const days=parseInt(document.getElementById("days").value); const table=document.getElementById("table"); table.innerHTML=""; const subjects=Object.keys(questionBank);
   for(let i=1;i<=days;i++){ const dayCard=document.createElement("div"); dayCard.className="day-card"; dayCard.innerHTML="<b>Day "+i+"</b>";
     const wrap=document.createElement("div"); wrap.className="sessions";
-    for(let j=0;j<3;j++){ const s=document.createElement("div"); s.className="session"; const sub=subjects[Math.floor(Math.random()*subjects.length)]; s.innerText=sub; s.onclick=()=>{ subjectSelect.value=sub; populateTopics(); show("quiz"); }; wrap.appendChild(s); }
-    dayCard.appendChild(wrap); table.appendChild(dayCard);
-  }
+    for(let j=0;j<3;j++){ const s=document.createElement("div"); s.className="session"; const sub=subjects[Math.floor(Math.random()*subjects.length)]; s.innerText=sub; s.onclick=()=>{ subjectSelect.value=sub; populateTopics(); show('quiz'); }; wrap.appendChild(s); }
+    dayCard.appendChild(wrap); table.appendChild(dayCard); }
 }
 
 // Pomodoro
@@ -251,18 +188,19 @@ game();
 
 // Notes
 function saveNotes(){ localStorage.setItem("notes",document.getElementById("notesArea").value); }
-document.getElementById("notesArea").value=localStorage.getItem("notes")||""; 
+document.getElementById("notesArea").value=localStorage.getItem("notes")||"";
 
-// Subject Notes Section
+// Subject Notes
 const subjectNotesContainer=document.getElementById("subjectNotesContainer");
 for(let subj in questionBank){
   const div=document.createElement("div"); div.className="subject-note";
   div.innerHTML=`<h3 onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">${subj}</h3>`;
   const inner=document.createElement("div");
-  inner.innerHTML=Object.keys(questionBank[subj]).map(t=>`<b>${t}:</b> Sample notes about ${t}.`).join("<br>");
+  inner.innerHTML=Object.keys(questionBank[subj]).map(t=>`<b>${t}:</b> Sample notes for ${t}.`).join("<br>");
   div.appendChild(inner);
   subjectNotesContainer.appendChild(div);
 }
 </script>
+
 </body>
 </html>
