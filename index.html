@@ -20,6 +20,7 @@ body {
   color:white;
 }
 
+/* SIDEBAR */
 .sidebar {
   position:fixed;
   width:260px;
@@ -39,17 +40,20 @@ body {
   color:white;
   text-align:left;
   cursor:pointer;
+  transition:0.2s;
 }
 
 .sidebar button:hover {
   background:rgba(255,255,255,0.2);
 }
 
+/* MAIN */
 .main {
   margin-left:280px;
   padding:25px;
 }
 
+/* CARD */
 .card {
   background:white;
   padding:25px;
@@ -62,6 +66,7 @@ body {
   background:#1f2937;
 }
 
+/* STATS */
 .stats {
   display:flex;
   gap:15px;
@@ -80,15 +85,64 @@ body {
 .level {background:linear-gradient(135deg,#f59e0b,#fde047);}
 .streak {background:linear-gradient(135deg,#ef4444,#f97316);}
 
-button {
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#4f7cff;
-  color:white;
+/* QUIZ (COGNITO STYLE) */
+.quiz-option {
+  display:block;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:2px solid #ddd;
   cursor:pointer;
+  transition:0.2s;
 }
 
+.quiz-option:hover {
+  border-color:#4f7cff;
+  background:#eef2ff;
+}
+
+.correct {
+  background:#22c55e;
+  color:white;
+}
+
+.wrong {
+  background:#ef4444;
+  color:white;
+}
+
+/* TIMETABLE */
+.day-card {
+  background:linear-gradient(135deg,#4f7cff,#6366f1);
+  color:white;
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:15px;
+}
+
+.sessions {
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.session {
+  flex:1;
+  background:white;
+  color:#111;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.session:hover {
+  transform:scale(1.05);
+}
+
+/* MEMORY */
 .memory-card {
   width:70px;
   height:70px;
@@ -102,6 +156,7 @@ button {
   cursor:pointer;
 }
 
+/* INPUT */
 input, textarea {
   width:100%;
   padding:10px;
@@ -127,6 +182,7 @@ input, textarea {
 
 <div class="main">
 
+<!-- DASHBOARD -->
 <div id="dashboard" class="card section">
 <h2>Dashboard</h2>
 
@@ -135,16 +191,17 @@ input, textarea {
   <div class="stat level">Level<br><span id="level">1</span></div>
   <div class="stat streak">Streak<br><span id="streak">0</span></div>
 </div>
-
 </div>
 
+<!-- QUIZ -->
 <div id="quiz" class="card section" style="display:none;">
 <h2>Quiz</h2>
-<p id="question"></p>
+<p id="question" style="font-weight:bold;"></p>
 <div id="options"></div>
 <button onclick="nextQ()">Next</button>
 </div>
 
+<!-- TIMETABLE -->
 <div id="timetable" class="card section" style="display:none;">
 <h2>Timetable</h2>
 <input id="days" type="number" placeholder="Days to revise">
@@ -152,6 +209,7 @@ input, textarea {
 <div id="table"></div>
 </div>
 
+<!-- POMODORO -->
 <div id="pomodoro" class="card section" style="display:none;">
 <h2>Pomodoro</h2>
 <h1 id="timer">25:00</h1>
@@ -160,11 +218,13 @@ input, textarea {
 <button onclick="reset()">Reset</button>
 </div>
 
+<!-- GAME -->
 <div id="game" class="card section" style="display:none;">
 <h2>Memory Game</h2>
 <div id="gameArea"></div>
 </div>
 
+<!-- NOTES -->
 <div id="notes" class="card section" style="display:none;">
 <h2>Notes</h2>
 <textarea id="notesArea"></textarea>
@@ -191,10 +251,13 @@ let xp = parseInt(localStorage.getItem("xp")) || 0;
 let streak = parseInt(localStorage.getItem("streak")) || 0;
 
 function update(){
-  document.getElementById("xp").innerText = xp;
-  document.getElementById("level").innerText = Math.floor(xp/100)+1;
-  document.getElementById("streak").innerText = streak;
+  xpEl.innerText = xp;
+  levelEl.innerText = Math.floor(xp/100)+1;
+  streakEl.innerText = streak;
 }
+const xpEl = document.getElementById("xp");
+const levelEl = document.getElementById("level");
+const streakEl = document.getElementById("streak");
 update();
 
 // QUIZ
@@ -208,27 +271,34 @@ let i=0;
 
 function loadQ(){
   let q=qs[i];
-  document.getElementById("question").innerText=q.q;
-  let optDiv=document.getElementById("options");
-  optDiv.innerHTML="";
+  question.innerText=q.q;
+  options.innerHTML="";
 
   q.o.forEach(opt=>{
-    let b=document.createElement("button");
-    b.innerText=opt;
-    b.onclick=()=>{
-      if(opt===q.a){xp+=10; streak++; alert("Correct");}
-      else{streak=0; alert("Wrong");}
+    let div=document.createElement("div");
+    div.className="quiz-option";
+    div.innerText=opt;
+
+    div.onclick=()=>{
+      if(opt===q.a){
+        div.classList.add("correct");
+        xp+=10; streak++;
+      } else {
+        div.classList.add("wrong");
+        streak=0;
+      }
       update();
       localStorage.setItem("xp",xp);
       localStorage.setItem("streak",streak);
     };
-    optDiv.appendChild(b);
+
+    options.appendChild(div);
   });
 }
 
 function nextQ(){
   i++;
-  if(i>=qs.length){alert("Finished"); i=0;}
+  if(i>=qs.length){alert("Finished!"); i=0;}
   loadQ();
 }
 
@@ -240,10 +310,31 @@ function generate(){
   let table=document.getElementById("table");
   table.innerHTML="";
 
+  const subjects=["Maths","Science","English","Geography"];
+
   for(let i=1;i<=d;i++){
-    let div=document.createElement("div");
-    div.innerText="Day "+i+": Maths, Science, English";
-    table.appendChild(div);
+    let day=document.createElement("div");
+    day.className="day-card";
+    day.innerHTML="<b>Day "+i+"</b>";
+
+    let sessionWrap=document.createElement("div");
+    sessionWrap.className="sessions";
+
+    for(let j=0;j<3;j++){
+      let subj=subjects[Math.floor(Math.random()*subjects.length)];
+      let s=document.createElement("div");
+      s.className="session";
+      s.innerText=subj;
+
+      s.onclick=()=>{
+        show("quiz");
+      };
+
+      sessionWrap.appendChild(s);
+    }
+
+    day.appendChild(sessionWrap);
+    table.appendChild(day);
   }
 }
 
@@ -253,7 +344,7 @@ let t=1500, int;
 function updateTimer(){
   let m=Math.floor(t/60);
   let s=t%60;
-  document.getElementById("timer").innerText=`${m}:${s.toString().padStart(2,'0')}`;
+  timer.innerText=`${m}:${s.toString().padStart(2,'0')}`;
 }
 
 function start(){
@@ -265,17 +356,8 @@ function start(){
   }
 }
 
-function pause(){
-  clearInterval(int);
-  int=null;
-}
-
-function reset(){
-  clearInterval(int);
-  int=null;
-  t=1500;
-  updateTimer();
-}
+function pause(){clearInterval(int); int=null;}
+function reset(){clearInterval(int); int=null; t=1500; updateTimer();}
 
 updateTimer();
 
@@ -283,7 +365,6 @@ updateTimer();
 function game(){
   let arr=["A","A","B","B"];
   arr.sort(()=>Math.random()-0.5);
-  let gameArea=document.getElementById("gameArea");
   gameArea.innerHTML="";
   let first=null;
 
@@ -309,16 +390,13 @@ function game(){
     gameArea.appendChild(c);
   });
 }
-
 game();
 
 // NOTES
 function saveNotes(){
-  localStorage.setItem("notes",document.getElementById("notesArea").value);
+  localStorage.setItem("notes",notesArea.value);
 }
-
-document.getElementById("notesArea").value=
-  localStorage.getItem("notes")||"";
+notesArea.value=localStorage.getItem("notes")||"";
 
 </script>
 
